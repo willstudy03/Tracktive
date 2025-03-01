@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tracktive.userservice.model.DAO.UserDAO">
+
+    <!-- Select a user by id -->
+    <select id="selectUserById" resultType="User">
+        SELECT id, name, email, phone_number, user_role, created_at
+        FROM users
+        WHERE id = #{id};
+    </select>
+
+    <!-- Select all users -->
+    <select id="selectAllUsers" resultType="User">
+        SELECT id, name, email, phone_number, user_role, created_at
+        FROM users;
+    </select>
+
+    <!-- Insert a new user -->
+    <insert id="addUser">
+        INSERT INTO users (id, name, email, phone_number, user_role)
+        VALUES (#{id}, #{name}, #{email}, #{phoneNumber}, #{userRole});
+    </insert>
+
+    <!-- Update a user -->
+    <update id="updateUser">
+        UPDATE users
+        SET name = #{name},
+        email = #{email},
+        phone_number = #{phoneNumber},
+        user_role = #{userRole}
+        WHERE id = #{id};
+    </update>
+
+    <!-- Delete a user by id -->
+    <delete id="deleteUserById">
+        DELETE FROM users WHERE id = #{id}
+    </delete>
+
+</mapper>

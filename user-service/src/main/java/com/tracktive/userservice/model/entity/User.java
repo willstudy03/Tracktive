@@ -1,38 +1,33 @@
 package com.tracktive.userservice.model.entity;
 
 import com.tracktive.userservice.model.Enum.UserRole;
-import jakarta.persistence.*;
 /**
 * Description: User POJO
 * @author William Theo
 * @date 28/2/2025
 */
-@Entity
-@Table(name = "user")
+
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     private String name;
 
-    @Column(unique = true)
     private String email;
 
-    private String phone_number;
+    private String phoneNumber;
 
     private UserRole userRole;
 
-    private String created_at;
+    private String createdAt;
 
     public User() {}
 
-    public User(String id, String name, String email, String phone_number, UserRole userRole) {
+    public User(String id, String name, String email, String phoneNumber, UserRole userRole) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.phone_number = phone_number;
+        this.phoneNumber = phoneNumber;
         this.userRole = userRole;
     }
 
@@ -60,12 +55,12 @@ public class User {
         this.email = email;
     }
 
-    public String getPhone_number() {
-        return phone_number;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone_number(String phone_number) {
-        this.phone_number = phone_number;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public UserRole getUserRole() {
@@ -76,12 +71,12 @@ public class User {
         this.userRole = userRole;
     }
 
-    public String getCreated_at() {
-        return created_at;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(String created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
 

@@ -1,0 +1,52 @@
+package com.tracktive.userservice.repository.Impl;
+
+import com.tracktive.userservice.model.DAO.UserDAO;
+import com.tracktive.userservice.model.entity.User;
+import com.tracktive.userservice.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+/**
+* Description: User Repository Implementation
+* @author William Theo
+* @date 1/3/2025
+*/
+@Repository
+public class UserRepositoryImpl implements UserRepository {
+
+    private final UserDAO userDAO;
+
+    @Autowired
+    public UserRepositoryImpl(UserDAO userDAO){
+        this.userDAO = userDAO;
+    }
+
+    @Override
+    public List<User> selectAllUsers() {
+        List<User> users = userDAO.selectAllUsers();
+        return users != null ? users : Collections.emptyList();
+    }
+
+    @Override
+    public Optional<User> selectUserById(String id) {
+        return userDAO.selectUserById(id);
+    }
+
+    @Override
+    public boolean addUser(User user) {
+        return userDAO.addUser(user) > 0;
+    }
+
+    @Override
+    public boolean update(User user) {
+        return userDAO.updateUser(user) > 0;
+    }
+
+    @Override
+    public boolean deleteById(String id) {
+        return userDAO.deleteUserById(id) > 0;
+    }
+}
