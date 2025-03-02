@@ -26,7 +26,7 @@ class UserRepositoryImplTest {
     @Test
     public void testAddUser(){
         User user = new User();
-        user.setId("23468c87-1674-4448-89e9-1fe00286ab4d");
+        user.setId("99998c87-1674-4448-89e9-1fe00286ab4d");
         user.setName("John Doe");
         user.setEmail("JohnDoe@gmail.com");
         user.setPhoneNumber("012349879");
@@ -45,24 +45,31 @@ class UserRepositoryImplTest {
 
     @Test
     public void testSelectUserById(){
-        String id = "9a5d60a1-0d3f-432f-98c3-0816b787c7af";
+        String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
         Optional<User> user = userRepository.selectUserById(id);
         User result = user.get();
         assertEquals(id, result.getId());
     }
 
     @Test
+    public void testLockUserById(){
+        String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
+        Optional<User> user = userRepository.lockUserById(id);
+        logger.info("Acquired lock for user: " + user);
+    }
+
+    @Test
     public void testUpdateUser(){
-        Optional<User> user = userRepository.selectUserById("9a5d60a1-0d3f-432f-98c3-0816b787c7af");
+        Optional<User> user = userRepository.selectUserById("99998c87-1674-4448-89e9-1fe00286ab4d");
         User updateUser = user.get();
         logger.info("User Name:{}", updateUser.getName());
-        updateUser.setName("William Theo");
+        updateUser.setName("John Doee");
         assertTrue(userRepository.update(user.get()));
     };
 
     @Test
     public void testDeleteUser(){
-        String id = "23468c87-1674-4448-89e9-1fe00286ab4d";
+        String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
         boolean delResult = userRepository.deleteById(id);
         Optional<User> user = userRepository.selectUserById(id);
         assertEquals(user, Optional.empty());

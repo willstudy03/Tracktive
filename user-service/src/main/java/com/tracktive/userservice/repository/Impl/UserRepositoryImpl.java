@@ -26,13 +26,17 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> selectAllUsers() {
-        List<User> users = userDAO.selectAllUsers();
-        return users != null ? users : Collections.emptyList();
+        return Optional.ofNullable(userDAO.selectAllUsers()).orElse(Collections.emptyList());
     }
 
     @Override
     public Optional<User> selectUserById(String id) {
         return userDAO.selectUserById(id);
+    }
+
+    @Override
+    public Optional<User> lockUserById(String id) {
+        return userDAO.lockUserById(id);
     }
 
     @Override

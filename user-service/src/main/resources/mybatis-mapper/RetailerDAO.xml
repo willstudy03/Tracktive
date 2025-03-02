@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tracktive.userservice.model.DAO.RetailerDAO">
+
+    <!-- Select a retailer by id -->
+    <select id="selectRetailerById" resultType="Retailer">
+        SELECT retailer_id, ssm_registration_number, business_name, business_address, bank_account, bank_name, pay_by_term_credit
+        FROM retailers
+        WHERE retailer_id = #{retailerId};
+    </select>
+
+    <!-- Select all retailers -->
+    <select id="selectAllRetailers" resultType="Retailer">
+        SELECT retailer_id, ssm_registration_number, business_name, business_address, bank_account, bank_name, pay_by_term_credit
+        FROM retailers;
+    </select>
+
+    <!-- Lock a retailer by id -->
+    <select id="lockRetailerById" resultType="Retailer">
+        SELECT retailer_id, ssm_registration_number, business_name, business_address, bank_account, bank_name, pay_by_term_credit
+        FROM retailers
+        WHERE retailer_id = #{retailerId}
+        FOR UPDATE;
+    </select>
+
+    <!-- Insert a new retailer -->
+    <insert id="addRetailer">
+        INSERT INTO retailers (retailer_id, ssm_registration_number, business_name, business_address, bank_account, bank_name, pay_by_term_credit)
+        VALUES (#{retailerId}, #{ssmRegistrationNumber}, #{businessName}, #{businessAddress}, #{bankAccount}, #{bankName}, #{payByTermCredit});
+    </insert>
+
+    <!-- Update a retailer -->
+    <update id="updateRetailer">
+        UPDATE retailers
+        SET ssm_registration_number = #{ssmRegistrationNumber},
+        business_name = #{businessName},
+        business_address = #{businessAddress},
+        bank_account = #{bankAccount},
+        bank_name = #{bankName},
+        pay_by_term_credit = #{payByTermCredit}
+        WHERE retailer_id = #{retailerId};
+    </update>
+
+    <!-- Delete a retailer by id -->
+    <delete id="deleteRetailerById">
+        DELETE FROM retailers WHERE retailer_id = #{retailerId};
+    </delete>
+</mapper>

@@ -14,6 +14,8 @@ public interface UserRepository {
     List<User> selectAllUsers();
     // Find user by ID
     Optional<User> selectUserById(String id);
+    // Lock a user by ID
+    Optional<User> lockUserById(String id);
     // Insert a new user
     boolean addUser(User user);
     // Update user info
