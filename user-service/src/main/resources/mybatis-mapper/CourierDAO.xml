@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tracktive.userservice.model.DAO.CourierDAO">
+
+    <!-- Select a courier by id -->
+    <select id="selectCourierById" resultType="Courier">
+        SELECT courier_id, driving_license_number, plate_number, preferred_delivery_zone, bank_account, bank_name
+        FROM couriers
+        WHERE courier_id = #{courierId};
+    </select>
+
+    <!-- Select all couriers -->
+    <select id="selectAllCouriers" resultType="Courier">
+        SELECT courier_id, driving_license_number, plate_number, preferred_delivery_zone, bank_account, bank_name
+        FROM couriers;
+    </select>
+
+    <!-- Lock a courier by id (for update) -->
+    <select id="lockCourierById" resultType="Courier">
+        SELECT courier_id, driving_license_number, plate_number, preferred_delivery_zone, bank_account, bank_name
+        FROM couriers
+        WHERE courier_id = #{courierId}
+        FOR UPDATE;
+    </select>
+
+    <!-- Insert a new courier -->
+    <insert id="addCourier">
+        INSERT INTO couriers (courier_id, driving_license_number, plate_number, preferred_delivery_zone, bank_account, bank_name)
+        VALUES (#{courierId}, #{drivingLicenseNumber}, #{plateNumber}, #{preferredDeliveryZone}, #{bankAccount}, #{bankName});
+    </insert>
+
+    <!-- Update a courier -->
+    <update id="updateCourier">
+        UPDATE couriers
+        SET driving_license_number = #{drivingLicenseNumber},
+        plate_number = #{plateNumber},
+        preferred_delivery_zone = #{preferredDeliveryZone},
+        bank_account = #{bankAccount},
+        bank_name = #{bankName}
+        WHERE courier_id = #{courierId};
+    </update>
+
+    <!-- Delete a courier by id -->
+    <delete id="deleteCourierById">
+        DELETE FROM couriers WHERE courier_id = #{courierId};
+    </delete>
+</mapper>

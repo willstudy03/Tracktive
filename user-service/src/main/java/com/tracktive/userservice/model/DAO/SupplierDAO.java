@@ -12,6 +12,7 @@ import java.util.Optional;
 */
 @Mapper
 public interface SupplierDAO {
+
     // Select operations
     List<Supplier> selectAllSuppliers();
     Optional<Supplier> selectSupplierById(String id);
