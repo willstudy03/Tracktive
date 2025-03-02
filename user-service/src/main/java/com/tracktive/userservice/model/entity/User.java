@@ -1,12 +1,12 @@
 package com.tracktive.userservice.model.entity;
 
 import com.tracktive.userservice.model.Enum.UserRole;
+
 /**
 * Description: User POJO
 * @author William Theo
 * @date 28/2/2025
 */
-
 public class User {
 
     private String id;

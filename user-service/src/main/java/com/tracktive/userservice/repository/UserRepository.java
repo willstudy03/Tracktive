@@ -19,7 +19,7 @@ public interface UserRepository {
     // Insert a new user
     boolean addUser(User user);
     // Update user info
-    boolean update(User user);
+    boolean updateUser(User user);
     // Delete user by ID
     boolean deleteById(String id);
 }

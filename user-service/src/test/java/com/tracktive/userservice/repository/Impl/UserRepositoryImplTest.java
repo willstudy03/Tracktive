@@ -59,12 +59,12 @@ class UserRepositoryImplTest {
     }
 
     @Test
-    public void testUpdateUser(){
+    public void testUpdateUserUser(){
         Optional<User> user = userRepository.selectUserById("99998c87-1674-4448-89e9-1fe00286ab4d");
         User updateUser = user.get();
         logger.info("User Name:{}", updateUser.getName());
         updateUser.setName("John Doee");
-        assertTrue(userRepository.update(user.get()));
+        assertTrue(userRepository.updateUser(user.get()));
     };
 
     @Test

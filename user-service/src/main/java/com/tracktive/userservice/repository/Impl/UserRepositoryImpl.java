@@ -45,7 +45,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean update(User user) {
+    public boolean updateUser(User user) {
         return userDAO.updateUser(user) > 0;
     }
 

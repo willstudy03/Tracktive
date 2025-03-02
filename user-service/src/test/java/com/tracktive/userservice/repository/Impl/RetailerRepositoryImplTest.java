@@ -22,7 +22,7 @@ class RetailerRepositoryImplTest {
 
     @Autowired
     private RetailerRepository retailerRepository;
-    private static final Logger logger = LoggerFactory.getLogger(RetailerRepositoryImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(RetailerRepositoryImplTest.class);
 
     @Test
     void addRetailer() {

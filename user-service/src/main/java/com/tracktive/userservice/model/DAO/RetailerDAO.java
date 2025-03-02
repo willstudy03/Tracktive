@@ -2,7 +2,6 @@ package com.tracktive.userservice.model.DAO;
 
 import com.tracktive.userservice.model.entity.Retailer;
 import org.apache.ibatis.annotations.Mapper;
-
 import java.util.List;
 import java.util.Optional;
 
