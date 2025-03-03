@@ -1,5 +1,6 @@
 package com.tracktive.userservice.repository.Impl;
 
+import com.tracktive.userservice.model.DTO.UserDTO;
 import com.tracktive.userservice.model.Enum.UserRole;
 import com.tracktive.userservice.model.entity.User;
 import com.tracktive.userservice.repository.UserRepository;
@@ -25,20 +26,20 @@ class UserRepositoryImplTest {
 
     @Test
     public void testAddUser(){
-        User user = new User();
-        user.setId("99998c87-1674-4448-89e9-1fe00286ab4d");
-        user.setName("John Doe");
-        user.setEmail("JohnDoe@gmail.com");
-        user.setPhoneNumber("012349879");
-        user.setUserRole(UserRole.ADMIN);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId("99998c87-1674-4448-89e9-1fe00286ab4d");
+        userDTO.setName("John Doe");
+        userDTO.setEmail("JohnDoe@gmail.com");
+        userDTO.setPhoneNumber("012349879");
+        userDTO.setUserRole(UserRole.ADMIN);
 
-        boolean isAdded = userRepository.addUser(user);
+        boolean isAdded = userRepository.addUser(userDTO);
         assertTrue(isAdded);
     }
 
     @Test
     public void testSelectAllUsers(){
-        List<User> users = userRepository.selectAllUsers();
+        List<UserDTO> users = userRepository.selectAllUsers();
         logger.info("Users:{}", users);
         assertEquals(users.isEmpty(),false);
     }
@@ -46,22 +47,22 @@ class UserRepositoryImplTest {
     @Test
     public void testSelectUserById(){
         String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
-        Optional<User> user = userRepository.selectUserById(id);
-        User result = user.get();
+        Optional<UserDTO> user = userRepository.selectUserById(id);
+        UserDTO result = user.get();
         assertEquals(id, result.getId());
     }
 
     @Test
     public void testLockUserById(){
         String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
-        Optional<User> user = userRepository.lockUserById(id);
+        Optional<UserDTO> user = userRepository.lockUserById(id);
         logger.info("Acquired lock for user: " + user);
     }
 
     @Test
     public void testUpdateUserUser(){
-        Optional<User> user = userRepository.selectUserById("99998c87-1674-4448-89e9-1fe00286ab4d");
-        User updateUser = user.get();
+        Optional<UserDTO> user = userRepository.selectUserById("99998c87-1674-4448-89e9-1fe00286ab4d");
+        UserDTO updateUser = user.get();
         logger.info("User Name:{}", updateUser.getName());
         updateUser.setName("John Doee");
         assertTrue(userRepository.updateUser(user.get()));
@@ -71,7 +72,7 @@ class UserRepositoryImplTest {
     public void testDeleteUser(){
         String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
         boolean delResult = userRepository.deleteById(id);
-        Optional<User> user = userRepository.selectUserById(id);
+        Optional<UserDTO> user = userRepository.selectUserById(id);
         assertEquals(user, Optional.empty());
         assertTrue(delResult);
     }
