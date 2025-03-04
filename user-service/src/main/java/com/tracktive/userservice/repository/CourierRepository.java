@@ -1,5 +1,6 @@
 package com.tracktive.userservice.repository;
 
+import com.tracktive.userservice.model.DTO.CourierDTO;
 import com.tracktive.userservice.model.entity.Courier;
 import com.tracktive.userservice.model.entity.Retailer;
 
@@ -13,15 +14,15 @@ import java.util.Optional;
 */
 public interface CourierRepository {
     // Get all courier
-    List<Courier> selectAllCouriers();
+    List<CourierDTO> selectAllCouriers();
     // Find courier by ID
-    Optional<Courier> selectCourierById(String id);
+    Optional<CourierDTO> selectCourierById(String id);
     // Lock a courier by ID
-    Optional<Courier> lockCourierById(String id);
+    Optional<CourierDTO> lockCourierById(String id);
     // Insert a new courier
-    boolean addCourier(Courier courier);
+    boolean addCourier(CourierDTO courierDTO);
     // Update courier info
-    boolean updateCourier(Courier courier);
+    boolean updateCourier(CourierDTO courierDTO);
     // Delete courier by ID
     boolean deleteById(String id);
 }

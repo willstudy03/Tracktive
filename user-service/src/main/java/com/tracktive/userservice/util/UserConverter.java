@@ -2,7 +2,6 @@ package com.tracktive.userservice.util;
 
 import com.tracktive.userservice.model.DTO.UserDTO;
 import com.tracktive.userservice.model.entity.User;
-
 import java.util.Objects;
 
 /**

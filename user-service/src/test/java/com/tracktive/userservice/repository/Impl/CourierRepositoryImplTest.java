@@ -1,5 +1,6 @@
 package com.tracktive.userservice.repository.Impl;
 
+import com.tracktive.userservice.model.DTO.CourierDTO;
 import com.tracktive.userservice.model.entity.Courier;
 import com.tracktive.userservice.model.entity.User;
 import com.tracktive.userservice.repository.CourierRepository;
@@ -23,56 +24,56 @@ class CourierRepositoryImplTest {
 
     @Test
     void addCourier() {
-        Courier courier = new Courier();
-        courier.setCourierId("33130e6b-2296-4deb-82d5-ab04a4fbf30e");
-        courier.setDrivingLicenseNumber("2342342342");
-        courier.setPlateNumber("SWG6868");
-        courier.setPreferredDeliveryZone("MELAKA");
-        courier.setBankAccount("93945789345");
-        courier.setBankName("CIMB");
+        CourierDTO courierDTO = new CourierDTO();
+        courierDTO.setCourierId("33130e6b-2296-4deb-82d5-ab04a4fbf30e");
+        courierDTO.setDrivingLicenseNumber("2342342342");
+        courierDTO.setPlateNumber("SWG6868");
+        courierDTO.setPreferredDeliveryZone("MELAKA");
+        courierDTO.setBankAccount("93945789345");
+        courierDTO.setBankName("CIMB");
 
-        boolean result = courierRepository.addCourier(courier);
+        boolean result = courierRepository.addCourier(courierDTO);
         assertTrue(result);
     }
 
 
     @Test
     void selectAllCouriers() {
-        List<Courier> couriers = courierRepository.selectAllCouriers();
-        logger.info("Couriers:{}", couriers);
-        assertEquals(couriers.isEmpty(),false);
+        List<CourierDTO> courierDTOS = courierRepository.selectAllCouriers();
+        logger.info("Couriers:{}", courierDTOS);
+        assertEquals(courierDTOS.isEmpty(),false);
     }
 
     @Test
     void selectCourierById() {
         String id = "33130e6b-2296-4deb-82d5-ab04a4fbf30e";
-        Optional<Courier> courier = courierRepository.selectCourierById(id);
-        Courier result = courier.get();
+        Optional<CourierDTO> courierDTO = courierRepository.selectCourierById(id);
+        CourierDTO result = courierDTO.get();
         assertEquals(id, result.getCourierId());
     }
 
     @Test
     void lockCourierById() {
         String id = "33130e6b-2296-4deb-82d5-ab04a4fbf30e";
-        Optional<Courier> courier = courierRepository.selectCourierById(id);
-        logger.info("Acquired lock for user: " + courier.get().getCourierId());
+        Optional<CourierDTO> courierDTO = courierRepository.selectCourierById(id);
+        logger.info("Acquired lock for user: " + courierDTO.get().getCourierId());
     }
 
     @Test
     void updateCourier() {
-        Optional<Courier> courier = courierRepository.selectCourierById("33130e6b-2296-4deb-82d5-ab04a4fbf30e");
-        Courier updateCourier = courier.get();
-        logger.info("User Name:{}", updateCourier.getBankName());
-        updateCourier.setBankName("PUBLIC BANK");
-        assertTrue(courierRepository.updateCourier(updateCourier));
+        Optional<CourierDTO> courierDTO = courierRepository.selectCourierById("33130e6b-2296-4deb-82d5-ab04a4fbf30e");
+        CourierDTO updateCourierDTO = courierDTO.get();
+        logger.info("User Name:{}", updateCourierDTO.getBankName());
+        updateCourierDTO.setBankName("PUBLIC BANK");
+        assertTrue(courierRepository.updateCourier(updateCourierDTO));
     }
 
     @Test
     void deleteById() {
         String id = "33130e6b-2296-4deb-82d5-ab04a4fbf30e";
         boolean deleteResult = courierRepository.deleteById(id);
-        Optional<Courier> courier = courierRepository.selectCourierById(id);
-        assertEquals(courier, Optional.empty());
+        Optional<CourierDTO> courierDTO = courierRepository.selectCourierById(id);
+        assertEquals(courierDTO, Optional.empty());
         assertTrue(deleteResult);
     }
 }

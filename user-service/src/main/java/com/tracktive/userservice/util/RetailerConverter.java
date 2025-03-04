@@ -2,9 +2,13 @@ package com.tracktive.userservice.util;
 
 import com.tracktive.userservice.model.DTO.RetailerDTO;
 import com.tracktive.userservice.model.entity.Retailer;
-
 import java.util.Objects;
 
+/**
+* Description: Util to convert Retailer model
+* @author William Theo
+* @date 4/3/2025
+*/
 public class RetailerConverter {
 
     // Private Constructor to prevent instantiation
