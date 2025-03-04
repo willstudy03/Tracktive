@@ -1,0 +1,43 @@
+package com.tracktive.userservice.util;
+
+import com.tracktive.userservice.model.DTO.RetailerDTO;
+import com.tracktive.userservice.model.entity.Retailer;
+
+import java.util.Objects;
+
+public class RetailerConverter {
+
+    // Private Constructor to prevent instantiation
+    private RetailerConverter() {
+    }
+
+    public static RetailerDTO toDTO(Retailer retailer){
+        if (Objects.isNull(retailer)){
+            return null;
+        }
+        RetailerDTO retailerDTO = new RetailerDTO();
+        retailerDTO.setRetailerId(retailer.getRetailerId());
+        retailerDTO.setSsmRegistrationNumber(retailer.getSsmRegistrationNumber());
+        retailerDTO.setBusinessName(retailer.getBusinessName());
+        retailerDTO.setBusinessAddress(retailer.getBusinessAddress());
+        retailerDTO.setBankAccount(retailer.getBankAccount());
+        retailerDTO.setBankName(retailer.getBankName());
+        retailerDTO.setPayByTermCredit(retailer.getPayByTermCredit());
+        return retailerDTO;
+    }
+
+    public static Retailer toEntity(RetailerDTO retailerDTO){
+        if (Objects.isNull(retailerDTO)){
+            return null;
+        }
+        Retailer retailer = new Retailer();
+        retailer.setRetailerId(retailerDTO.getRetailerId());
+        retailer.setSsmRegistrationNumber(retailerDTO.getSsmRegistrationNumber());
+        retailer.setBusinessName(retailerDTO.getBusinessName());
+        retailer.setBusinessAddress(retailerDTO.getBusinessAddress());
+        retailer.setBankAccount(retailerDTO.getBankAccount());
+        retailer.setBankName(retailerDTO.getBankName());
+        retailer.setPayByTermCredit(retailerDTO.getPayByTermCredit());
+        return retailer;
+    }
+}

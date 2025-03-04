@@ -1,5 +1,6 @@
 package com.tracktive.userservice.repository.Impl;
 
+import com.tracktive.userservice.model.DTO.RetailerDTO;
 import com.tracktive.userservice.model.entity.Retailer;
 import com.tracktive.userservice.repository.RetailerRepository;
 import org.junit.jupiter.api.Test;
@@ -26,57 +27,57 @@ class RetailerRepositoryImplTest {
 
     @Test
     void addRetailer() {
-        Retailer retailer = new Retailer();
-        retailer.setRetailerId("23468c87-1674-4448-89e9-1fe00286ab4d");
-        retailer.setSsmRegistrationNumber("234234234");
-        retailer.setBusinessName("Performance Tire");
-        retailer.setBusinessAddress("TAMAN MERDEKA");
-        retailer.setBankAccount("2334234234234");
-        retailer.setBankName("MAYBANK");
-        retailer.setPayByTermCredit(3);
+        RetailerDTO retailerDTO = new RetailerDTO();
+        retailerDTO.setRetailerId("23468c87-1674-4448-89e9-1fe00286ab4d");
+        retailerDTO.setSsmRegistrationNumber("234234234");
+        retailerDTO.setBusinessName("Performance Tire");
+        retailerDTO.setBusinessAddress("TAMAN MERDEKA");
+        retailerDTO.setBankAccount("2334234234234");
+        retailerDTO.setBankName("MAYBANK");
+        retailerDTO.setPayByTermCredit(3);
 
-        boolean result = retailerRepository.addRetailer(retailer);
+        boolean result = retailerRepository.addRetailer(retailerDTO);
         assertTrue(result);
     }
 
     @Test
     void selectAllRetailers() {
-        List<Retailer> retailers = retailerRepository.selectAllRetailers();
-        assertEquals(retailers.isEmpty(),false);
+        List<RetailerDTO> retailerDTOs = retailerRepository.selectAllRetailers();
+        assertEquals(retailerDTOs.isEmpty(),false);
     }
 
     @Test
     void selectRetailerById() {
         String id = "23468c87-1674-4448-89e9-1fe00286ab4d";
-        Optional<Retailer> retailer = retailerRepository.selectRetailerById(id);
-        Retailer result = retailer.get();
+        Optional<RetailerDTO> retailerDTO = retailerRepository.selectRetailerById(id);
+        RetailerDTO result = retailerDTO.get();
         assertEquals(result.getRetailerId(), id);
     }
 
     @Test
     void lockRetailerById() {
         String id = "23468c87-1674-4448-89e9-1fe00286ab4d";
-        Optional<Retailer> retailer = retailerRepository.lockRetailerById(id);
-        logger.info("Acquired lock for user: " + retailer);
+        Optional<RetailerDTO> retailerDTO = retailerRepository.lockRetailerById(id);
+        logger.info("Acquired lock for user: " + retailerDTO);
     }
 
 
 
     @Test
     void updateRetailer() {
-        Optional<Retailer> retailer = retailerRepository.selectRetailerById("23468c87-1674-4448-89e9-1fe00286ab4d");
-        Retailer updateRetailer = retailer.get();
-        logger.info("Business Name:{}", updateRetailer.getBusinessName());
-        updateRetailer.setBusinessName("Peformance Tiree");
-        assertTrue(retailerRepository.updateRetailer(updateRetailer));
+        Optional<RetailerDTO> retailerDTO = retailerRepository.selectRetailerById("23468c87-1674-4448-89e9-1fe00286ab4d");
+        RetailerDTO updateRetailerDTO = retailerDTO.get();
+        logger.info("Business Name:{}", updateRetailerDTO.getBusinessName());
+        updateRetailerDTO.setBusinessName("Peformance Tiree");
+        assertTrue(retailerRepository.updateRetailer(updateRetailerDTO));
     }
 
     @Test
     void deleteById() {
         String id = "23468c87-1674-4448-89e9-1fe00286ab4d";
         boolean deleteResult = retailerRepository.deleteById(id);
-        Optional<Retailer> retailer = retailerRepository.selectRetailerById(id);
-        assertEquals(retailer, Optional.empty());
+        Optional<RetailerDTO> retailerDTO = retailerRepository.selectRetailerById(id);
+        assertEquals(retailerDTO, Optional.empty());
         assertTrue(deleteResult);
     }
 }

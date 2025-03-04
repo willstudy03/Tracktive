@@ -1,5 +1,6 @@
 package com.tracktive.userservice.repository;
 
+import com.tracktive.userservice.model.DTO.RetailerDTO;
 import com.tracktive.userservice.model.entity.Retailer;
 
 import java.util.List;
@@ -12,15 +13,15 @@ import java.util.Optional;
 */
 public interface RetailerRepository {
     // Get all retailer
-    List<Retailer> selectAllRetailers();
+    List<RetailerDTO> selectAllRetailers();
     // Find retailer by ID
-    Optional<Retailer> selectRetailerById(String id);
+    Optional<RetailerDTO> selectRetailerById(String id);
     // Lock a retailer by ID
-    Optional<Retailer> lockRetailerById(String id);
+    Optional<RetailerDTO> lockRetailerById(String id);
     // Insert a new retailer
-    boolean addRetailer(Retailer retailer);
+    boolean addRetailer(RetailerDTO retailerDTO);
     // Update retailer info
-    boolean updateRetailer(Retailer retailer);
+    boolean updateRetailer(RetailerDTO retailerDTO);
     // Delete retailer by ID
     boolean deleteById(String id);
 }
