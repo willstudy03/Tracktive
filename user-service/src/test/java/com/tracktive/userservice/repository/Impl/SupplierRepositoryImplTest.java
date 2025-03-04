@@ -1,15 +1,9 @@
 package com.tracktive.userservice.repository.Impl;
 
-import com.tracktive.userservice.model.DAO.SupplierDAO;
-import com.tracktive.userservice.model.Enum.UserRole;
-import com.tracktive.userservice.model.entity.Retailer;
+import com.tracktive.userservice.model.DTO.SupplierDTO;
 import com.tracktive.userservice.model.entity.Supplier;
-import com.tracktive.userservice.model.entity.User;
 import com.tracktive.userservice.repository.SupplierRepository;
 import com.tracktive.userservice.repository.UserRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,47 +34,47 @@ class SupplierRepositoryImplTest {
 
     @Test
     void addSupplier() {
-        Supplier supplier = new Supplier();
-        supplier.setSupplierId("7394fj29-1674-4448-89e9-1fe00286ab4d");
-        supplier.setSsmRegistrationNumber("38247923843");
-        supplier.setBusinessName("Best Tire");
-        supplier.setBusinessAddress("Ayer Keroh");
-        supplier.setBankAccount("23874923479234");
-        supplier.setBankName("CIMB");
+        SupplierDTO supplierDTO = new SupplierDTO();
+        supplierDTO.setSupplierId("7394fj29-1674-4448-89e9-1fe00286ab4d");
+        supplierDTO.setSsmRegistrationNumber("38247923843");
+        supplierDTO.setBusinessName("Best Tire");
+        supplierDTO.setBusinessAddress("Ayer Keroh");
+        supplierDTO.setBankAccount("23874923479234");
+        supplierDTO.setBankName("CIMB");
 
-        boolean result = supplierRepository.addSupplier(supplier);
+        boolean result = supplierRepository.addSupplier(supplierDTO);
         assertTrue(result);
     }
 
     @Test
     void selectAllSuppliers() {
-        List<Supplier> suppliers = supplierRepository.selectAllSuppliers();
-        assertEquals(suppliers.isEmpty(),false);
+        List<SupplierDTO> supplierDTOS = supplierRepository.selectAllSuppliers();
+        assertEquals(supplierDTOS.isEmpty(),false);
     }
 
     @Test
     void selectSupplierById() {
         String id = "7394fj29-1674-4448-89e9-1fe00286ab4d";
-        Optional<Supplier> supplier = supplierRepository.selectSupplierById(id);
-        Supplier result = supplier.get();
+        Optional<SupplierDTO> supplierDTO = supplierRepository.selectSupplierById(id);
+        SupplierDTO result = supplierDTO.get();
         assertEquals(result.getSupplierId(), id);
     }
 
     @Test
-    void lockUserById() {
+    void lockSupplierById() {
         String id = "7394fj29-1674-4448-89e9-1fe00286ab4d";
-        Optional<Supplier> supplier = supplierRepository.lockUserById(id);
-        logger.info("Acquired lock for user: " + supplier.get().getBusinessName());
+        Optional<SupplierDTO> supplierDTO = supplierRepository.lockSupplierById(id);
+        logger.info("Acquired lock for user: " + supplierDTO.get().getBusinessName());
     }
 
     @Test
     void updateSupplier() {
         String id = "7394fj29-1674-4448-89e9-1fe00286ab4d";
-        Optional<Supplier> supplier = supplierRepository.selectSupplierById(id);
-        Supplier updateSupplier = supplier.get();
-        logger.info("Business Name:{}", updateSupplier.getBusinessName());
-        updateSupplier.setBusinessName("Peformance Tiree");
-        assertTrue(supplierRepository.updateSupplier(updateSupplier));
+        Optional<SupplierDTO> supplierDTO = supplierRepository.selectSupplierById(id);
+        SupplierDTO updateSupplierDTO = supplierDTO.get();
+        logger.info("Business Name:{}", updateSupplierDTO.getBusinessName());
+        updateSupplierDTO.setBusinessName("Peformance Tiree");
+        assertTrue(supplierRepository.updateSupplier(updateSupplierDTO));
     }
 
     @Test

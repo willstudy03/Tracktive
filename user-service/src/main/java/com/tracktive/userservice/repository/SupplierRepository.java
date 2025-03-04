@@ -1,21 +1,21 @@
 package com.tracktive.userservice.repository;
 
-import com.tracktive.userservice.model.entity.Supplier;
+import com.tracktive.userservice.model.DTO.SupplierDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface SupplierRepository {
     // Get all suppliers
-    List<Supplier> selectAllSuppliers();
+    List<SupplierDTO> selectAllSuppliers();
     // Find supplier by ID
-    Optional<Supplier> selectSupplierById(String id);
+    Optional<SupplierDTO> selectSupplierById(String id);
     // Lock a Supplier by ID
-    Optional<Supplier> lockUserById(String id);
+    Optional<SupplierDTO> lockSupplierById(String id);
     // Insert a new supplier
-    boolean addSupplier(Supplier supplier);
+    boolean addSupplier(SupplierDTO supplierDTO);
     // Update supplier info
-    boolean updateSupplier(Supplier supplier);
+    boolean updateSupplier(SupplierDTO supplierDTO);
     // Delete supplier by ID
     boolean deleteById(String id);
 }
