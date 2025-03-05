@@ -2,12 +2,12 @@ package com.tracktive.userservice.repository.Impl;
 
 import com.tracktive.userservice.model.DAO.CourierDAO;
 import com.tracktive.userservice.model.DTO.CourierDTO;
-import com.tracktive.userservice.model.DTO.RetailerDTO;
 import com.tracktive.userservice.model.entity.Courier;
 import com.tracktive.userservice.repository.CourierRepository;
 import com.tracktive.userservice.util.CourierConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;

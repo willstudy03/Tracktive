@@ -2,12 +2,12 @@ package com.tracktive.userservice.repository.Impl;
 
 import com.tracktive.userservice.model.DAO.RetailerDAO;
 import com.tracktive.userservice.model.DTO.RetailerDTO;
-import com.tracktive.userservice.model.DTO.SupplierDTO;
 import com.tracktive.userservice.model.entity.Retailer;
 import com.tracktive.userservice.repository.RetailerRepository;
 import com.tracktive.userservice.util.RetailerConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
