@@ -1,8 +1,8 @@
 package com.tracktive.productservice.repository.Impl;
 
+import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.Enum.ProductCategory;
 import com.tracktive.productservice.model.Enum.ProductStatus;
-import com.tracktive.productservice.model.entity.Product;
 import com.tracktive.productservice.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -29,51 +29,51 @@ class ProductRepositoryImplTest {
 
     @Test
     void selectAllProducts() {
-        List<Product> products = productRepository.selectAllProducts();
-        logger.info("Products:{}", products);
-        assertEquals(products.isEmpty(),false);
+        List<ProductDTO> productDTOS = productRepository.selectAllProducts();
+        logger.info("Products:{}", productDTOS);
+        assertEquals(productDTOS.isEmpty(),false);
     }
 
     @Test
     void selectProductById() {
         String id = "01edbd0f-863f-4e65-b81d-025cdd430aa3";
-        Optional<Product> product = productRepository.selectProductById(id);
-        Product result = product.get();
-        assertEquals(id, result.getProductId());
+        Optional<ProductDTO> productDTO = productRepository.selectProductById(id);
+        ProductDTO resultDTO = productDTO.get();
+        assertEquals(id, resultDTO.getProductId());
     }
 
     @Test
     void lockProductById() {
         String id = "01edbd0f-863f-4e65-b81d-025cdd430aa3";
-        Optional<Product> product = productRepository.lockProductById(id);
-        Product result = product.get();
-        assertEquals(id, result.getProductId());
-        logger.info("Acquired lock for product: " + result.getProductName());
+        Optional<ProductDTO> productDTO = productRepository.lockProductById(id);
+        ProductDTO resultDTO = productDTO.get();
+        assertEquals(id, resultDTO.getProductId());
+        logger.info("Acquired lock for product: " + resultDTO.getProductName());
     }
 
     @Test
     void addProduct() {
-        Product product = new Product();
-        product.setProductId("01edbd0f-863f-4e65-b81d-025cdd430aa3");
-        product.setProductCategory(ProductCategory.TIRE);
-        product.setProductBrand("Michelin");
-        product.setProductName("Michelin Pilot Sport 4");
-        product.setProductDescription("High-performance summer tire for passenger cars.");
-        product.setRecommendedPrice(BigDecimal.valueOf(450.00));
-        product.setProductStatus(ProductStatus.ACTIVE);
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setProductId("01edbd0f-863f-4e65-b81d-025cdd430aa3");
+        productDTO.setProductCategory(ProductCategory.TIRE);
+        productDTO.setProductBrand("Michelin");
+        productDTO.setProductName("Michelin Pilot Sport 4");
+        productDTO.setProductDescription("High-performance summer tire for passenger cars.");
+        productDTO.setRecommendedPrice(BigDecimal.valueOf(450.00));
+        productDTO.setProductStatus(ProductStatus.ACTIVE);
 
-        boolean isAdded = productRepository.addProduct(product);
+        boolean isAdded = productRepository.addProduct(productDTO);
         assertTrue(isAdded);
     }
 
     @Test
     void updateProduct() {
         String id = "01edbd0f-863f-4e65-b81d-025cdd430aa3";
-        Optional<Product> product = productRepository.selectProductById(id);
-        Product result = product.get();
-        result.setProductName("Michelin Pilot Sport 5");
+        Optional<ProductDTO> productDTO = productRepository.selectProductById(id);
+        ProductDTO resultDTO = productDTO.get();
+        resultDTO.setProductName("Michelin Pilot Sport 5");
 
-        boolean isUpdated = productRepository.updateProduct(result);
+        boolean isUpdated = productRepository.updateProduct(resultDTO);
         assertTrue(isUpdated);
     }
 

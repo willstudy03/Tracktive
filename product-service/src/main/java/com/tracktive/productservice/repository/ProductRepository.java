@@ -1,5 +1,6 @@
 package com.tracktive.productservice.repository;
 
+import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.entity.Product;
 
 import java.util.List;
@@ -12,15 +13,15 @@ import java.util.Optional;
 */
 public interface ProductRepository {
     // Get all product
-    List<Product> selectAllProducts();
+    List<ProductDTO> selectAllProducts();
     // Find product by ID
-    Optional<Product> selectProductById(String id);
+    Optional<ProductDTO> selectProductById(String id);
     // Lock a product by ID
-    Optional<Product> lockProductById(String id);
+    Optional<ProductDTO> lockProductById(String id);
     // Insert a new product
-    boolean addProduct(Product product);
+    boolean addProduct(ProductDTO productDTO);
     // Update product info
-    boolean updateProduct(Product product);
+    boolean updateProduct(ProductDTO productDTO);
     // Delete product by ID
     boolean deleteById(String id);
 }
