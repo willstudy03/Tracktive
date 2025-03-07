@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tracktive.productservice.model.DAO.ProductDAO">
+
+    <!-- Select a product by id -->
+    <select id="selectProductById" resultType="Product">
+        SELECT product_id, product_category, product_brand, product_name, product_description,
+        recommended_price, product_status, updated_at, created_at
+        FROM products
+        WHERE product_id = #{productId};
+    </select>
+
+    <!-- Select all products -->
+    <select id="selectAllProducts" resultType="Product">
+        SELECT product_id, product_category, product_brand, product_name, product_description,
+        recommended_price, product_status, updated_at, created_at
+        FROM products;
+    </select>
+
+    <!-- Lock a product by id (for update) -->
+    <select id="lockProductById" resultType="Product">
+        SELECT product_id, product_category, product_brand, product_name, product_description,
+        recommended_price, product_status, updated_at, created_at
+        FROM products
+        WHERE product_id = #{productId}
+        FOR UPDATE;
+    </select>
+
+    <!-- Insert a new product -->
+    <insert id="addProduct">
+        INSERT INTO products (product_id, product_category, product_brand, product_name,
+        product_description, recommended_price, product_status)
+        VALUES (#{productId}, #{productCategory}, #{productBrand}, #{productName},
+        #{productDescription}, #{recommendedPrice}, #{productStatus});
+    </insert>
+
+    <!-- Update a product -->
+    <update id="updateProduct">
+        UPDATE products
+        SET product_category = #{productCategory},
+        product_brand = #{productBrand},
+        product_name = #{productName},
+        product_description = #{productDescription},
+        recommended_price = #{recommendedPrice},
+        product_status = #{productStatus}
+        WHERE product_id = #{productId};
+    </update>
+
+    <!-- Delete a product by id -->
+    <delete id="deleteProductById">
+        DELETE FROM products WHERE product_id = #{productId};
+    </delete>
+
+</mapper>
