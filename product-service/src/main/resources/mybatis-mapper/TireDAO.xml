@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tracktive.productservice.model.DAO.TireDAO">
+
+    <!-- Select all tires -->
+    <select id="selectAllTires" resultType="Tire">
+        SELECT id, tire_sku, width, aspect_ratio, rim_diameter, construction_type,
+        load_index, speed_rating, tire_season, tread_pattern, tire_type, run_flat
+        FROM tires;
+    </select>
+
+    <select id="selectTireByParams" parameterType="Tire" resultType="Tire">
+        SELECT id, tire_sku, width, aspect_ratio, rim_diameter, construction_type,
+        load_index, speed_rating, tire_season, tread_pattern, tire_type, run_flat
+        FROM tires
+        <where>
+            <if test="id != null and id != ''"> AND id = #{id}</if>
+            <if test="tireSku != null and tireSku != ''"> AND tire_sku = #{tireSku}</if>
+            <if test="width != null"> AND width = #{width}</if>
+            <if test="aspectRatio != null"> AND aspect_ratio = #{aspectRatio}</if>
+            <if test="rimDiameter != null"> AND rim_diameter = #{rimDiameter}</if>
+            <if test="constructionType != null"> AND construction_type = #{constructionType}</if>
+            <if test="loadIndex != null"> AND load_index = #{loadIndex}</if>
+            <if test="speedRating != null"> AND speed_rating = #{speedRating}</if>
+            <if test="tireSeason != null"> AND tire_season = #{tireSeason}</if>
+            <if test="treadPattern != null"> AND tread_pattern = #{treadPattern}</if>
+            <if test="tireType != null"> AND tire_type = #{tireType}</if>
+            <if test="runFlat != null"> AND run_flat = #{runFlat}</if>
+        </where>
+    </select>
+
+    <!-- Select tire by ID -->
+    <select id="selectTireById" parameterType="String" resultType="Tire">
+        SELECT id, tire_sku, width, aspect_ratio, rim_diameter, construction_type,
+        load_index, speed_rating, tire_season, tread_pattern, tire_type, run_flat
+        FROM tires
+        WHERE id = #{id};
+    </select>
+
+    <!-- Select tire by SKU -->
+    <select id="selectTireBySKU" parameterType="String" resultType="Tire">
+        SELECT id, tire_sku, width, aspect_ratio, rim_diameter, construction_type,
+        load_index, speed_rating, tire_season, tread_pattern, tire_type, run_flat
+        FROM tires
+        WHERE tire_sku = #{sku};
+    </select>
+
+    <!-- Lock tire by ID (FOR UPDATE) -->
+    <select id="lockTireById" parameterType="String" resultType="Tire">
+        SELECT id, tire_sku, width, aspect_ratio, rim_diameter, construction_type,
+        load_index, speed_rating, tire_season, tread_pattern, tire_type, run_flat
+        FROM tires
+        WHERE id = #{id}
+        FOR UPDATE;
+    </select>
+
+    <!-- Insert a new tire -->
+    <insert id="addTire">
+        INSERT INTO tires (id, tire_sku, width, aspect_ratio, rim_diameter, construction_type,
+        load_index, speed_rating, tire_season, tread_pattern, tire_type, run_flat)
+        VALUES (#{id}, #{tireSku}, #{width}, #{aspectRatio}, #{rimDiameter}, #{constructionType},
+        #{loadIndex}, #{speedRating}, #{tireSeason}, #{treadPattern}, #{tireType}, #{runFlat});
+    </insert>
+
+    <!-- Update a tire -->
+    <update id="updateTire">
+        UPDATE tires
+        SET tire_sku = #{tireSku},
+        width = #{width},
+        aspect_ratio = #{aspectRatio},
+        rim_diameter = #{rimDiameter},
+        construction_type = #{constructionType},
+        load_index = #{loadIndex},
+        speed_rating = #{speedRating},
+        tire_season = #{tireSeason},
+        tread_pattern = #{treadPattern},
+        tire_type = #{tireType},
+        run_flat = #{runFlat}
+        WHERE id = #{id};
+    </update>
+
+    <!-- Delete a tire by ID -->
+    <delete id="deleteTireById">
+        DELETE FROM tires WHERE id = #{id};
+    </delete>
+
+</mapper>
