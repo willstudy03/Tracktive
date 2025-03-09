@@ -11,6 +11,10 @@ import java.util.Objects;
 * @date 7/3/2025
 */
 public class ProductConverter {
+
+    // Private constructor to prevent instantiation
+    private ProductConverter(){}
+
     public static ProductDTO toDTO(Product product){
         if (Objects.isNull(product)){
             return null;

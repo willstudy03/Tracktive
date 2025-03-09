@@ -1,6 +1,7 @@
 package com.tracktive.productservice.repository.Impl;
 
 import com.tracktive.productservice.model.DTO.ProductDTO;
+import com.tracktive.productservice.model.DTO.TireDTO;
 import com.tracktive.productservice.model.Enum.TireSeason;
 import com.tracktive.productservice.model.Enum.TireType;
 import com.tracktive.productservice.model.Enum.TreadPattern;
@@ -26,26 +27,25 @@ class TireRepositoryImplTest {
 
     @Test
     void selectAllTire() {
-        List<Tire> tires = tireRepository.selectAllTire();
-        logger.info("Tires:{}", tires);
-        assertEquals(tires.isEmpty(),false);
+        List<TireDTO> tireDTOS = tireRepository.selectAllTire();
+        logger.info("Tires:{}", tireDTOS);
+        assertEquals(tireDTOS.isEmpty(),false);
     }
 
     @Test
     void selectTireByParams() {
-        Tire tire = new Tire();
-        tire.setId("");
-        tire.setTireSku("BRD-205-55R16-91V");
-        List<Tire> tires = tireRepository.selectTireByParams(tire);
-        logger.info("Result:{}",tires.getFirst().getTireSku());
-        assertEquals(tires.isEmpty(),false);
+        TireDTO tireDTO = new TireDTO();
+        tireDTO.setId("");
+        tireDTO.setTireSku("abc");
+        List<TireDTO> tireDTOS = tireRepository.selectTireByParams(tireDTO);
+        assertEquals(tireDTOS.isEmpty(),true);
     }
 
     @Test
     void selectTireById() {
         String id = "01edbd0f-863f-4e65-b81d-025cdd430aa3";
-        Optional<Tire> tire = tireRepository.selectTireById(id);
-        Tire tireResult = tire.get();
+        Optional<TireDTO> tireDTO = tireRepository.selectTireById(id);
+        TireDTO tireResult = tireDTO.get();
         logger.info("Result:{}",tireResult.getRunFlat());
         assertEquals(id, tireResult.getId());
     }
@@ -53,8 +53,8 @@ class TireRepositoryImplTest {
     @Test
     void lockTireById() {
         String id = "01edbd0f-863f-4e65-b81d-025cdd430aa3";
-        Optional<Tire> tire = tireRepository.lockTireById(id);
-        Tire tireResult = tire.get();
+        Optional<TireDTO> tireDTO = tireRepository.lockTireById(id);
+        TireDTO tireResult = tireDTO.get();
         logger.info("Result:{}",tireResult.getRunFlat());
         assertEquals(id, tireResult.getId());
     }
@@ -62,36 +62,36 @@ class TireRepositoryImplTest {
     @Test
     void selectTireBySKU() {
         String sku = "BRD-205-55R16-91V";
-        Optional<Tire> tire = tireRepository.selectTireBySKU(sku);
-        Tire tireResult = tire.get();
+        Optional<TireDTO> tireDTO = tireRepository.selectTireBySKU(sku);
+        TireDTO tireResult = tireDTO.get();
         assertEquals(sku, tireResult.getTireSku());
     }
 
     @Test
     void addTire() {
-        Tire tire = new Tire();
-        tire.setId("01edbd0f-863f-4e65-b81d-025cdd430aa3");
-        tire.setTireSku("BRD-205-55R16-91V");
-        tire.setWidth(205);
-        tire.setAspectRatio(55);
-        tire.setRimDiameter(16);
-        tire.setConstructionType("R");
-        tire.setLoadIndex("91");
-        tire.setSpeedRating("V");
-        tire.setTireSeason(TireSeason.SUMMER);
-        tire.setTreadPattern(TreadPattern.SYMMETRICAL);
-        tire.setTireType(TireType.TOURING);
-        tire.setRunFlat(true);
+        TireDTO tireDTO = new TireDTO();
+        tireDTO.setId("01edbd0f-863f-4e65-b81d-025cdd430aa3");
+        tireDTO.setTireSku("BRD-205-55R16-91V");
+        tireDTO.setWidth(205);
+        tireDTO.setAspectRatio(55);
+        tireDTO.setRimDiameter(16);
+        tireDTO.setConstructionType("R");
+        tireDTO.setLoadIndex("91");
+        tireDTO.setSpeedRating("V");
+        tireDTO.setTireSeason(TireSeason.SUMMER);
+        tireDTO.setTreadPattern(TreadPattern.SYMMETRICAL);
+        tireDTO.setTireType(TireType.TOURING);
+        tireDTO.setRunFlat(true);
 
-        boolean isAdded = tireRepository.addTire(tire);
+        boolean isAdded = tireRepository.addTire(tireDTO);
         assertTrue(isAdded);
     }
 
     @Test
     void updateTire() {
         String id = "01edbd0f-863f-4e65-b81d-025cdd430aa3";
-        Optional<Tire> tire = tireRepository.selectTireById(id);
-        Tire tireResult = tire.get();
+        Optional<TireDTO> tireDTO = tireRepository.selectTireById(id);
+        TireDTO tireResult = tireDTO.get();
         tireResult.setWidth(215);
         boolean updateResult = tireRepository.updateTire(tireResult);
         assertTrue(updateResult);

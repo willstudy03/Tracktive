@@ -1,5 +1,6 @@
 package com.tracktive.productservice.repository;
 
+import com.tracktive.productservice.model.DTO.TireDTO;
 import com.tracktive.productservice.model.entity.Tire;
 import java.util.List;
 import java.util.Optional;
@@ -11,19 +12,19 @@ import java.util.Optional;
 */
 public interface TireRepository {
     // Get all Tires
-    List<Tire> selectAllTire();
+    List<TireDTO> selectAllTire();
     // Find all Tires by Params
-    List<Tire> selectTireByParams(Tire tire);
+    List<TireDTO> selectTireByParams(TireDTO tireDTO);
     // Find Tire by ID
-    Optional<Tire> selectTireById(String id);
+    Optional<TireDTO> selectTireById(String id);
     // Lock a Tire by ID
-    Optional<Tire> lockTireById(String id);
+    Optional<TireDTO> lockTireById(String id);
     // Find Tire by SKU
-    Optional<Tire> selectTireBySKU(String sku);
+    Optional<TireDTO> selectTireBySKU(String sku);
     // Insert a new tire
-    boolean addTire(Tire tire);
+    boolean addTire(TireDTO tireDTO);
     // Update tire info
-    boolean updateTire(Tire tire);
+    boolean updateTire(TireDTO tireDTO);
     // Delete tire by ID
     boolean deleteById(String id);
 }
