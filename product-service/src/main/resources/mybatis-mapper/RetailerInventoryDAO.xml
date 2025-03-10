@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tracktive.productservice.model.DAO.RetailerInventoryDAO">
+
+    <!-- Select all retailer products -->
+    <select id="selectAllRetailerInventory" resultType="RetailerInventory">
+        SELECT retailer_inventory_id, retailer_id, product_id, stock_quantity, reorder_level, product_status, updated_at, created_at
+        FROM retailer_inventory;
+    </select>
+
+    <!-- Select retailer inventory by retailer id -->
+    <select id="selectRetailerInventoryByRetailerId" resultType="RetailerInventory">
+        SELECT retailer_inventory_id, retailer_id, product_id, stock_quantity, reorder_level, product_status, updated_at, created_at
+        FROM retailer_inventory
+        WHERE retailer_id = #{retailerId};
+    </select>
+
+    <!-- Select retailer inventory by its id -->
+    <select id="selectRetailerInventoryById" resultType="RetailerInventory">
+        SELECT retailer_inventory_id, retailer_id, product_id, stock_quantity, reorder_level, product_status, updated_at, created_at
+        FROM retailer_inventory
+        WHERE retailer_inventory_id = #{retailerInventoryId};
+    </select>
+
+    <!-- Lock retailer inventory by its id (FOR UPDATE) -->
+    <select id="lockRetailerInventoryById" resultType="RetailerInventory">
+        SELECT retailer_inventory_id, retailer_id, product_id, stock_quantity, reorder_level, product_status, updated_at, created_at
+        FROM retailer_inventory
+        WHERE retailer_inventory_id = #{retailerInventoryId}
+        FOR UPDATE;
+    </select>
+
+    <!-- Insert a new retailer inventory -->
+    <insert id="addRetailerInventory">
+        INSERT INTO retailer_inventory (retailer_inventory_id, retailer_id, product_id, stock_quantity, reorder_level, product_status)
+        VALUES (#{retailerInventoryId}, #{retailerId}, #{productId}, #{stockQuantity}, #{reorderLevel}, #{productStatus});
+    </insert>
+
+    <!-- Update a retailer inventory -->
+    <update id="updateRetailerInventory">
+        UPDATE retailer_inventory
+        SET retailer_id = #{retailerId},
+        product_id = #{productId},
+        stock_quantity = #{stockQuantity},
+        reorder_level = #{reorderLevel},
+        product_status = #{productStatus}
+        WHERE retailer_inventory_id = #{retailerInventoryId};
+    </update>
+
+    <!-- Delete a retailer inventory by its id -->
+    <delete id="deleteRetailerInventoryById">
+        DELETE FROM retailer_inventory WHERE retailer_inventory_id = #{retailerInventoryId};
+    </delete>
+
+</mapper>

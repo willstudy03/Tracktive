@@ -1,9 +1,7 @@
 package com.tracktive.productservice.repository.Impl;
 
 import com.tracktive.productservice.model.DTO.SupplierProductDTO;
-import com.tracktive.productservice.model.DTO.TireDTO;
 import com.tracktive.productservice.model.Enum.ProductStatus;
-import com.tracktive.productservice.model.entity.SupplierProduct;
 import com.tracktive.productservice.repository.SupplierProductRepository;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -14,9 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
 * Description: Supplier Product Repository CRUD Test Case
@@ -83,6 +81,7 @@ class SupplierProductRepositoryImplTest {
         Optional<SupplierProductDTO> supplierProductDTO = supplierProductRepository.selectSupplierProductById(id);
         SupplierProductDTO updateProductDTO = supplierProductDTO.get();
         updateProductDTO.setProductStatus(ProductStatus.DISCONTINUED);
+        updateProductDTO.setProductId("product234");
         boolean updated = supplierProductRepository.updateSupplierProduct(updateProductDTO);
         assertTrue(updated);
     }

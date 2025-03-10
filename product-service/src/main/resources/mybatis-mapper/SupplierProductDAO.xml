@@ -39,7 +39,9 @@
     <!-- Update a supplier product -->
     <update id="updateSupplierProduct">
         UPDATE supplier_products
-        SET price = #{price},
+        SET supplier_id = #{supplierId},
+        product_id = #{productId},
+        price = #{price},
         discount_percentage = #{discountPercentage},
         stock_quantity = #{stockQuantity},
         product_status = #{productStatus}

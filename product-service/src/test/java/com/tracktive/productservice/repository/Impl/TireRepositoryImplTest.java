@@ -1,11 +1,9 @@
 package com.tracktive.productservice.repository.Impl;
 
-import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.DTO.TireDTO;
 import com.tracktive.productservice.model.Enum.TireSeason;
 import com.tracktive.productservice.model.Enum.TireType;
 import com.tracktive.productservice.model.Enum.TreadPattern;
-import com.tracktive.productservice.model.entity.Tire;
 import com.tracktive.productservice.repository.TireRepository;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -16,7 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class TireRepositoryImplTest {

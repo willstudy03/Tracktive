@@ -1,7 +1,7 @@
 package com.tracktive.productservice.repository;
 
 import com.tracktive.productservice.model.DTO.TireDTO;
-import com.tracktive.productservice.model.entity.Tire;
+
 import java.util.List;
 import java.util.Optional;
 
