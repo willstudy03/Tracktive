@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tracktive.productservice.model.DAO.SupplierProductDAO">
+
+    <!-- Select all supplier products -->
+    <select id="selectAllSupplierProducts" resultType="SupplierProduct">
+        SELECT supplier_product_id, supplier_id, product_id, price, discount_percentage, stock_quantity, product_status, updated_at, created_at
+        FROM supplier_products;
+    </select>
+
+    <!-- Select supplier products by supplier id -->
+    <select id="selectSupplierProductsBySupplierId" resultType="SupplierProduct">
+        SELECT supplier_product_id, supplier_id, product_id, price, discount_percentage, stock_quantity, product_status, updated_at, created_at
+        FROM supplier_products
+        WHERE supplier_id = #{supplierId};
+    </select>
+
+    <!-- Select a supplier product by its id -->
+    <select id="selectSupplierProductById" resultType="SupplierProduct">
+        SELECT supplier_product_id, supplier_id, product_id, price, discount_percentage, stock_quantity, product_status, updated_at, created_at
+        FROM supplier_products
+        WHERE supplier_product_id = #{supplierProductId};
+    </select>
+
+    <!-- Lock a supplier product by its id (FOR UPDATE) -->
+    <select id="lockSupplierProductById" resultType="SupplierProduct">
+        SELECT supplier_product_id, supplier_id, product_id, price, discount_percentage, stock_quantity, product_status, updated_at, created_at
+        FROM supplier_products
+        WHERE supplier_product_id = #{supplierProductId}
+        FOR UPDATE;
+    </select>
+
+    <!-- Insert a new supplier product -->
+    <insert id="addSupplierProduct">
+        INSERT INTO supplier_products (supplier_product_id, supplier_id, product_id, price, discount_percentage, stock_quantity, product_status)
+        VALUES (#{supplierProductId}, #{supplierId}, #{productId}, #{price}, #{discountPercentage}, #{stockQuantity}, #{productStatus});
+    </insert>
+
+    <!-- Update a supplier product -->
+    <update id="updateSupplierProduct">
+        UPDATE supplier_products
+        SET price = #{price},
+        discount_percentage = #{discountPercentage},
+        stock_quantity = #{stockQuantity},
+        product_status = #{productStatus}
+        WHERE supplier_product_id = #{supplierProductId};
+    </update>
+
+    <!-- Delete a supplier product by its id -->
+    <delete id="deleteSupplierProductById">
+        DELETE FROM supplier_products WHERE supplier_product_id = #{supplierProductId};
+    </delete>
+
+</mapper>
