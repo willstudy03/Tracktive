@@ -1,5 +1,7 @@
 package com.tracktive.userservice.repository.Impl;
 
+import com.tracktive.userservice.exception.DatabaseOperationException;
+import com.tracktive.userservice.exception.UserAlreadyExistsException;
 import com.tracktive.userservice.model.DAO.UserDAO;
 import com.tracktive.userservice.model.DTO.SupplierDTO;
 import com.tracktive.userservice.model.DTO.UserDTO;
@@ -7,6 +9,8 @@ import com.tracktive.userservice.model.entity.User;
 import com.tracktive.userservice.repository.UserRepository;
 import com.tracktive.userservice.util.UserConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 import java.util.Collections;
 import java.util.List;
@@ -40,45 +44,35 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<UserDTO> selectUserById(String id) {
-        validateId(id);
         return userDAO.selectUserById(id).map(UserConverter::toDTO);
     }
 
     @Override
     public Optional<UserDTO> lockUserById(String id) {
-        validateId(id);
         return userDAO.lockUserById(id).map(UserConverter::toDTO);
     }
 
     @Override
     public boolean addUser(UserDTO userDTO) {
-        validateUserDTO(userDTO);
-        User user = UserConverter.toEntity(userDTO);
-        return userDAO.addUser(user) > 0;
+        try {
+            User user = UserConverter.toEntity(userDTO);
+            return userDAO.addUser(user) > 0;
+        } catch (DuplicateKeyException e) {
+            throw new UserAlreadyExistsException("User with id " + userDTO.getId() + " already exists", e);
+        } catch (DataAccessException e) {
+            throw new DatabaseOperationException("Failed to add product to the database", e);
+        }
     }
 
     @Override
     public boolean updateUser(UserDTO userDTO) {
-        validateUserDTO(userDTO);
         User user = UserConverter.toEntity(userDTO);
         return userDAO.updateUser(user) > 0;
     }
 
     @Override
     public boolean deleteById(String id) {
-        validateId(id);
         return userDAO.deleteUserById(id) > 0;
     }
 
-    private void validateId(String id){
-        if (Objects.isNull(id) || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID cannot be null or empty");
-        }
-    }
-
-    private void validateUserDTO(UserDTO userDTO) {
-        if (Objects.isNull(userDTO)) {
-            throw new IllegalArgumentException("UserDTO cannot be null");
-        }
-    }
 }

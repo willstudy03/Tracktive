@@ -1,11 +1,17 @@
 package com.tracktive.userservice.repository.Impl;
 
+import com.tracktive.userservice.exception.DatabaseOperationException;
+import com.tracktive.userservice.exception.UserAlreadyExistsException;
 import com.tracktive.userservice.model.DAO.RetailerDAO;
 import com.tracktive.userservice.model.DTO.RetailerDTO;
 import com.tracktive.userservice.model.entity.Retailer;
+import com.tracktive.userservice.model.entity.Supplier;
 import com.tracktive.userservice.repository.RetailerRepository;
 import com.tracktive.userservice.util.RetailerConverter;
+import com.tracktive.userservice.util.SupplierConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
@@ -40,45 +46,35 @@ public class RetailerRepositoryImpl implements RetailerRepository {
 
     @Override
     public Optional<RetailerDTO> selectRetailerById(String id) {
-        validateId(id);
         return retailerDAO.selectRetailerById(id).map(RetailerConverter::toDTO);
     }
 
     @Override
     public Optional<RetailerDTO> lockRetailerById(String id) {
-        validateId(id);
         return retailerDAO.lockRetailerById(id).map(RetailerConverter::toDTO);
     }
 
     @Override
     public boolean addRetailer(RetailerDTO retailerDTO) {
-        validateRetailerDTO(retailerDTO);
-        Retailer retailer = RetailerConverter.toEntity(retailerDTO);
-        return retailerDAO.addRetailer(retailer) > 0;
+        try {
+            Retailer retailer = RetailerConverter.toEntity(retailerDTO);
+            return retailerDAO.addRetailer(retailer) > 0;
+        } catch (DuplicateKeyException e) {
+            throw new UserAlreadyExistsException("Retailer with id " + retailerDTO.getRetailerId() + " already exists", e);
+        } catch (DataAccessException e) {
+            throw new DatabaseOperationException("Failed to add retailer to the database", e);
+        }
     }
 
     @Override
     public boolean updateRetailer(RetailerDTO retailerDTO) {
-        validateRetailerDTO(retailerDTO);
         Retailer retailer = RetailerConverter.toEntity(retailerDTO);
         return retailerDAO.updateRetailer(retailer) > 0;
     }
 
     @Override
     public boolean deleteById(String id) {
-        validateId(id);
         return retailerDAO.deleteRetailerById(id) > 0;
     }
 
-    private void validateId(String id){
-        if (Objects.isNull(id) || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID cannot be null or empty");
-        }
-    }
-
-    private void validateRetailerDTO(RetailerDTO retailerDTO) {
-        if (Objects.isNull(retailerDTO)) {
-            throw new IllegalArgumentException("RetailerDTO cannot be null");
-        }
-    }
 }

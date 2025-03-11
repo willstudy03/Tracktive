@@ -14,7 +14,7 @@ public interface CourierService {
     List<CourierDTO> selectAllCouriers();
     CourierDTO selectCourierById(String id);
     CourierDTO lockCourierById(String id);
-    boolean addCourier(CourierDTO courierDTO);
-    boolean updateCourier(CourierDTO courierDTO);
-    boolean deleteCourierById(String id);
+    void addCourier(CourierDTO courierDTO);
+    void updateCourier(CourierDTO courierDTO);
+    void deleteCourierById(String id);
 }

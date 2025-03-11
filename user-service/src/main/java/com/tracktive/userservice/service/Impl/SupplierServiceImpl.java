@@ -3,6 +3,7 @@ package com.tracktive.userservice.service.Impl;
 import com.tracktive.userservice.exception.LockAcquisitionException;
 import com.tracktive.userservice.exception.UserNotFoundException;
 import com.tracktive.userservice.model.DTO.SupplierDTO;
+import com.tracktive.userservice.model.DTO.UserDTO;
 import com.tracktive.userservice.repository.SupplierRepository;
 import com.tracktive.userservice.service.SupplierService;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Description: Supplier CRUD Service Implementation
@@ -38,47 +40,79 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public SupplierDTO selectSupplierById(String id) {
+        validateId(id);
         return supplierRepository.selectSupplierById(id)
-                .orElseThrow(()->new UserNotFoundException("Supplier not found with id: " + id));
+                .orElseThrow(()->{
+                    logger.warn("Supplier not found with id: {}", id);
+                    return new UserNotFoundException("Supplier not found with id: " + id);
+                });
     }
 
     @Override
     @Transactional
     public SupplierDTO lockSupplierById(String id) {
-        try{
+        validateId(id);
+        try {
             return supplierRepository.lockSupplierById(id)
-                    .orElseThrow(()->new UserNotFoundException("Supplier not found with id: " + id));
-        }catch (CannotAcquireLockException e){
-            logger.warn("Lock acquisition failed for supplier id: {}", id);
+                    .orElseThrow(() -> {
+                        logger.warn("Failed to lock supplier, supplier not found with id: {}", id);
+                        return new UserNotFoundException("Supplier not found with id: " + id);
+                    });
+        } catch (CannotAcquireLockException e) {
+            logger.error("Lock acquisition failed for supplier id: {}", id, e);
             throw new LockAcquisitionException("Failed to acquire lock for supplier with id: " + id, e);
+        } catch (Exception e) {
+            logger.error("Unexpected error during supplier lock for id: {}", id, e);
+            throw new RuntimeException("Unexpected error during lock operation", e);
         }
     }
 
     @Override
     @Transactional
-    public boolean addSupplier(SupplierDTO supplierDTO) {
-        return supplierRepository.addSupplier(supplierDTO);
-    }
-
-    @Override
-    @Transactional
-    public boolean updateSupplier(SupplierDTO supplierDTO) {
-        boolean updated = supplierRepository.updateSupplier(supplierDTO);
-        if (!updated) {
-            logger.info("Failed to update: Supplier not found with id: {}", supplierDTO.getSupplierId());
-            throw new UserNotFoundException("Failed to update: Supplier not found with id: " + supplierDTO.getSupplierId());
+    public void addSupplier(SupplierDTO supplierDTO) {
+        validateSupplierDTO(supplierDTO);
+        boolean result = supplierRepository.addSupplier(supplierDTO);
+        if (!result) {
+            logger.error("Failed to add supplier with id: {}", supplierDTO.getSupplierId());
+            throw new RuntimeException("Failed to add supplier with id: " + supplierDTO.getSupplierId());
         }
-        return true;
+        logger.info("Supplier [{}] added successfully", supplierDTO.getSupplierId());
     }
 
     @Override
     @Transactional
-    public boolean deleteSupplierById(String id) {
+    public void updateSupplier(SupplierDTO supplierDTO) {
+        validateSupplierDTO(supplierDTO);
+        boolean result = supplierRepository.updateSupplier(supplierDTO);
+        if (!result) {
+            logger.error("Failed to update supplier with id: {}", supplierDTO.getSupplierId());
+            throw new UserNotFoundException("Failed to update supplier with id: " + supplierDTO.getSupplierId());
+        }
+        logger.info("Supplier [{}] updated successfully", supplierDTO.getSupplierId());
+    }
+
+    @Override
+    @Transactional
+    public void deleteSupplierById(String id) {
+        validateId(id);
         boolean deleted = supplierRepository.deleteById(id);
         if (!deleted) {
             logger.info("Failed to delete: Supplier not found with id: {}", id);
             throw new UserNotFoundException("Failed to delete: Supplier not found with id: " + id);
         }
-        return true;
+        logger.info("Supplier [{}] deleted successfully", id);
+    }
+
+    private void validateId(String id){
+        if (Objects.isNull(id) || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("ID cannot be null or empty");
+        }
+    }
+
+    private void validateSupplierDTO(SupplierDTO supplierDTO) {
+        if (Objects.isNull(supplierDTO)) {
+            throw new IllegalArgumentException("SupplierDTO cannot be null");
+        }
+        //@TODO: Validation
     }
 }

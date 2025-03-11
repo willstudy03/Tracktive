@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Description: Courier CRUD Service Implementation
@@ -38,47 +39,79 @@ public class CourierServiceImpl implements CourierService {
 
     @Override
     public CourierDTO selectCourierById(String id) {
+        validateId(id);
         return courierRepository.selectCourierById(id)
-                .orElseThrow(()->new UserNotFoundException("Courier not found with id: " + id));
+                .orElseThrow(()->{
+                    logger.warn("Courier not found with id: {}", id);
+                    return new UserNotFoundException("Courier not found with id: " + id);
+                });
     }
 
     @Override
     @Transactional
     public CourierDTO lockCourierById(String id) {
-        try{
+        validateId(id);
+        try {
             return courierRepository.lockCourierById(id)
-                    .orElseThrow(()->new UserNotFoundException("Courier not found with id: " + id));
-        }catch (CannotAcquireLockException e){
-            logger.warn("Lock acquisition failed for courier id: {}", id);
+                    .orElseThrow(() -> {
+                        logger.warn("Failed to lock courier, courier not found with id: {}", id);
+                        return new UserNotFoundException("Courier not found with id: " + id);
+                    });
+        } catch (CannotAcquireLockException e) {
+            logger.error("Lock acquisition failed for courier id: {}", id, e);
             throw new LockAcquisitionException("Failed to acquire lock for courier with id: " + id, e);
+        } catch (Exception e) {
+            logger.error("Unexpected error during courier lock for id: {}", id, e);
+            throw new RuntimeException("Unexpected error during lock operation", e);
         }
     }
 
     @Override
     @Transactional
-    public boolean addCourier(CourierDTO courierDTO) {
-        return courierRepository.addCourier(courierDTO);
+    public void addCourier(CourierDTO courierDTO) {
+        validateCourierDTO(courierDTO);
+        boolean result = courierRepository.addCourier(courierDTO);
+        if (!result) {
+            logger.error("Failed to add courier with id: {}", courierDTO.getCourierId());
+            throw new RuntimeException("Failed to add courier with id: " + courierDTO.getCourierId());
+        }
+        logger.info("Courier [{}] added successfully", courierDTO.getCourierId());
     }
 
     @Override
     @Transactional
-    public boolean updateCourier(CourierDTO courierDTO) {
-        boolean updated = courierRepository.updateCourier(courierDTO);
-        if (!updated) {
-            logger.info("Failed to update: Courier not found with id: {}", courierDTO.getCourierId());
-            throw new UserNotFoundException("Failed to update: Courier not found with id: " + courierDTO.getCourierId());
+    public void updateCourier(CourierDTO courierDTO) {
+        validateCourierDTO(courierDTO);
+        boolean result = courierRepository.updateCourier(courierDTO);
+        if (!result) {
+            logger.error("Failed to update courier with id: {}", courierDTO.getCourierId());
+            throw new UserNotFoundException("Failed to update courier with id: " + courierDTO.getCourierId());
         }
-        return true;
+        logger.info("Courier [{}] updated successfully", courierDTO.getCourierId());
     }
 
     @Override
     @Transactional
-    public boolean deleteCourierById(String id) {
-        boolean deleted = courierRepository.deleteById(id);
-        if (!deleted) {
-            logger.info("Failed to delete: Courier not found with id: {}", id);
-            throw new UserNotFoundException("Failed to delete: Courier not found with id: " + id);
+    public void deleteCourierById(String id) {
+        validateId(id);
+        boolean result = courierRepository.deleteById(id);
+        if (!result) {
+            logger.error("Failed to delete courier with id: {}", id);
+            throw new UserNotFoundException("Failed to delete courier with id: " + id);
         }
-        return true;
+        logger.info("Courier [{}] deleted successfully", id);
+    }
+
+    private void validateId(String id){
+        if (Objects.isNull(id) || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("ID cannot be null or empty");
+        }
+    }
+
+    private void validateCourierDTO(CourierDTO courierDTO) {
+        if (Objects.isNull(courierDTO)) {
+            throw new IllegalArgumentException("CourierDTO cannot be null");
+        }
+        //TODO: VALIDATION
     }
 }

@@ -13,7 +13,7 @@ public interface SupplierService {
     List<SupplierDTO> selectAllSuppliers();
     SupplierDTO selectSupplierById(String id);
     SupplierDTO lockSupplierById(String id);
-    boolean addSupplier(SupplierDTO supplierDTO);
-    boolean updateSupplier(SupplierDTO supplierDTO);
-    boolean deleteSupplierById(String id);
+    void addSupplier(SupplierDTO supplierDTO);
+    void updateSupplier(SupplierDTO supplierDTO);
+    void deleteSupplierById(String id);
 }

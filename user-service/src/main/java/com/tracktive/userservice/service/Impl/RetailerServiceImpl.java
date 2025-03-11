@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+
 /**
  * Description: Retailer CRUD Service Implementation
  * @author William Theo
@@ -37,47 +39,78 @@ public class RetailerServiceImpl implements RetailerService {
 
     @Override
     public RetailerDTO selectRetailerById(String id) {
+        validateId(id);
         return retailerRepository.selectRetailerById(id)
-                .orElseThrow(()->new UserNotFoundException("Retailer not found with id: " + id));
+                .orElseThrow(()->{
+                    logger.warn("Retailer not found with id: {}", id);
+                    return new UserNotFoundException("Retailer not found with id: " + id);
+                });
     }
 
     @Override
     @Transactional
     public RetailerDTO lockRetailerById(String id) {
-        try{
+        validateId(id);
+        try {
             return retailerRepository.lockRetailerById(id)
-                    .orElseThrow(()->new UserNotFoundException("Retailer not found with id: " + id));
-        }catch (CannotAcquireLockException e){
-            logger.warn("Lock acquisition failed for retailer id: {}", id);
+                    .orElseThrow(() -> {
+                        logger.warn("Failed to lock retailer, retailer not found with id: {}", id);
+                        return new UserNotFoundException("Retailer not found with id: " + id);
+                    });
+        } catch (CannotAcquireLockException e) {
+            logger.error("Lock acquisition failed for retailer id: {}", id, e);
             throw new LockAcquisitionException("Failed to acquire lock for retailer with id: " + id, e);
+        } catch (Exception e) {
+            logger.error("Unexpected error during retailer lock for id: {}", id, e);
+            throw new RuntimeException("Unexpected error during lock operation", e);
         }
     }
 
     @Override
     @Transactional
-    public boolean addRetailer(RetailerDTO retailerDTO) {
-        return retailerRepository.addRetailer(retailerDTO);
+    public void addRetailer(RetailerDTO retailerDTO) {
+        validateRetailerDTO(retailerDTO);
+        boolean result = retailerRepository.addRetailer(retailerDTO);
+        if (!result) {
+            logger.error("Failed to add retailer with id: {}", retailerDTO.getRetailerId());
+            throw new RuntimeException("Failed to add retailer with id: " + retailerDTO.getRetailerId());
+        }
+        logger.info("Retailer [{}] added successfully", retailerDTO.getRetailerId());
     }
 
     @Override
     @Transactional
-    public boolean updateRetailer(RetailerDTO retailerDTO) {
-        boolean updated = retailerRepository.updateRetailer(retailerDTO);
-        if (!updated) {
-            logger.info("Failed to update: Retailer not found with id: {}", retailerDTO.getRetailerId());
-            throw new UserNotFoundException("Failed to update: Retailer not found with id: " + retailerDTO.getRetailerId());
+    public void updateRetailer(RetailerDTO retailerDTO) {
+        validateRetailerDTO(retailerDTO);
+        boolean result = retailerRepository.updateRetailer(retailerDTO);
+        if (!result) {
+            logger.error("Failed to update retailer with id: {}", retailerDTO.getRetailerId());
+            throw new UserNotFoundException("Failed to update retailer with id: " + retailerDTO.getRetailerId());
         }
-        return true;
+        logger.info("Retailer [{}] updated successfully", retailerDTO.getRetailerId());
     }
 
     @Override
     @Transactional
-    public boolean deleteRetailerById(String id) {
-        boolean deleted = retailerRepository.deleteById(id);
-        if (!deleted) {
-            logger.info("Failed to delete: Retailer not found with id: {}", id);
-            throw new UserNotFoundException("Failed to delete: Retailer not found with id: " + id);
+    public void deleteRetailerById(String id) {
+        validateId(id);
+        boolean result = retailerRepository.deleteById(id);
+        if (!result) {
+            logger.error("Failed to delete retailer with id: {}", id);
+            throw new UserNotFoundException("Failed to delete retailer with id: " + id);
         }
-        return true;
+        logger.info("Retailer [{}] deleted successfully", id);
+    }
+
+    private void validateId(String id){
+        if (Objects.isNull(id) || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("ID cannot be null or empty");
+        }
+    }
+
+    private void validateRetailerDTO(RetailerDTO retailerDTO) {
+        if (Objects.isNull(retailerDTO)) {
+            throw new IllegalArgumentException("RetailerDTO cannot be null");
+        }
     }
 }

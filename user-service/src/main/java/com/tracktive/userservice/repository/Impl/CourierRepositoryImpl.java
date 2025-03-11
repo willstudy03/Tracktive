@@ -1,11 +1,17 @@
 package com.tracktive.userservice.repository.Impl;
 
+import com.tracktive.userservice.exception.DatabaseOperationException;
+import com.tracktive.userservice.exception.UserAlreadyExistsException;
 import com.tracktive.userservice.model.DAO.CourierDAO;
 import com.tracktive.userservice.model.DTO.CourierDTO;
 import com.tracktive.userservice.model.entity.Courier;
+import com.tracktive.userservice.model.entity.Retailer;
 import com.tracktive.userservice.repository.CourierRepository;
 import com.tracktive.userservice.util.CourierConverter;
+import com.tracktive.userservice.util.RetailerConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
@@ -40,45 +46,35 @@ public class CourierRepositoryImpl implements CourierRepository {
 
     @Override
     public Optional<CourierDTO> selectCourierById(String id) {
-        validateId(id);
         return courierDAO.selectCourierById(id).map(CourierConverter::toDTO);
     }
 
     @Override
     public Optional<CourierDTO> lockCourierById(String id) {
-        validateId(id);
         return courierDAO.lockCourierById(id).map(CourierConverter::toDTO);
     }
 
     @Override
     public boolean addCourier(CourierDTO courierDTO) {
-        validateCourierDTO(courierDTO);
-        Courier courier = CourierConverter.toEntity(courierDTO);
-        return courierDAO.addCourier(courier) > 0;
+        try {
+            Courier courier = CourierConverter.toEntity(courierDTO);
+            return courierDAO.addCourier(courier) > 0;
+        } catch (DuplicateKeyException e) {
+            throw new UserAlreadyExistsException("Courier with id " + courierDTO.getCourierId() + " already exists", e);
+        } catch (DataAccessException e) {
+            throw new DatabaseOperationException("Failed to add courier to the database", e);
+        }
     }
 
     @Override
     public boolean updateCourier(CourierDTO courierDTO) {
-        validateCourierDTO(courierDTO);
         Courier courier = CourierConverter.toEntity(courierDTO);
         return courierDAO.updateCourier(courier) > 0;
     }
 
     @Override
     public boolean deleteById(String id) {
-        validateId(id);
         return courierDAO.deleteCourierById(id) > 0;
     }
 
-    private void validateId(String id){
-        if (Objects.isNull(id) || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("ID cannot be null or empty");
-        }
-    }
-
-    private void validateCourierDTO(CourierDTO courierDTO) {
-        if (Objects.isNull(courierDTO)) {
-            throw new IllegalArgumentException("CourierDTO cannot be null");
-        }
-    }
 }

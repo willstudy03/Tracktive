@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
 * Description: User CRUD Service Implementation
@@ -37,47 +38,79 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO selectUserById(String id) {
+        validateId(id);
         return userRepository.selectUserById(id)
-                .orElseThrow(()->new UserNotFoundException("User not found with id: " + id));
+                .orElseThrow(()->{
+                    logger.warn("User not found with id: {}", id);
+                    return new UserNotFoundException("User not found with id: " + id);
+                });
     }
 
     @Override
     @Transactional
     public UserDTO lockUserById(String id) {
-        try{
+        validateId(id);
+        try {
             return userRepository.lockUserById(id)
-                    .orElseThrow(()->new UserNotFoundException("User not found with id: " + id));
-        }catch (CannotAcquireLockException e){
-            logger.warn("Lock acquisition failed for user id: {}", id);
+                    .orElseThrow(() -> {
+                        logger.warn("Failed to lock user, user not found with id: {}", id);
+                        return new UserNotFoundException("User not found with id: " + id);
+                    });
+        } catch (CannotAcquireLockException e) {
+            logger.error("Lock acquisition failed for user id: {}", id, e);
             throw new LockAcquisitionException("Failed to acquire lock for user with id: " + id, e);
+        } catch (Exception e) {
+            logger.error("Unexpected error during user lock for id: {}", id, e);
+            throw new RuntimeException("Unexpected error during lock operation", e);
         }
     }
 
     @Override
     @Transactional
-    public boolean addUser(UserDTO userDTO) {
-        return userRepository.addUser(userDTO);
-    }
-
-    @Override
-    @Transactional
-    public boolean updateUser(UserDTO userDTO) {
-        boolean updated = userRepository.updateUser(userDTO);
-        if (!updated) {
-            logger.info("Failed to update: User not found with id: {}", userDTO.getId());
-            throw new UserNotFoundException("Failed to update: User not found with id: " + userDTO.getId());
+    public void addUser(UserDTO userDTO) {
+        validateUserDTO(userDTO);
+        boolean result = userRepository.addUser(userDTO);
+        if (!result) {
+            logger.error("Failed to add user with id: {}", userDTO.getId());
+            throw new RuntimeException("Failed to add user with id: " + userDTO.getId());
         }
-        return true;
+        logger.info("User [{}] added successfully", userDTO.getId());
     }
 
     @Override
     @Transactional
-    public boolean deleteUserById(String id) {
+    public void updateUser(UserDTO userDTO) {
+        validateUserDTO(userDTO);
+        boolean result = userRepository.updateUser(userDTO);
+        if (!result) {
+            logger.error("Failed to update user with id: {}", userDTO.getId());
+            throw new UserNotFoundException("Failed to update user with id: " + userDTO.getId());
+        }
+        logger.info("User [{}] updated successfully", userDTO.getId());
+    }
+
+    @Override
+    @Transactional
+    public void deleteUserById(String id) {
+        validateId(id);
         boolean deleted = userRepository.deleteById(id);
         if (!deleted) {
             logger.info("Failed to delete: User not found with id: {}", id);
             throw new UserNotFoundException("Failed to delete: User not found with id: " + id);
         }
-        return true;
+        logger.warn("User [{}] deleted successfully", id);
+    }
+
+    private void validateId(String id){
+        if (Objects.isNull(id) || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("ID cannot be null or empty");
+        }
+    }
+
+    private void validateUserDTO(UserDTO userDTO) {
+        if (Objects.isNull(userDTO)) {
+            throw new IllegalArgumentException("UserDTO cannot be null");
+        }
+        //@TODO: Validation
     }
 }

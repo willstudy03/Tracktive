@@ -12,7 +12,7 @@ public interface UserService {
     List<UserDTO> selectAllUsers();
     UserDTO selectUserById(String id);
     UserDTO lockUserById(String id);
-    boolean addUser(UserDTO userDTO);
-    boolean updateUser(UserDTO userDTO);
-    boolean deleteUserById(String id);
+    void addUser(UserDTO userDTO);
+    void updateUser(UserDTO userDTO);
+    void deleteUserById(String id);
 }
