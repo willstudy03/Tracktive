@@ -37,7 +37,6 @@ public class RetailerInventoryRepositoryImpl implements RetailerInventoryReposit
 
     @Override
     public List<RetailerInventoryDTO> selectRetailerInventoryByRetailerId(String retailerId) {
-        validateRetailerId(retailerId);
         return retailerInventoryDAO.selectRetailerInventoryByRetailerId(retailerId)
                 .stream()
                 .map(RetailerInventoryConverter::toDTO)
@@ -46,28 +45,24 @@ public class RetailerInventoryRepositoryImpl implements RetailerInventoryReposit
 
     @Override
     public Optional<RetailerInventoryDTO> selectRetailerInventoryById(String id) {
-        validateId(id);
         return retailerInventoryDAO.selectRetailerInventoryById(id)
                 .map(RetailerInventoryConverter::toDTO);
     }
 
     @Override
     public Optional<RetailerInventoryDTO> lockRetailerInventoryById(String id) {
-        validateId(id);
         return retailerInventoryDAO.lockRetailerInventoryById(id)
                 .map(RetailerInventoryConverter::toDTO);
     }
 
     @Override
     public boolean addRetailerInventory(RetailerInventoryDTO retailerInventoryDTO) {
-        validateRetailerInventoryDTO(retailerInventoryDTO);
         RetailerInventory retailerInventory = RetailerInventoryConverter.toEntity(retailerInventoryDTO);
         return retailerInventoryDAO.addRetailerInventory(retailerInventory) > 0;
     }
 
     @Override
     public boolean updateRetailerInventory(RetailerInventoryDTO retailerInventoryDTO) {
-        validateRetailerInventoryDTO(retailerInventoryDTO);
         RetailerInventory retailerInventory = RetailerInventoryConverter.toEntity(retailerInventoryDTO);
         return retailerInventoryDAO.updateRetailerInventory(retailerInventory) > 0;
     }
@@ -77,21 +72,4 @@ public class RetailerInventoryRepositoryImpl implements RetailerInventoryReposit
         return retailerInventoryDAO.deleteRetailerInventoryById(id) > 0;
     }
 
-    private void validateId(String id){
-        if (Objects.isNull(id) || id.trim().isEmpty()) {
-            throw new IllegalArgumentException("Retailer Inventory ID cannot be null or empty");
-        }
-    }
-
-    private void validateRetailerId(String retailerId){
-        if (Objects.isNull(retailerId) || retailerId.trim().isEmpty()) {
-            throw new IllegalArgumentException("Retailer Id cannot be null or empty");
-        }
-    }
-
-    private void validateRetailerInventoryDTO(RetailerInventoryDTO retailerInventoryDTO) {
-        if (Objects.isNull(retailerInventoryDTO)) {
-            throw new IllegalArgumentException("RetailerInventoryDTO cannot be null");
-        }
-    }
 }

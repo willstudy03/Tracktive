@@ -1,7 +1,6 @@
 package com.tracktive.productservice.repository;
 
 import com.tracktive.productservice.model.DTO.RetailerInventoryDTO;
-import com.tracktive.productservice.model.entity.RetailerInventory;
 
 import java.util.List;
 import java.util.Optional;
