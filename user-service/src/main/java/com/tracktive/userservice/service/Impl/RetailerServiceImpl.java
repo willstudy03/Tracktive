@@ -112,5 +112,6 @@ public class RetailerServiceImpl implements RetailerService {
         if (Objects.isNull(retailerDTO)) {
             throw new IllegalArgumentException("RetailerDTO cannot be null");
         }
+        //@TODO: Validation
     }
 }
