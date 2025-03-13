@@ -5,6 +5,7 @@ import com.tracktive.productservice.exception.ProductNotFoundException;
 import com.tracktive.productservice.model.DTO.SupplierProductDTO;
 import com.tracktive.productservice.repository.SupplierProductRepository;
 import com.tracktive.productservice.service.SupplierProductService;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +64,8 @@ public class SupplierProductServiceImpl implements SupplierProductService {
                         logger.warn("Failed to lock supplier product, supplier not found with id: {}", id);
                         return new ProductNotFoundException("Supplier product not found with id: " + id);
                     });
-        } catch (CannotAcquireLockException e) {
-            logger.error("Lock acquisition failed for supplier product id: {}", id, e);
+        } catch (PersistenceException e) {
+            logger.error("Persistence error occurred during lock acquisition for supplier product id: {}", id, e);
             throw new LockAcquisitionException("Failed to acquire lock for supplier product with id: " + id, e);
         } catch (Exception e) {
             logger.error("Unexpected error during supplier product lock for id: {}", id, e);

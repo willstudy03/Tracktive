@@ -5,6 +5,7 @@ import com.tracktive.productservice.exception.ProductNotFoundException;
 import com.tracktive.productservice.model.DTO.RetailerInventoryDTO;
 import com.tracktive.productservice.repository.RetailerInventoryRepository;
 import com.tracktive.productservice.service.RetailerInventoryService;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +59,8 @@ public class RetailerInventoryServiceImpl implements RetailerInventoryService {
                         logger.warn("Failed to lock retailer inventory, retailer inventory not found with id: {}", id);
                         return new ProductNotFoundException("Retailer Inventory not found with id: " + id);
                     });
-        } catch (CannotAcquireLockException e) {
-            logger.error("Lock acquisition failed for retailer inventory id: {}", id, e);
+        } catch (PersistenceException e) {
+            logger.error("Persistence error occurred during lock acquisition for retailer inventory id: {}", id, e);
             throw new LockAcquisitionException("Failed to acquire lock for retailer inventory with id: " + id, e);
         } catch (Exception e) {
             logger.error("Unexpected error during retailer inventory lock for id: {}", id, e);
