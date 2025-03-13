@@ -5,6 +5,7 @@ import com.tracktive.userservice.exception.UserNotFoundException;
 import com.tracktive.userservice.model.DTO.CourierDTO;
 import com.tracktive.userservice.repository.CourierRepository;
 import com.tracktive.userservice.service.CourierService;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +58,8 @@ public class CourierServiceImpl implements CourierService {
                         logger.warn("Failed to lock courier, courier not found with id: {}", id);
                         return new UserNotFoundException("Courier not found with id: " + id);
                     });
-        } catch (CannotAcquireLockException e) {
-            logger.error("Lock acquisition failed for courier id: {}", id, e);
+        } catch (PersistenceException e) {
+            logger.error("Persistence error occurred during lock acquisition for courier id: {}", id, e);
             throw new LockAcquisitionException("Failed to acquire lock for courier with id: " + id, e);
         } catch (Exception e) {
             logger.error("Unexpected error during courier lock for id: {}", id, e);

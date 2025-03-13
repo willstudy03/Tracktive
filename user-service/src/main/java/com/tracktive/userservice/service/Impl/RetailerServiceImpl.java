@@ -5,6 +5,7 @@ import com.tracktive.userservice.exception.UserNotFoundException;
 import com.tracktive.userservice.model.DTO.RetailerDTO;
 import com.tracktive.userservice.repository.RetailerRepository;
 import com.tracktive.userservice.service.RetailerService;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +58,8 @@ public class RetailerServiceImpl implements RetailerService {
                         logger.warn("Failed to lock retailer, retailer not found with id: {}", id);
                         return new UserNotFoundException("Retailer not found with id: " + id);
                     });
-        } catch (CannotAcquireLockException e) {
-            logger.error("Lock acquisition failed for retailer id: {}", id, e);
+        } catch (PersistenceException e) {
+            logger.error("Persistence error occurred during lock acquisition for retailer id: {}", id, e);
             throw new LockAcquisitionException("Failed to acquire lock for retailer with id: " + id, e);
         } catch (Exception e) {
             logger.error("Unexpected error during retailer lock for id: {}", id, e);

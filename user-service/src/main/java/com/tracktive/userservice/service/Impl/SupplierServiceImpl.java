@@ -6,6 +6,7 @@ import com.tracktive.userservice.model.DTO.SupplierDTO;
 import com.tracktive.userservice.model.DTO.UserDTO;
 import com.tracktive.userservice.repository.SupplierRepository;
 import com.tracktive.userservice.service.SupplierService;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +59,8 @@ public class SupplierServiceImpl implements SupplierService {
                         logger.warn("Failed to lock supplier, supplier not found with id: {}", id);
                         return new UserNotFoundException("Supplier not found with id: " + id);
                     });
-        } catch (CannotAcquireLockException e) {
-            logger.error("Lock acquisition failed for supplier id: {}", id, e);
+        } catch (PersistenceException e) {
+            logger.error("Persistence error occurred during lock acquisition for supplier id: {}", id, e);
             throw new LockAcquisitionException("Failed to acquire lock for supplier with id: " + id, e);
         } catch (Exception e) {
             logger.error("Unexpected error during supplier lock for id: {}", id, e);

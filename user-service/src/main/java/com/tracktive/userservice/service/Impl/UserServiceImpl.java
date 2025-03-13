@@ -5,6 +5,7 @@ import com.tracktive.userservice.exception.UserNotFoundException;
 import com.tracktive.userservice.model.DTO.UserDTO;
 import com.tracktive.userservice.repository.UserRepository;
 import com.tracktive.userservice.service.UserService;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +57,8 @@ public class UserServiceImpl implements UserService {
                         logger.warn("Failed to lock user, user not found with id: {}", id);
                         return new UserNotFoundException("User not found with id: " + id);
                     });
-        } catch (CannotAcquireLockException e) {
-            logger.error("Lock acquisition failed for user id: {}", id, e);
+        } catch (PersistenceException e) {
+            logger.error("Persistence error occurred during lock acquisition for user id: {}", id, e);
             throw new LockAcquisitionException("Failed to acquire lock for user with id: " + id, e);
         } catch (Exception e) {
             logger.error("Unexpected error during user lock for id: {}", id, e);
