@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tracktive.orderservice.model.DAO.OrderDAO">
+
+    <!-- Select all orders -->
+    <select id="selectAllOrders" resultType="Order">
+        SELECT id, retailer_id, supplier_id, payment_id, delivery_task_id, total_amount,
+        delivery_address, order_status, updated_at, created_at
+        FROM orders;
+    </select>
+
+    <!-- Select all orders by retailer ID -->
+    <select id="selectAllOrdersByRetailerId" resultType="Order">
+        SELECT id, retailer_id, supplier_id, payment_id, delivery_task_id, total_amount,
+        delivery_address, order_status, updated_at, created_at
+        FROM orders
+        WHERE retailer_id = #{id};
+    </select>
+
+    <!-- Select all orders by supplier ID -->
+    <select id="selectAllOrdersBySupplierId" resultType="Order">
+        SELECT id, retailer_id, supplier_id, payment_id, delivery_task_id, total_amount,
+        delivery_address, order_status, updated_at, created_at
+        FROM orders
+        WHERE supplier_id = #{id};
+    </select>
+
+    <!-- Select an order by ID -->
+    <select id="selectOrderById" resultType="Order">
+        SELECT id, retailer_id, supplier_id, payment_id, delivery_task_id, total_amount,
+        delivery_address, order_status, updated_at, created_at
+        FROM orders
+        WHERE id = #{id};
+    </select>
+
+    <!-- Lock an order by ID (FOR UPDATE) -->
+    <select id="lockOrderById" resultType="Order">
+        SELECT id, retailer_id, supplier_id, payment_id, delivery_task_id, total_amount,
+        delivery_address, order_status, updated_at, created_at
+        FROM orders
+        WHERE id = #{id}
+        FOR UPDATE;
+    </select>
+
+    <!-- Insert a new order -->
+    <insert id="addOrder">
+        INSERT INTO orders (id, retailer_id, supplier_id, payment_id, delivery_task_id,
+        total_amount, delivery_address, order_status)
+        VALUES (#{id}, #{retailerId}, #{supplierId}, #{paymentId}, #{deliveryTaskId},
+        #{totalAmount}, #{deliveryAddress}, #{orderStatus});
+    </insert>
+
+    <!-- Update an existing order -->
+    <update id="updateOrder">
+        UPDATE orders
+        SET retailer_id = #{retailerId},
+        supplier_id = #{supplierId},
+        payment_id = #{paymentId},
+        delivery_task_id = #{deliveryTaskId},
+        total_amount = #{totalAmount},
+        delivery_address = #{deliveryAddress},
+        order_status = #{orderStatus}
+        WHERE id = #{id};
+    </update>
+
+    <!-- Delete an order by ID -->
+    <delete id="deleteOrderById">
+        DELETE FROM orders WHERE id = #{id};
+    </delete>
+
+</mapper>
