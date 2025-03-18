@@ -6,7 +6,7 @@ import com.tracktive.orderservice.model.entity.Order;
 import java.util.Objects;
 
 /**
-* Description: Util for convert Order
+* Description: Util for convert Order Model
 * @author William Theo
 * @date 18/3/2025
 */

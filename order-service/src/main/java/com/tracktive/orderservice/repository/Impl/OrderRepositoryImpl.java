@@ -1,10 +1,11 @@
-package com.tracktive.orderservice.repository;
+package com.tracktive.orderservice.repository.Impl;
 
 import com.tracktive.orderservice.exception.DatabaseOperationException;
 import com.tracktive.orderservice.exception.OrderAlreadyExistException;
 import com.tracktive.orderservice.model.DAO.OrderDAO;
 import com.tracktive.orderservice.model.DTO.OrderDTO;
 import com.tracktive.orderservice.model.entity.Order;
+import com.tracktive.orderservice.repository.OrderRepository;
 import com.tracktive.orderservice.util.OrderConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
