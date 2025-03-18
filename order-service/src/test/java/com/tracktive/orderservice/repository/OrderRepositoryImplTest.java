@@ -1,5 +1,6 @@
 package com.tracktive.orderservice.repository;
 
+import com.tracktive.orderservice.model.DTO.OrderDTO;
 import com.tracktive.orderservice.model.Enum.OrderStatus;
 import com.tracktive.orderservice.model.entity.Order;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ class OrderRepositoryImplTest {
 
     @Test
     void selectAllOrders() {
-        List<Order> orderDTOS = orderRepository.selectAllOrders();
+        List<OrderDTO> orderDTOS = orderRepository.selectAllOrders();
         logger.info("Orders:{}", orderDTOS);
         assertEquals(orderDTOS.isEmpty(),false);
     }
@@ -33,7 +34,7 @@ class OrderRepositoryImplTest {
     @Test
     void selectAllOrdersByRetailerId() {
         String retailerId = "retailer123";
-        List<Order> orderDTOS = orderRepository.selectAllOrdersByRetailerId(retailerId);
+        List<OrderDTO> orderDTOS = orderRepository.selectAllOrdersByRetailerId(retailerId);
         logger.info("Orders:{}", orderDTOS);
         assertEquals(orderDTOS.get(0).getRetailerId(), retailerId);
     }
@@ -41,7 +42,7 @@ class OrderRepositoryImplTest {
     @Test
     void selectAllOrdersBySupplierId() {
         String supplierId = "supplier456";   // Replace with actual supplier ID
-        List<Order> orderDTOS = orderRepository.selectAllOrdersBySupplierId(supplierId);
+        List<OrderDTO> orderDTOS = orderRepository.selectAllOrdersBySupplierId(supplierId);
         logger.info("Orders:{}", orderDTOS);
         assertEquals(orderDTOS.get(0).getSupplierId(), supplierId);
     }
@@ -49,16 +50,16 @@ class OrderRepositoryImplTest {
     @Test
     void selectOrderById() {
         String orderId = "05d4ff2c-9e03-4f35-9f36-7d9e50c7d0c0";
-        Optional<Order> order = orderRepository.selectOrderById(orderId);
-        Order result = order.get();
+        Optional<OrderDTO> order = orderRepository.selectOrderById(orderId);
+        OrderDTO result = order.get();
         assertEquals(orderId, result.getId());
     }
 
     @Test
     void lockOrderById() {
         String orderId = "05d4ff2c-9e03-4f35-9f36-7d9e50c7d0c0";
-        Optional<Order> order = orderRepository.lockOrderById(orderId);
-        Order result = order.get();
+        Optional<OrderDTO> order = orderRepository.lockOrderById(orderId);
+        OrderDTO result = order.get();
         assertEquals(orderId, result.getId());
     }
 
@@ -75,15 +76,15 @@ class OrderRepositoryImplTest {
         OrderStatus orderStatus = OrderStatus.PENDING;
 
         // Create the Order object
-        Order order = new Order(orderId, retailerId, supplierId, paymentId, deliveryTaskId, totalAmount, deliveryAddress, orderStatus);
+        OrderDTO order = new OrderDTO(orderId, retailerId, supplierId, paymentId, deliveryTaskId, totalAmount, deliveryAddress, orderStatus);
         boolean result = orderRepository.addOrder(order);
         assertTrue(result);
     }
 
     @Test
     void updateOrder() {
-        Optional<Order> order = orderRepository.selectOrderById("05d4ff2c-9e03-4f35-9f36-7d9e50c7d0c0");
-        Order updateOrder = order.get();
+        Optional<OrderDTO> order = orderRepository.selectOrderById("05d4ff2c-9e03-4f35-9f36-7d9e50c7d0c0");
+        OrderDTO updateOrder = order.get();
         logger.info("Order Status:{}", updateOrder.getOrderStatus());
         updateOrder.setOrderStatus(OrderStatus.CANCELLED);
         assertTrue(orderRepository.updateOrder(updateOrder));

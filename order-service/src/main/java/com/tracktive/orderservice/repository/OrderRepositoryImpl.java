@@ -3,7 +3,9 @@ package com.tracktive.orderservice.repository;
 import com.tracktive.orderservice.exception.DatabaseOperationException;
 import com.tracktive.orderservice.exception.OrderAlreadyExistException;
 import com.tracktive.orderservice.model.DAO.OrderDAO;
+import com.tracktive.orderservice.model.DTO.OrderDTO;
 import com.tracktive.orderservice.model.entity.Order;
+import com.tracktive.orderservice.util.OrderConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
@@ -29,44 +31,55 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public List<Order> selectAllOrders() {
+    public List<OrderDTO> selectAllOrders() {
         return Optional.ofNullable(orderDAO.selectAllOrders())
-                .orElse(Collections.emptyList());
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(OrderConverter::toDTO)
+                .toList();
     }
 
     @Override
-    public List<Order> selectAllOrdersByRetailerId(String id) {
-        return orderDAO.selectAllOrdersByRetailerId(id);
+    public List<OrderDTO> selectAllOrdersByRetailerId(String id) {
+        return orderDAO.selectAllOrdersByRetailerId(id)
+                .stream()
+                .map(OrderConverter::toDTO)
+                .toList();
     }
 
     @Override
-    public List<Order> selectAllOrdersBySupplierId(String id) {
-        return orderDAO.selectAllOrdersBySupplierId(id);
+    public List<OrderDTO> selectAllOrdersBySupplierId(String id) {
+        return orderDAO.selectAllOrdersBySupplierId(id)
+                .stream()
+                .map(OrderConverter::toDTO)
+                .toList();
     }
 
     @Override
-    public Optional<Order> selectOrderById(String id) {
-        return orderDAO.selectOrderById(id);
+    public Optional<OrderDTO> selectOrderById(String id) {
+        return orderDAO.selectOrderById(id).map(OrderConverter::toDTO);
     }
 
     @Override
-    public Optional<Order> lockOrderById(String id) {
-        return orderDAO.lockOrderById(id);
+    public Optional<OrderDTO> lockOrderById(String id) {
+        return orderDAO.lockOrderById(id).map(OrderConverter::toDTO);
     }
 
     @Override
-    public boolean addOrder(Order order) {
+    public boolean addOrder(OrderDTO orderDTO) {
         try {
+            Order order = OrderConverter.toEntity(orderDTO);
             return orderDAO.addOrder(order) > 0;
         } catch (DuplicateKeyException e) {
-            throw new OrderAlreadyExistException("Order with id " + order.getId() + " already exists", e);
+            throw new OrderAlreadyExistException("Order with id " + orderDTO.getId() + " already exists", e);
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("Failed to add order to the database", e);
         }
     }
 
     @Override
-    public boolean updateOrder(Order order) {
+    public boolean updateOrder(OrderDTO orderDTO) {
+        Order order = OrderConverter.toEntity(orderDTO);
         return orderDAO.updateOrder(order) > 0;
     }
 
