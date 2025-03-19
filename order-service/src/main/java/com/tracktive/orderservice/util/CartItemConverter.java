@@ -6,7 +6,7 @@ import com.tracktive.orderservice.model.entity.CartItem;
 import java.util.Objects;
 
 /**
-* Description: Util for convert Order Model
+* Description: Util for convert Cart Item Model
 * @author William Theo
 * @date 19/3/2025
 */

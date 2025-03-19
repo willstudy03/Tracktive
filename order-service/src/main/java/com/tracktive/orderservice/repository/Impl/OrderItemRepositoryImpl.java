@@ -3,8 +3,10 @@ package com.tracktive.orderservice.repository.Impl;
 import com.tracktive.orderservice.exception.DatabaseOperationException;
 import com.tracktive.orderservice.exception.OrderItemAlreadyExistException;
 import com.tracktive.orderservice.model.DAO.OrderItemDAO;
+import com.tracktive.orderservice.model.DTO.OrderItemDTO;
 import com.tracktive.orderservice.model.entity.OrderItem;
 import com.tracktive.orderservice.repository.OrderItemRepository;
+import com.tracktive.orderservice.util.OrderItemConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
@@ -29,33 +31,38 @@ public class OrderItemRepositoryImpl implements OrderItemRepository {
     }
 
     @Override
-    public List<OrderItem> selectAllOrderItems() {
-        return orderItemDAO.selectAllOrderItems();
+    public List<OrderItemDTO> selectAllOrderItems() {
+        return orderItemDAO.selectAllOrderItems()
+                .stream()
+                .map(OrderItemConverter::toDTO)
+                .toList();
     }
 
     @Override
-    public Optional<OrderItem> selectOrderItemById(String id) {
-        return orderItemDAO.selectOrderItemById(id);
+    public Optional<OrderItemDTO> selectOrderItemById(String id) {
+        return orderItemDAO.selectOrderItemById(id).map(OrderItemConverter::toDTO);
     }
 
     @Override
-    public Optional<OrderItem> lockOrderItemById(String id) {
-        return orderItemDAO.lockOrderItemById(id);
+    public Optional<OrderItemDTO> lockOrderItemById(String id) {
+        return orderItemDAO.lockOrderItemById(id).map(OrderItemConverter::toDTO);
     }
 
     @Override
-    public boolean addOrderItem(OrderItem orderItem) {
+    public boolean addOrderItem(OrderItemDTO orderItemDTO) {
         try {
+            OrderItem orderItem = OrderItemConverter.toEntity(orderItemDTO);
             return orderItemDAO.addOrderItem(orderItem) > 0;
         } catch (DuplicateKeyException e) {
-            throw new OrderItemAlreadyExistException("Order Item with id " + orderItem.getId() + " already exists", e);
+            throw new OrderItemAlreadyExistException("Order Item with id " + orderItemDTO.getId() + " already exists", e);
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("Failed to add Order Item to the database", e);
         }
     }
 
     @Override
-    public boolean updateOrderItem(OrderItem orderItem) {
+    public boolean updateOrderItem(OrderItemDTO orderItemDTO) {
+        OrderItem orderItem = OrderItemConverter.toEntity(orderItemDTO);
         return orderItemDAO.updateOrderItem(orderItem) > 0;
     }
 

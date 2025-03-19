@@ -1,5 +1,6 @@
 package com.tracktive.orderservice.repository;
 
+import com.tracktive.orderservice.model.DTO.OrderItemDTO;
 import com.tracktive.orderservice.model.entity.OrderItem;
 
 import java.util.List;
@@ -12,18 +13,18 @@ import java.util.Optional;
 */
 public interface OrderItemRepository {
     // Select operations
-    List<OrderItem> selectAllOrderItems();
+    List<OrderItemDTO> selectAllOrderItems();
 
-    Optional<OrderItem> selectOrderItemById(String id);
+    Optional<OrderItemDTO> selectOrderItemById(String id);
 
     // Lock operation
-    Optional<OrderItem> lockOrderItemById(String id);
+    Optional<OrderItemDTO> lockOrderItemById(String id);
 
     // Insert operation
-    boolean addOrderItem(OrderItem orderItem);
+    boolean addOrderItem(OrderItemDTO orderItemDTO);
 
     // Update operation
-    boolean updateOrderItem(OrderItem orderItem);
+    boolean updateOrderItem(OrderItemDTO orderItemDTO);
 
     // Delete operation
     boolean deleteOrderItemById(String id);
