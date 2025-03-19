@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tracktive.orderservice.model.DAO.CartItemDAO">
+
+    <!-- Select all cart items -->
+    <select id="selectAllCartItems" resultType="CartItem">
+        SELECT id, retailer_id, supplier_product_id, supplier_id, product_id, quantity,
+        price_snapshot, discount_snapshot, subtotal, updated_at, created_at
+        FROM cart_items;
+    </select>
+
+    <!-- Select all cart items by retailer ID -->
+    <select id="selectAllByRetailerId" resultType="CartItem">
+        SELECT id, retailer_id, supplier_product_id, supplier_id, product_id, quantity,
+        price_snapshot, discount_snapshot, subtotal, updated_at, created_at
+        FROM cart_items
+        WHERE retailer_id = #{id};
+    </select>
+
+    <!-- Select a cart item by ID -->
+    <select id="selectCartItemById" resultType="CartItem">
+        SELECT id, retailer_id, supplier_product_id, supplier_id, product_id, quantity,
+        price_snapshot, discount_snapshot, subtotal, updated_at, created_at
+        FROM cart_items
+        WHERE id = #{id};
+    </select>
+
+    <!-- Lock a cart item by ID (FOR UPDATE) -->
+    <select id="lockCartItemById" resultType="CartItem">
+        SELECT id, retailer_id, supplier_product_id, supplier_id, product_id, quantity,
+        price_snapshot, discount_snapshot, subtotal, updated_at, created_at
+        FROM cart_items
+        WHERE id = #{id}
+        FOR UPDATE;
+    </select>
+
+    <!-- Insert a new cart item -->
+    <insert id="addCartItem">
+        INSERT INTO cart_items (id, retailer_id, supplier_product_id, supplier_id, product_id, quantity,
+        price_snapshot, discount_snapshot, subtotal)
+        VALUES (#{id}, #{retailerId}, #{supplierProductId}, #{supplierId}, #{productId}, #{quantity},
+        #{priceSnapshot}, #{discountSnapshot}, #{subtotal});
+    </insert>
+
+    <!-- Update an existing cart item -->
+    <update id="updateCartItem">
+        UPDATE cart_items
+        SET retailer_id = #{retailerId},
+        supplier_product_id = #{supplierProductId},
+        supplier_id = #{supplierId},
+        product_id = #{productId},
+        quantity = #{quantity},
+        price_snapshot = #{priceSnapshot},
+        discount_snapshot = #{discountSnapshot},
+        subtotal = #{subtotal}
+        WHERE id = #{id};
+    </update>
+
+    <!-- Delete a cart item by ID -->
+    <delete id="deleteCartItemById">
+        DELETE FROM cart_items WHERE id = #{id};
+    </delete>
+
+</mapper>

@@ -15,6 +15,8 @@ public class CartItem {
 
     private String supplierProductId;
 
+    private String supplierId;
+
     private String productId;
 
     private Integer quantity;
@@ -32,10 +34,11 @@ public class CartItem {
     public CartItem() {
     }
 
-    public CartItem(String id, String retailerId, String supplierProductId, String productId, Integer quantity, BigDecimal priceSnapshot, BigDecimal discountSnapshot, BigDecimal subtotal) {
+    public CartItem(String id, String retailerId, String supplierProductId, String supplierId, String productId, Integer quantity, BigDecimal priceSnapshot, BigDecimal discountSnapshot, BigDecimal subtotal) {
         this.id = id;
         this.retailerId = retailerId;
         this.supplierProductId = supplierProductId;
+        this.supplierId = supplierId;
         this.productId = productId;
         this.quantity = quantity;
         this.priceSnapshot = priceSnapshot;
@@ -65,6 +68,14 @@ public class CartItem {
 
     public void setSupplierProductId(String supplierProductId) {
         this.supplierProductId = supplierProductId;
+    }
+
+    public String getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(String supplierId) {
+        this.supplierId = supplierId;
     }
 
     public String getProductId() {

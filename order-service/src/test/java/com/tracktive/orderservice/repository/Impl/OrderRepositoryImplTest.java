@@ -1,8 +1,8 @@
-package com.tracktive.orderservice.repository;
+package com.tracktive.orderservice.repository.Impl;
 
 import com.tracktive.orderservice.model.DTO.OrderDTO;
 import com.tracktive.orderservice.model.Enum.OrderStatus;
-import com.tracktive.orderservice.model.entity.Order;
+import com.tracktive.orderservice.repository.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,10 +12,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+* Description: Order Repository CRUD Test Case
+* @author William Theo
+* @date 19/3/2025
+*/
 @SpringBootTest
 class OrderRepositoryImplTest {
 
