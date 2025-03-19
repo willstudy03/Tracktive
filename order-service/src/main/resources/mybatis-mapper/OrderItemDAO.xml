@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tracktive.orderservice.model.DAO.OrderItemDAO">
+
+    <!-- Select all order items -->
+    <select id="selectAllOrderItems" resultType="OrderItem">
+        SELECT id, order_id, supplier_product_id, supplier_id, product_id, quantity,
+        price_snapshot, discount_snapshot, subtotal, updated_at, created_at
+        FROM order_items;
+    </select>
+
+    <!-- Select an order item by ID -->
+    <select id="selectOrderItemById" resultType="OrderItem">
+        SELECT id, order_id, supplier_product_id, supplier_id, product_id, quantity,
+        price_snapshot, discount_snapshot, subtotal, updated_at, created_at
+        FROM order_items
+        WHERE id = #{id};
+    </select>
+
+    <!-- Lock an order item by ID (FOR UPDATE) -->
+    <select id="lockOrderItemById" resultType="OrderItem">
+        SELECT id, order_id, supplier_product_id, supplier_id, product_id, quantity,
+        price_snapshot, discount_snapshot, subtotal, updated_at, created_at
+        FROM order_items
+        WHERE id = #{id}
+        FOR UPDATE;
+    </select>
+
+    <!-- Insert a new order item -->
+    <insert id="addOrderItem">
+        INSERT INTO order_items (id, order_id, supplier_product_id, supplier_id, product_id, quantity,
+        price_snapshot, discount_snapshot, subtotal)
+        VALUES (#{id}, #{orderId}, #{supplierProductId}, #{supplierId}, #{productId}, #{quantity},
+        #{priceSnapshot}, #{discountSnapshot}, #{subtotal});
+    </insert>
+
+    <!-- Update an existing order item -->
+    <update id="updateOrderItem">
+        UPDATE order_items
+        SET order_id = #{orderId},
+        supplier_product_id = #{supplierProductId},
+        supplier_id = #{supplierId},
+        product_id = #{productId},
+        quantity = #{quantity},
+        price_snapshot = #{priceSnapshot},
+        discount_snapshot = #{discountSnapshot},
+        subtotal = #{subtotal}
+        WHERE id = #{id};
+    </update>
+
+    <!-- Delete an order item by ID -->
+    <delete id="deleteOrderItemById">
+        DELETE FROM order_items WHERE id = #{id};
+    </delete>
+
+</mapper>
