@@ -1,10 +1,13 @@
 package com.tracktive.orderservice.repository.Impl;
 
+import com.tracktive.orderservice.exception.CartItemAlreadyExistException;
 import com.tracktive.orderservice.exception.DatabaseOperationException;
 import com.tracktive.orderservice.exception.OrderAlreadyExistException;
 import com.tracktive.orderservice.model.DAO.CartItemDAO;
+import com.tracktive.orderservice.model.DTO.CartItemDTO;
 import com.tracktive.orderservice.model.entity.CartItem;
 import com.tracktive.orderservice.repository.CartItemRepository;
+import com.tracktive.orderservice.util.CartItemConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
@@ -29,38 +32,46 @@ public class CartItemRepositoryImpl implements CartItemRepository {
     }
 
     @Override
-    public List<CartItem> selectAllCartItems() {
-        return cartItemDAO.selectAllCartItems();
+    public List<CartItemDTO> selectAllCartItems() {
+        return cartItemDAO.selectAllCartItems()
+                .stream()
+                .map(CartItemConverter::toDTO)
+                .toList();
     }
 
     @Override
-    public List<CartItem> selectAllByRetailerId(String id) {
-        return cartItemDAO.selectAllByRetailerId(id);
+    public List<CartItemDTO> selectAllByRetailerId(String id) {
+        return cartItemDAO.selectAllByRetailerId(id)
+                .stream()
+                .map(CartItemConverter::toDTO)
+                .toList();
     }
 
     @Override
-    public Optional<CartItem> selectCartItemById(String id) {
-        return cartItemDAO.selectCartItemById(id);
+    public Optional<CartItemDTO> selectCartItemById(String id) {
+        return cartItemDAO.selectCartItemById(id).map(CartItemConverter::toDTO);
     }
 
     @Override
-    public Optional<CartItem> lockCartItemById(String id) {
-        return  cartItemDAO.lockCartItemById(id);
+    public Optional<CartItemDTO> lockCartItemById(String id) {
+        return  cartItemDAO.lockCartItemById(id).map(CartItemConverter::toDTO);
     }
 
     @Override
-    public boolean addCartItem(CartItem cartItem) {
+    public boolean addCartItem(CartItemDTO cartItemDTO) {
         try {
+            CartItem cartItem = CartItemConverter.toEntity(cartItemDTO);
             return cartItemDAO.addCartItem(cartItem) > 0;
         } catch (DuplicateKeyException e) {
-            throw new OrderAlreadyExistException("Order with id " + cartItem.getId() + " already exists", e);
+            throw new CartItemAlreadyExistException("Cart Item with id " + cartItemDTO.getId() + " already exists", e);
         } catch (DataAccessException e) {
-            throw new DatabaseOperationException("Failed to add order to the database", e);
+            throw new DatabaseOperationException("Failed to add Cart Item to the database", e);
         }
     }
 
     @Override
-    public boolean updateCartItem(CartItem cartItem) {
+    public boolean updateCartItem(CartItemDTO cartItemDTO) {
+        CartItem cartItem = CartItemConverter.toEntity(cartItemDTO);
         return cartItemDAO.updateCartItem(cartItem) > 0;
     }
 

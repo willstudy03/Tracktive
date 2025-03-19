@@ -1,5 +1,6 @@
 package com.tracktive.orderservice.repository;
 
+import com.tracktive.orderservice.model.DTO.CartItemDTO;
 import com.tracktive.orderservice.model.entity.CartItem;
 
 import java.util.List;
@@ -12,20 +13,20 @@ import java.util.Optional;
 */
 public interface CartItemRepository {
     // Select operations
-    List<CartItem> selectAllCartItems();
+    List<CartItemDTO> selectAllCartItems();
 
-    List<CartItem> selectAllByRetailerId(String id);
+    List<CartItemDTO> selectAllByRetailerId(String id);
 
-    Optional<CartItem> selectCartItemById(String id);
+    Optional<CartItemDTO> selectCartItemById(String id);
 
     // Lock operation
-    Optional<CartItem> lockCartItemById(String id);
+    Optional<CartItemDTO> lockCartItemById(String id);
 
     // Insert operation
-    boolean addCartItem(CartItem cartItem);
+    boolean addCartItem(CartItemDTO cartItemDTO);
 
     // Update operation
-    boolean updateCartItem(CartItem cartItem);
+    boolean updateCartItem(CartItemDTO cartItemDTO);
 
     // Delete operation
     boolean deleteCartItemById(String id);
