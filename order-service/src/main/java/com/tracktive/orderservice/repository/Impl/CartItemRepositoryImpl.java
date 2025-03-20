@@ -2,7 +2,6 @@ package com.tracktive.orderservice.repository.Impl;
 
 import com.tracktive.orderservice.exception.CartItemAlreadyExistException;
 import com.tracktive.orderservice.exception.DatabaseOperationException;
-import com.tracktive.orderservice.exception.OrderAlreadyExistException;
 import com.tracktive.orderservice.model.DAO.CartItemDAO;
 import com.tracktive.orderservice.model.DTO.CartItemDTO;
 import com.tracktive.orderservice.model.entity.CartItem;
