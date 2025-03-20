@@ -3,7 +3,6 @@ package com.tracktive.orderservice.service;
 import com.tracktive.orderservice.model.DTO.CartItemDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
 * Description: Cart Item Service

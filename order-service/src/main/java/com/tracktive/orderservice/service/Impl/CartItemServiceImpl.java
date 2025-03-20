@@ -38,7 +38,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     public List<CartItemDTO> selectAllByRetailerId(String id) {
-        validateId(id);
+        validateRetailerId(id);
         return cartItemRepository.selectAllByRetailerId(id);
     }
 
@@ -59,14 +59,14 @@ public class CartItemServiceImpl implements CartItemService {
         try {
             return cartItemRepository.lockCartItemById(id)
                     .orElseThrow(() -> {
-                        logger.warn("Failed to lock product, product not found with id: {}", id);
-                        return new CartItemNotFoundException("Product not found with id: " + id);
+                        logger.warn("Failed to lock cart item, cart item not found with id: {}", id);
+                        return new CartItemNotFoundException("Cart item not found with id: " + id);
                     });
         } catch (PersistenceException e) {
-            logger.error("Persistence error occurred during lock acquisition for product id: {}", id, e);
-            throw new LockAcquisitionException("Failed to acquire lock for product with id: " + id, e);
+            logger.error("Persistence error occurred during lock acquisition for cart item id: {}", id, e);
+            throw new LockAcquisitionException("Failed to acquire lock for cart item with id: " + id, e);
         } catch (Exception e) {
-            logger.error("Unexpected error during product lock for id: {}", id, e);
+            logger.error("Unexpected error during cart item lock for id: {}", id, e);
             throw new RuntimeException("Unexpected error during lock operation", e);
         }
     }
@@ -105,6 +105,12 @@ public class CartItemServiceImpl implements CartItemService {
             throw new CartItemNotFoundException("Failed to delete cart item with id: " + id);
         }
         logger.info("Cart Item [{}] deleted successfully", id);
+    }
+
+    private void validateRetailerId(String id) {
+        if (Objects.isNull(id) || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("Retailer ID cannot be null or empty");
+        }
     }
 
     private void validateId(String id) {

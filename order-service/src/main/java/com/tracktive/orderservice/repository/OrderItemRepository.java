@@ -1,7 +1,6 @@
 package com.tracktive.orderservice.repository;
 
 import com.tracktive.orderservice.model.DTO.OrderItemDTO;
-import com.tracktive.orderservice.model.entity.OrderItem;
 
 import java.util.List;
 import java.util.Optional;
