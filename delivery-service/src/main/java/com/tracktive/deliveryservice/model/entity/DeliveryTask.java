@@ -8,7 +8,7 @@ import com.tracktive.deliveryservice.model.Enum.DeliveryType;
 * @author William Theo
 * @date 21/3/2025
 */
-public class Delivery {
+public class DeliveryTask {
 
     private String id;
 
@@ -38,10 +38,10 @@ public class Delivery {
 
     private String createdAt;
 
-    public Delivery() {
+    public DeliveryTask() {
     }
 
-    public Delivery(String id, String orderId, String courierId, String recipientId, DeliveryType deliveryType, String pickUpAddress, String destinationAddress, Double currentLatitude, Double currentLongitude, String startedAt, String completedAt, DeliveryStatus deliveryStatus) {
+    public DeliveryTask(String id, String orderId, String courierId, String recipientId, DeliveryType deliveryType, String pickUpAddress, String destinationAddress, Double currentLatitude, Double currentLongitude, String startedAt, String completedAt, DeliveryStatus deliveryStatus) {
         this.id = id;
         this.orderId = orderId;
         this.courierId = courierId;

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tracktive.deliveryservice.model.DAO.DeliveryTaskDAO">
+
+    <!-- Select all delivery tasks -->
+    <select id="selectAllDeliveryTasks" resultType="DeliveryTask">
+        SELECT id, order_id, courier_id, recipient_id, delivery_type, pick_up_address,
+        destination_address, current_latitude, current_longitude, started_at,
+        completed_at, delivery_status, updated_at, created_at
+        FROM delivery_tasks;
+    </select>
+
+    <!-- Select all delivery tasks by courier ID -->
+    <select id="selectAllDeliveryTasksByCourierId" resultType="DeliveryTask">
+        SELECT id, order_id, courier_id, recipient_id, delivery_type, pick_up_address,
+        destination_address, current_latitude, current_longitude, started_at,
+        completed_at, delivery_status, updated_at, created_at
+        FROM delivery_tasks
+        WHERE courier_id = #{id};
+    </select>
+
+    <!-- Select a delivery task by order ID -->
+    <select id="selectDeliveryTaskByOrderId" resultType="DeliveryTask">
+        SELECT id, order_id, courier_id, recipient_id, delivery_type, pick_up_address,
+        destination_address, current_latitude, current_longitude, started_at,
+        completed_at, delivery_status, updated_at, created_at
+        FROM delivery_tasks
+        WHERE order_id = #{id};
+    </select>
+
+    <!-- Select a delivery task by ID -->
+    <select id="selectDeliveryTaskById" resultType="DeliveryTask">
+        SELECT id, order_id, courier_id, recipient_id, delivery_type, pick_up_address,
+        destination_address, current_latitude, current_longitude, started_at,
+        completed_at, delivery_status, updated_at, created_at
+        FROM delivery_tasks
+        WHERE id = #{id};
+    </select>
+
+    <!-- Lock a delivery task by ID (FOR UPDATE) -->
+    <select id="lockDeliveryTaskById" resultType="DeliveryTask">
+        SELECT id, order_id, courier_id, recipient_id, delivery_type, pick_up_address,
+        destination_address, current_latitude, current_longitude, started_at,
+        completed_at, delivery_status, updated_at, created_at
+        FROM delivery_tasks
+        WHERE id = #{id}
+        FOR UPDATE;
+    </select>
+
+    <!-- Insert a new delivery task -->
+    <insert id="addDeliveryTask">
+        INSERT INTO delivery_tasks (id, order_id, courier_id, recipient_id, delivery_type, pick_up_address,
+        destination_address, current_latitude, current_longitude, started_at,
+        completed_at, delivery_status)
+        VALUES (#{id}, #{orderId}, #{courierId}, #{recipientId}, #{deliveryType}, #{pickUpAddress},
+        #{destinationAddress}, #{currentLatitude}, #{currentLongitude}, #{startedAt},
+        #{completedAt}, #{deliveryStatus});
+    </insert>
+
+    <!-- Update an existing delivery task -->
+    <update id="updateDeliveryTask">
+        UPDATE delivery_tasks
+        SET order_id = #{orderId},
+        courier_id = #{courierId},
+        recipient_id = #{recipientId},
+        delivery_type = #{deliveryType},
+        pick_up_address = #{pickUpAddress},
+        destination_address = #{destinationAddress},
+        current_latitude = #{currentLatitude},
+        current_longitude = #{currentLongitude},
+        started_at = #{startedAt},
+        completed_at = #{completedAt},
+        delivery_status = #{deliveryStatus}
+        WHERE id = #{id};
+    </update>
+
+    <!-- Delete a delivery task by ID -->
+    <delete id="deleteDeliveryTaskById">
+        DELETE FROM delivery_tasks WHERE id = #{id};
+    </delete>
+</mapper>
