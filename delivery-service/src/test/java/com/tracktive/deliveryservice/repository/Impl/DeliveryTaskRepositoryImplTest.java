@@ -1,5 +1,6 @@
 package com.tracktive.deliveryservice.repository.Impl;
 
+import com.tracktive.deliveryservice.model.DTO.DeliveryTaskDTO;
 import com.tracktive.deliveryservice.model.Enum.DeliveryStatus;
 import com.tracktive.deliveryservice.model.Enum.DeliveryType;
 import com.tracktive.deliveryservice.model.entity.DeliveryTask;
@@ -30,7 +31,7 @@ class DeliveryTaskRepositoryImplTest {
 
     @Test
     void selectAllDeliveryTasks() {
-        List<DeliveryTask> deliveryTaskDTOs = deliveryTaskRepository.selectAllDeliveryTasks();
+        List<DeliveryTaskDTO> deliveryTaskDTOs = deliveryTaskRepository.selectAllDeliveryTasks();
         logger.info("Delivery Task:{}", deliveryTaskDTOs);
         assertEquals(deliveryTaskDTOs.isEmpty(),false);
     }
@@ -38,7 +39,7 @@ class DeliveryTaskRepositoryImplTest {
     @Test
     void selectAllDeliveryTasksByCourierId() {
         String id = "C12345";
-        List<DeliveryTask> deliveryTaskDTOs = deliveryTaskRepository.selectAllDeliveryTasksByCourierId(id);
+        List<DeliveryTaskDTO> deliveryTaskDTOs = deliveryTaskRepository.selectAllDeliveryTasksByCourierId(id);
         logger.info("Delivery Task:{}", deliveryTaskDTOs);
         assertEquals(deliveryTaskDTOs.get(0).getCourierId(), id);
     }
@@ -46,7 +47,7 @@ class DeliveryTaskRepositoryImplTest {
     @Test
     void selectDeliveryTaskByOrderId() {
         String id = "ORD987654";
-        Optional<DeliveryTask> deliveryTaskDTOs = deliveryTaskRepository.selectDeliveryTaskByOrderId(id);
+        Optional<DeliveryTaskDTO> deliveryTaskDTOs = deliveryTaskRepository.selectDeliveryTaskByOrderId(id);
         logger.info("Delivery Task:{}", deliveryTaskDTOs);
         assertEquals(deliveryTaskDTOs.get().getOrderId(), id);
     }
@@ -54,7 +55,7 @@ class DeliveryTaskRepositoryImplTest {
     @Test
     void selectDeliveryTaskById() {
         String id = "DT123456";
-        Optional<DeliveryTask> deliveryTaskDTOs = deliveryTaskRepository.selectDeliveryTaskById(id);
+        Optional<DeliveryTaskDTO> deliveryTaskDTOs = deliveryTaskRepository.selectDeliveryTaskById(id);
         logger.info("Delivery Task:{}", deliveryTaskDTOs);
         assertEquals(deliveryTaskDTOs.get().getId(), id);
     }
@@ -62,14 +63,14 @@ class DeliveryTaskRepositoryImplTest {
     @Test
     void lockDeliveryTaskById() {
         String id = "DT123456";
-        Optional<DeliveryTask> deliveryTaskDTOs = deliveryTaskRepository.lockDeliveryTaskById(id);
+        Optional<DeliveryTaskDTO> deliveryTaskDTOs = deliveryTaskRepository.lockDeliveryTaskById(id);
         logger.info("Delivery Task:{}", deliveryTaskDTOs);
         assertEquals(deliveryTaskDTOs.get().getId(), id);
     }
 
     @Test
     void addDeliveryTask() {
-        DeliveryTask deliveryTask = new DeliveryTask();
+        DeliveryTaskDTO deliveryTask = new DeliveryTaskDTO();
 
         deliveryTask.setId("DT123456");
         deliveryTask.setOrderId("ORD987654");
@@ -90,8 +91,8 @@ class DeliveryTaskRepositoryImplTest {
 
     @Test
     void updateDeliveryTask() {
-        Optional<DeliveryTask> deliveryTask = deliveryTaskRepository.selectDeliveryTaskById("DT123456");
-        DeliveryTask updateDeliveryTask = deliveryTask.get();
+        Optional<DeliveryTaskDTO> deliveryTask = deliveryTaskRepository.selectDeliveryTaskById("DT123456");
+        DeliveryTaskDTO updateDeliveryTask = deliveryTask.get();
         logger.info("Delivery Task Status:{}", updateDeliveryTask.getDeliveryStatus());
         updateDeliveryTask.setDeliveryStatus(DeliveryStatus.DELIVERED);
         assertTrue(deliveryTaskRepository.updateDeliveryTask(updateDeliveryTask));

@@ -1,5 +1,6 @@
 package com.tracktive.deliveryservice.repository;
 
+import com.tracktive.deliveryservice.model.DTO.DeliveryTaskDTO;
 import com.tracktive.deliveryservice.model.entity.DeliveryTask;
 
 import java.util.List;
@@ -12,22 +13,22 @@ import java.util.Optional;
 */
 public interface DeliveryTaskRepository {
     // Select operations
-    List<DeliveryTask> selectAllDeliveryTasks();
+    List<DeliveryTaskDTO> selectAllDeliveryTasks();
 
-    List<DeliveryTask> selectAllDeliveryTasksByCourierId(String id);
+    List<DeliveryTaskDTO> selectAllDeliveryTasksByCourierId(String id);
 
-    Optional<DeliveryTask> selectDeliveryTaskByOrderId(String id);
+    Optional<DeliveryTaskDTO> selectDeliveryTaskByOrderId(String id);
 
-    Optional<DeliveryTask> selectDeliveryTaskById(String id);
+    Optional<DeliveryTaskDTO> selectDeliveryTaskById(String id);
 
     // Lock operation
-    Optional<DeliveryTask> lockDeliveryTaskById(String id);
+    Optional<DeliveryTaskDTO> lockDeliveryTaskById(String id);
 
     // Insert operation
-    boolean addDeliveryTask(DeliveryTask deliveryTask);
+    boolean addDeliveryTask(DeliveryTaskDTO deliveryTaskDTO);
 
     // Update operation
-    boolean updateDeliveryTask(DeliveryTask deliveryTask);
+    boolean updateDeliveryTask(DeliveryTaskDTO deliveryTaskDTO);
 
     // Delete operation
     boolean deleteDeliveryTaskById(String id);
