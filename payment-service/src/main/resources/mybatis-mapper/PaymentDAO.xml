@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tracktive.paymentservice.model.DAO.PaymentDAO">
+
+    <!-- Select all payments -->
+    <select id="selectAllPayments" resultType="Payment">
+        SELECT id, order_id, user_id, currency, amount, total_paid_amount, payment_status, updated_at, created_at
+        FROM payments;
+    </select>
+
+    <!-- Select all payments by user ID -->
+    <select id="selectAllPaymentsByUserId" resultType="Payment">
+        SELECT id, order_id, user_id, currency, amount, total_paid_amount, payment_status, updated_at, created_at
+        FROM payments
+        WHERE user_id = #{id};
+    </select>
+
+    <!-- Select a payment by ID -->
+    <select id="selectPaymentById" resultType="Payment">
+        SELECT id, order_id, user_id, currency, amount, total_paid_amount, payment_status, updated_at, created_at
+        FROM payments
+        WHERE id = #{id};
+    </select>
+
+    <!-- Lock a payment by ID (FOR UPDATE) -->
+    <select id="lockPaymentById" resultType="Payment">
+        SELECT id, order_id, user_id, currency, amount, total_paid_amount, payment_status, updated_at, created_at
+        FROM payments
+        WHERE id = #{id}
+        FOR UPDATE;
+    </select>
+
+    <!-- Insert a new payment -->
+    <insert id="addPayment">
+        INSERT INTO payments (id, order_id, user_id, currency, amount, total_paid_amount, payment_status)
+        VALUES (#{id}, #{orderId}, #{userId}, #{currency}, #{amount}, #{totalPaidAmount}, #{paymentStatus});
+    </insert>
+
+    <!-- Update an existing payment -->
+    <update id="updatePayment">
+        UPDATE payments
+        SET order_id = #{orderId},
+        user_id = #{userId},
+        currency = #{currency},
+        amount = #{amount},
+        total_paid_amount = #{totalPaidAmount},
+        payment_status = #{paymentStatus}
+        WHERE id = #{id};
+    </update>
+
+    <!-- Delete a payment by ID -->
+    <delete id="deletePaymentById">
+        DELETE FROM payments WHERE id = #{id};
+    </delete>
+
+</mapper>
