@@ -4,27 +4,27 @@
 
     <!-- Select all payments -->
     <select id="selectAllPayments" resultType="Payment">
-        SELECT id, order_id, user_id, currency, amount, total_paid_amount, payment_status, updated_at, created_at
+        SELECT id, order_id, user_id, currency, amount, total_paid_amount, payment_method, payment_status, updated_at, created_at
         FROM payments;
     </select>
 
     <!-- Select all payments by user ID -->
     <select id="selectAllPaymentsByUserId" resultType="Payment">
-        SELECT id, order_id, user_id, currency, amount, total_paid_amount, payment_status, updated_at, created_at
+        SELECT id, order_id, user_id, currency, amount, total_paid_amount, payment_method, payment_status, updated_at, created_at
         FROM payments
         WHERE user_id = #{id};
     </select>
 
     <!-- Select a payment by ID -->
     <select id="selectPaymentById" resultType="Payment">
-        SELECT id, order_id, user_id, currency, amount, total_paid_amount, payment_status, updated_at, created_at
+        SELECT id, order_id, user_id, currency, amount, total_paid_amount, payment_method, payment_status, updated_at, created_at
         FROM payments
         WHERE id = #{id};
     </select>
 
     <!-- Lock a payment by ID (FOR UPDATE) -->
     <select id="lockPaymentById" resultType="Payment">
-        SELECT id, order_id, user_id, currency, amount, total_paid_amount, payment_status, updated_at, created_at
+        SELECT id, order_id, user_id, currency, amount, total_paid_amount, payment_method, payment_status, updated_at, created_at
         FROM payments
         WHERE id = #{id}
         FOR UPDATE;
@@ -32,8 +32,8 @@
 
     <!-- Insert a new payment -->
     <insert id="addPayment">
-        INSERT INTO payments (id, order_id, user_id, currency, amount, total_paid_amount, payment_status)
-        VALUES (#{id}, #{orderId}, #{userId}, #{currency}, #{amount}, #{totalPaidAmount}, #{paymentStatus});
+        INSERT INTO payments (id, order_id, user_id, currency, amount, total_paid_amount, payment_method, payment_status)
+        VALUES (#{id}, #{orderId}, #{userId}, #{currency}, #{amount}, #{totalPaidAmount}, #{paymentMethod}, #{paymentStatus});
     </insert>
 
     <!-- Update an existing payment -->
@@ -44,6 +44,7 @@
         currency = #{currency},
         amount = #{amount},
         total_paid_amount = #{totalPaidAmount},
+        payment_method = #{paymentMethod},
         payment_status = #{paymentStatus}
         WHERE id = #{id};
     </update>

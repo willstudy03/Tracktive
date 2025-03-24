@@ -1,5 +1,6 @@
 package com.tracktive.paymentservice.model.entity;
 
+import com.tracktive.paymentservice.model.Enum.PaymentMethod;
 import com.tracktive.paymentservice.model.Enum.PaymentStatus;
 
 import java.math.BigDecimal;
@@ -24,6 +25,8 @@ public class Payment {
 
     private BigDecimal totalPaidAmount;
 
+    private PaymentMethod paymentMethod;
+
     private PaymentStatus paymentStatus;
 
     private LocalDateTime updatedAt;
@@ -33,13 +36,14 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(String id, String orderId, String userId, String currency, BigDecimal amount, BigDecimal totalPaidAmount, PaymentStatus paymentStatus) {
+    public Payment(String id, String orderId, String userId, String currency, BigDecimal amount, BigDecimal totalPaidAmount, PaymentMethod paymentMethod, PaymentStatus paymentStatus) {
         this.id = id;
         this.orderId = orderId;
         this.userId = userId;
         this.currency = currency;
         this.amount = amount;
         this.totalPaidAmount = totalPaidAmount;
+        this.paymentMethod = paymentMethod;
         this.paymentStatus = paymentStatus;
     }
 
@@ -89,6 +93,14 @@ public class Payment {
 
     public void setTotalPaidAmount(BigDecimal totalPaidAmount) {
         this.totalPaidAmount = totalPaidAmount;
+    }
+
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
     }
 
     public PaymentStatus getPaymentStatus() {

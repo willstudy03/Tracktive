@@ -1,18 +1,16 @@
-package com.tracktive.paymentservice.model.DAO;
+package com.tracktive.paymentservice.repository;
 
 import com.tracktive.paymentservice.model.entity.Payment;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
-* Description: Payment DAO for mybatis mapping
+* Description: Payment Repository Interface
 * @author William Theo
 * @date 24/3/2025
 */
-@Mapper
-public interface PaymentDAO {
+public interface PaymentRepository {
     // Select operations
     List<Payment> selectAllPayments();
 
@@ -24,11 +22,11 @@ public interface PaymentDAO {
     Optional<Payment> lockPaymentById(String id);
 
     // Insert operation
-    int addPayment(Payment payment);
+    boolean addPayment(Payment payment);
 
     // Update operation
-    int updatePayment(Payment payment);
+    boolean updatePayment(Payment payment);
 
     // Delete operation
-    int deletePaymentById(String id);
+    boolean deletePaymentById(String id);
 }
