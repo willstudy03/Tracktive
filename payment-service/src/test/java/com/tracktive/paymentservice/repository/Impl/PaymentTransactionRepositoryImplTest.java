@@ -1,6 +1,7 @@
 package com.tracktive.paymentservice.repository.Impl;
 
 import com.tracktive.paymentservice.model.DTO.PaymentDTO;
+import com.tracktive.paymentservice.model.DTO.PaymentTransactionDTO;
 import com.tracktive.paymentservice.model.Enum.PaymentMethod;
 import com.tracktive.paymentservice.model.Enum.PaymentStatus;
 import com.tracktive.paymentservice.model.entity.PaymentTransaction;
@@ -29,7 +30,7 @@ class PaymentTransactionRepositoryImplTest {
 
     @Test
     void selectAllPaymentTransactions() {
-        List<PaymentTransaction> paymentTransactionDTOS = paymentTransactionRepository.selectAllPaymentTransactions();
+        List<PaymentTransactionDTO> paymentTransactionDTOS = paymentTransactionRepository.selectAllPaymentTransactions();
         logger.info("Payment Transaction:{}", paymentTransactionDTOS);
         assertEquals(paymentTransactionDTOS.isEmpty(),false);
     }
@@ -37,7 +38,7 @@ class PaymentTransactionRepositoryImplTest {
     @Test
     void selectAllPaymentTransactionsByPaymentId() {
         String paymentID = "17bddb5c-e0ec-4a21-81e2-415242cb86cf";
-        List<PaymentTransaction> paymentTransactionDTOS = paymentTransactionRepository.selectAllPaymentTransactionsByPaymentId(paymentID);
+        List<PaymentTransactionDTO> paymentTransactionDTOS = paymentTransactionRepository.selectAllPaymentTransactionsByPaymentId(paymentID);
         logger.info("Payment Transaction:{}", paymentTransactionDTOS);
         assertEquals(paymentTransactionDTOS.getFirst().getPaymentId(), paymentID);
     }
@@ -45,7 +46,7 @@ class PaymentTransactionRepositoryImplTest {
     @Test
     void selectPaymentTransactionById() {
         String transactionID = "d6da16c1-9924-4633-92bf-41c7529a81d9";
-        Optional<PaymentTransaction> paymentTransactionDTOS = paymentTransactionRepository.selectPaymentTransactionById(transactionID);
+        Optional<PaymentTransactionDTO> paymentTransactionDTOS = paymentTransactionRepository.selectPaymentTransactionById(transactionID);
         logger.info("Payment Transaction:{}", paymentTransactionDTOS);
         assertEquals(paymentTransactionDTOS.get().getId(), transactionID);
     }
@@ -53,32 +54,32 @@ class PaymentTransactionRepositoryImplTest {
     @Test
     void lockPaymentTransactionById() {
         String transactionID = "d6da16c1-9924-4633-92bf-41c7529a81d9";
-        Optional<PaymentTransaction> paymentTransactionDTOS = paymentTransactionRepository.lockPaymentTransactionById(transactionID);
+        Optional<PaymentTransactionDTO> paymentTransactionDTOS = paymentTransactionRepository.lockPaymentTransactionById(transactionID);
         logger.info("Payment Transaction:{}", paymentTransactionDTOS);
         assertEquals(paymentTransactionDTOS.get().getId(), transactionID);
     }
 
     @Test
     void addPaymentTransaction() {
-        PaymentTransaction paymentTransaction = new PaymentTransaction();
-        paymentTransaction.setId("d6da16c1-9924-4633-92bf-41c7529a81d9");  // Generate a unique ID
-        paymentTransaction.setPaymentId("17bddb5c-e0ec-4a21-81e2-415242cb86cf");  // Reference to Payment entity
-        paymentTransaction.setStripePaymentIntentId("pi_3Kx0yf2eZvKYlo2CxJdK2Tx1");
-        paymentTransaction.setStripeChargeId("ch_3Kx0yf2eZvKYlo2Cxnz9zMzA");
-        paymentTransaction.setStripePaymentStatus("succeeded");
-        paymentTransaction.setReceiptUrl("https://pay.stripe.com/receipts/xyz");
-        paymentTransaction.setAmount(new BigDecimal("199.99"));
-        paymentTransaction.setCurrency("USD");
-        paymentTransaction.setStripeCreatedAt(LocalDateTime.now().minusMinutes(5)); // Simulate a past Stripe transaction time
+        PaymentTransactionDTO paymentTransactionDTO = new PaymentTransactionDTO();
+        paymentTransactionDTO.setId("d6da16c1-9924-4633-92bf-41c7529a81d9");  // Generate a unique ID
+        paymentTransactionDTO.setPaymentId("17bddb5c-e0ec-4a21-81e2-415242cb86cf");  // Reference to Payment entity
+        paymentTransactionDTO.setStripePaymentIntentId("pi_3Kx0yf2eZvKYlo2CxJdK2Tx1");
+        paymentTransactionDTO.setStripeChargeId("ch_3Kx0yf2eZvKYlo2Cxnz9zMzA");
+        paymentTransactionDTO.setStripePaymentStatus("succeeded");
+        paymentTransactionDTO.setReceiptUrl("https://pay.stripe.com/receipts/xyz");
+        paymentTransactionDTO.setAmount(new BigDecimal("199.99"));
+        paymentTransactionDTO.setCurrency("USD");
+        paymentTransactionDTO.setStripeCreatedAt(LocalDateTime.now().minusMinutes(5)); // Simulate a past Stripe transaction time
 
-        boolean result = paymentTransactionRepository.addPaymentTransaction(paymentTransaction);
+        boolean result = paymentTransactionRepository.addPaymentTransaction(paymentTransactionDTO);
         assertTrue(result);
     }
 
     @Test
     void updatePaymentTransaction() {
-        Optional<PaymentTransaction> paymentTransactionDTO = paymentTransactionRepository.selectPaymentTransactionById("d6da16c1-9924-4633-92bf-41c7529a81d9");
-        PaymentTransaction updatePaymentTransaction = paymentTransactionDTO.get();
+        Optional<PaymentTransactionDTO> paymentTransactionDTO = paymentTransactionRepository.selectPaymentTransactionById("d6da16c1-9924-4633-92bf-41c7529a81d9");
+        PaymentTransactionDTO updatePaymentTransaction = paymentTransactionDTO.get();
         logger.info("Payment Transaction Currency:{}", updatePaymentTransaction.getCurrency());
         updatePaymentTransaction.setCurrency("MYR");
         assertTrue(paymentTransactionRepository.updatePaymentTransaction(updatePaymentTransaction));

@@ -3,8 +3,10 @@ package com.tracktive.paymentservice.repository.Impl;
 import com.tracktive.paymentservice.exception.DatabaseOperationException;
 import com.tracktive.paymentservice.exception.PaymentTransactionAlreadyExistException;
 import com.tracktive.paymentservice.model.DAO.PaymentTransactionDAO;
+import com.tracktive.paymentservice.model.DTO.PaymentTransactionDTO;
 import com.tracktive.paymentservice.model.entity.PaymentTransaction;
 import com.tracktive.paymentservice.repository.PaymentTransactionRepository;
+import com.tracktive.paymentservice.util.PaymentTransactionConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
@@ -29,38 +31,46 @@ public class PaymentTransactionRepositoryImpl implements PaymentTransactionRepos
     }
 
     @Override
-    public List<PaymentTransaction> selectAllPaymentTransactions() {
-        return paymentTransactionDAO.selectAllPaymentTransactions();
+    public List<PaymentTransactionDTO> selectAllPaymentTransactions() {
+        return paymentTransactionDAO.selectAllPaymentTransactions()
+                .stream()
+                .map(PaymentTransactionConverter::toDTO)
+                .toList();
     }
 
     @Override
-    public List<PaymentTransaction> selectAllPaymentTransactionsByPaymentId(String id) {
-        return paymentTransactionDAO.selectAllPaymentTransactionsByPaymentId(id);
+    public List<PaymentTransactionDTO> selectAllPaymentTransactionsByPaymentId(String id) {
+        return paymentTransactionDAO.selectAllPaymentTransactionsByPaymentId(id)
+                .stream()
+                .map(PaymentTransactionConverter::toDTO)
+                .toList();
     }
 
     @Override
-    public Optional<PaymentTransaction> selectPaymentTransactionById(String id) {
-        return paymentTransactionDAO.selectPaymentTransactionById(id);
+    public Optional<PaymentTransactionDTO> selectPaymentTransactionById(String id) {
+        return paymentTransactionDAO.selectPaymentTransactionById(id).map(PaymentTransactionConverter::toDTO);
     }
 
     @Override
-    public Optional<PaymentTransaction> lockPaymentTransactionById(String id) {
-        return paymentTransactionDAO.lockPaymentTransactionById(id);
+    public Optional<PaymentTransactionDTO> lockPaymentTransactionById(String id) {
+        return paymentTransactionDAO.lockPaymentTransactionById(id).map(PaymentTransactionConverter::toDTO);
     }
 
     @Override
-    public boolean addPaymentTransaction(PaymentTransaction paymentTransaction) {
+    public boolean addPaymentTransaction(PaymentTransactionDTO paymentTransactionDTO) {
         try {
+            PaymentTransaction paymentTransaction = PaymentTransactionConverter.toEntity(paymentTransactionDTO);
             return paymentTransactionDAO.addPaymentTransaction(paymentTransaction) > 0;
         } catch (DuplicateKeyException e) {
-            throw new PaymentTransactionAlreadyExistException("Payment Transaction with id " + paymentTransaction.getId() + " already exists", e);
+            throw new PaymentTransactionAlreadyExistException("Payment Transaction with id " + paymentTransactionDTO.getId() + " already exists", e);
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("Failed to add Payment Transaction to the database", e);
         }
     }
 
     @Override
-    public boolean updatePaymentTransaction(PaymentTransaction paymentTransaction) {
+    public boolean updatePaymentTransaction(PaymentTransactionDTO paymentTransactionDTO) {
+        PaymentTransaction paymentTransaction = PaymentTransactionConverter.toEntity(paymentTransactionDTO);
         return paymentTransactionDAO.updatePaymentTransaction(paymentTransaction) > 0;
     }
 

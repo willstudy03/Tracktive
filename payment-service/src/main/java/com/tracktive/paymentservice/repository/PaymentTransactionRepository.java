@@ -1,5 +1,6 @@
 package com.tracktive.paymentservice.repository;
 
+import com.tracktive.paymentservice.model.DTO.PaymentTransactionDTO;
 import com.tracktive.paymentservice.model.entity.PaymentTransaction;
 
 import java.util.List;
@@ -12,20 +13,20 @@ import java.util.Optional;
 */
 public interface PaymentTransactionRepository {
     // Select operations
-    List<PaymentTransaction> selectAllPaymentTransactions();
+    List<PaymentTransactionDTO> selectAllPaymentTransactions();
 
-    List<PaymentTransaction> selectAllPaymentTransactionsByPaymentId(String id);
+    List<PaymentTransactionDTO> selectAllPaymentTransactionsByPaymentId(String id);
 
-    Optional<PaymentTransaction> selectPaymentTransactionById(String id);
+    Optional<PaymentTransactionDTO> selectPaymentTransactionById(String id);
 
     // Lock operation
-    Optional<PaymentTransaction> lockPaymentTransactionById(String id);
+    Optional<PaymentTransactionDTO> lockPaymentTransactionById(String id);
 
     // Insert operation
-    boolean addPaymentTransaction(PaymentTransaction paymentTransaction);
+    boolean addPaymentTransaction(PaymentTransactionDTO paymentTransactionDTO);
 
     // Update operation
-    boolean updatePaymentTransaction(PaymentTransaction paymentTransaction);
+    boolean updatePaymentTransaction(PaymentTransactionDTO paymentTransactionDTO);
 
     // Delete operation
     boolean deletePaymentTransactionById(String id);
