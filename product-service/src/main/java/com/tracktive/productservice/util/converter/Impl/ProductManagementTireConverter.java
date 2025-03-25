@@ -37,6 +37,7 @@ public class ProductManagementTireConverter implements ProductManagementConverte
             productManagementTireDTO.setWidth(tireDTO.getWidth());
             productManagementTireDTO.setAspectRatio(tireDTO.getAspectRatio());
             productManagementTireDTO.setRimDiameter(tireDTO.getRimDiameter());
+            productManagementTireDTO.setConstructionType(tireDTO.getConstructionType());
             productManagementTireDTO.setLoadIndex(tireDTO.getLoadIndex());
             productManagementTireDTO.setSpeedRating(tireDTO.getSpeedRating());
             productManagementTireDTO.setTireSeason(tireDTO.getTireSeason());

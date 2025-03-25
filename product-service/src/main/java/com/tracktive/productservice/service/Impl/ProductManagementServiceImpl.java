@@ -2,7 +2,6 @@ package com.tracktive.productservice.service.Impl;
 
 import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.DTO.ProductManagementDTO;
-import com.tracktive.productservice.model.entity.Product;
 import com.tracktive.productservice.service.ProductManagementService;
 import com.tracktive.productservice.service.ProductService;
 import com.tracktive.productservice.util.factory.ProductManagementConverterFactory;
