@@ -7,7 +7,7 @@ import com.tracktive.productservice.model.DAO.TireDAO;
 import com.tracktive.productservice.model.DTO.TireDTO;
 import com.tracktive.productservice.model.entity.Tire;
 import com.tracktive.productservice.repository.TireRepository;
-import com.tracktive.productservice.util.TireConverter;
+import com.tracktive.productservice.util.converter.Impl.TireConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;

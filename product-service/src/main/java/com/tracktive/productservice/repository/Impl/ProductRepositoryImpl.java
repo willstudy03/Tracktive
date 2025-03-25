@@ -6,7 +6,7 @@ import com.tracktive.productservice.model.DAO.ProductDAO;
 import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.entity.Product;
 import com.tracktive.productservice.repository.ProductRepository;
-import com.tracktive.productservice.util.ProductConverter;
+import com.tracktive.productservice.util.converter.Impl.ProductConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;

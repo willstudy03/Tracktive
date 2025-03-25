@@ -2,7 +2,7 @@ package com.tracktive.productservice.controller;
 
 import com.tracktive.productservice.model.VO.ProductVO;
 import com.tracktive.productservice.service.ProductService;
-import com.tracktive.productservice.util.ProductConverter;
+import com.tracktive.productservice.util.converter.Impl.ProductConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

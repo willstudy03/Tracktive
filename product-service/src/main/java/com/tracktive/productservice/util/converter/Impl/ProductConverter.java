@@ -1,4 +1,4 @@
-package com.tracktive.productservice.util;
+package com.tracktive.productservice.util.converter.Impl;
 
 import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.VO.ProductVO;

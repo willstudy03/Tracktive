@@ -4,12 +4,11 @@ import com.tracktive.productservice.model.DAO.RetailerInventoryDAO;
 import com.tracktive.productservice.model.DTO.RetailerInventoryDTO;
 import com.tracktive.productservice.model.entity.RetailerInventory;
 import com.tracktive.productservice.repository.RetailerInventoryRepository;
-import com.tracktive.productservice.util.RetailerInventoryConverter;
+import com.tracktive.productservice.util.converter.Impl.RetailerInventoryConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
