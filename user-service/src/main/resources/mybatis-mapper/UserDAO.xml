@@ -4,20 +4,20 @@
 
     <!-- Select a user by id -->
     <select id="selectUserById" resultType="User">
-        SELECT id, name, email, phone_number, user_role, created_at
+        SELECT id, name, email, phone_number, user_role, updated_at, created_at
         FROM users
         WHERE id = #{id};
     </select>
 
     <!-- Select all users -->
     <select id="selectAllUsers" resultType="User">
-        SELECT id, name, email, phone_number, user_role, created_at
+        SELECT id, name, email, phone_number, user_role, updated_at, created_at
         FROM users;
     </select>
 
     <!-- Lock a user -->
     <select id="lockUserById" resultType="User">
-        SELECT id, name, email, phone_number, user_role, created_at
+        SELECT id, name, email, phone_number, user_role, updated_at, created_at
         FROM users
         WHERE id = #{id}
         FOR UPDATE;

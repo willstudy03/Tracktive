@@ -28,7 +28,7 @@ class RetailerRepositoryImplTest {
     @Test
     void addRetailer() {
         RetailerDTO retailerDTO = new RetailerDTO();
-        retailerDTO.setRetailerId("23468c87-1674-4448-89e9-1fe00286ab4d");
+        retailerDTO.setRetailerId("99998c87-1674-4448-89e9-1fe00286ab4d");
         retailerDTO.setSsmRegistrationNumber("234234234");
         retailerDTO.setBusinessName("Performance Tire");
         retailerDTO.setBusinessAddress("TAMAN MERDEKA");
@@ -48,7 +48,7 @@ class RetailerRepositoryImplTest {
 
     @Test
     void selectRetailerById() {
-        String id = "23468c87-1674-4448-89e9-1fe00286ab4d";
+        String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
         Optional<RetailerDTO> retailerDTO = retailerRepository.selectRetailerById(id);
         RetailerDTO result = retailerDTO.get();
         assertEquals(result.getRetailerId(), id);
@@ -56,7 +56,7 @@ class RetailerRepositoryImplTest {
 
     @Test
     void lockRetailerById() {
-        String id = "23468c87-1674-4448-89e9-1fe00286ab4d";
+        String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
         Optional<RetailerDTO> retailerDTO = retailerRepository.lockRetailerById(id);
         logger.info("Acquired lock for user: " + retailerDTO);
     }
@@ -65,7 +65,7 @@ class RetailerRepositoryImplTest {
 
     @Test
     void updateRetailer() {
-        Optional<RetailerDTO> retailerDTO = retailerRepository.selectRetailerById("23468c87-1674-4448-89e9-1fe00286ab4d");
+        Optional<RetailerDTO> retailerDTO = retailerRepository.selectRetailerById("99998c87-1674-4448-89e9-1fe00286ab4d");
         RetailerDTO updateRetailerDTO = retailerDTO.get();
         logger.info("Business Name:{}", updateRetailerDTO.getBusinessName());
         updateRetailerDTO.setBusinessName("Peformance Tiree");
@@ -74,7 +74,7 @@ class RetailerRepositoryImplTest {
 
     @Test
     void deleteById() {
-        String id = "23468c87-1674-4448-89e9-1fe00286ab4d";
+        String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
         boolean deleteResult = retailerRepository.deleteById(id);
         Optional<RetailerDTO> retailerDTO = retailerRepository.selectRetailerById(id);
         assertEquals(retailerDTO, Optional.empty());

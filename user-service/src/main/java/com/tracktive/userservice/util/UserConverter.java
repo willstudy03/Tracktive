@@ -26,6 +26,8 @@ public class UserConverter {
         userDTO.setEmail(user.getEmail());
         userDTO.setPhoneNumber(user.getPhoneNumber());
         userDTO.setUserRole(user.getUserRole());
+        userDTO.setUpdatedAt(user.getUpdatedAt());
+        userDTO.setCreatedAt(user.getCreatedAt());
         return userDTO;
     }
 
@@ -39,6 +41,8 @@ public class UserConverter {
         user.setEmail(userDTO.getEmail());
         user.setPhoneNumber(userDTO.getPhoneNumber());
         user.setUserRole(userDTO.getUserRole());
+        user.setUpdatedAt(userDTO.getUpdatedAt());
+        user.setCreatedAt(userDTO.getCreatedAt());
         return user;
     }
 }

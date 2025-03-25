@@ -35,7 +35,7 @@ class SupplierRepositoryImplTest {
     @Test
     void addSupplier() {
         SupplierDTO supplierDTO = new SupplierDTO();
-        supplierDTO.setSupplierId("7394fj29-1674-4448-89e9-1fe00286ab4d");
+        supplierDTO.setSupplierId("99998c87-1674-4448-89e9-1fe00286ab4d");
         supplierDTO.setSsmRegistrationNumber("38247923843");
         supplierDTO.setBusinessName("Best Tire");
         supplierDTO.setBusinessAddress("Ayer Keroh");
@@ -54,7 +54,7 @@ class SupplierRepositoryImplTest {
 
     @Test
     void selectSupplierById() {
-        String id = "7394fj29-1674-4448-89e9-1fe00286ab4d";
+        String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
         Optional<SupplierDTO> supplierDTO = supplierRepository.selectSupplierById(id);
         SupplierDTO result = supplierDTO.get();
         assertEquals(result.getSupplierId(), id);
@@ -62,14 +62,14 @@ class SupplierRepositoryImplTest {
 
     @Test
     void lockSupplierById() {
-        String id = "7394fj29-1674-4448-89e9-1fe00286ab4d";
+        String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
         Optional<SupplierDTO> supplierDTO = supplierRepository.lockSupplierById(id);
         logger.info("Acquired lock for user: " + supplierDTO.get().getBusinessName());
     }
 
     @Test
     void updateSupplier() {
-        String id = "7394fj29-1674-4448-89e9-1fe00286ab4d";
+        String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
         Optional<SupplierDTO> supplierDTO = supplierRepository.selectSupplierById(id);
         SupplierDTO updateSupplierDTO = supplierDTO.get();
         logger.info("Business Name:{}", updateSupplierDTO.getBusinessName());
@@ -79,7 +79,7 @@ class SupplierRepositoryImplTest {
 
     @Test
     void deleteById() {
-        String id = "7394fj29-1674-4448-89e9-1fe00286ab4d";
+        String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
         boolean deleteResult = supplierRepository.deleteById(id);
         assertTrue(deleteResult);
     }

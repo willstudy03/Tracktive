@@ -2,6 +2,8 @@ package com.tracktive.userservice.model.entity;
 
 import com.tracktive.userservice.model.Enum.UserRole;
 
+import java.time.LocalDateTime;
+
 /**
 * Description: User POJO
 * @author William Theo
@@ -19,7 +21,9 @@ public class User {
 
     private UserRole userRole;
 
-    private String createdAt;
+    private LocalDateTime updatedAt;
+
+    private LocalDateTime createdAt;
 
     public User() {}
 
@@ -71,11 +75,19 @@ public class User {
         this.userRole = userRole;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }

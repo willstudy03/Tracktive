@@ -2,6 +2,8 @@ package com.tracktive.userservice.model.DTO;
 
 import com.tracktive.userservice.model.Enum.UserRole;
 
+import java.time.LocalDateTime;
+
 /**
 * Description: User DTO
 * @author William Theo
@@ -17,6 +19,10 @@ public class UserDTO {
     private String phoneNumber;
 
     private UserRole userRole;
+
+    private LocalDateTime updatedAt;
+
+    private LocalDateTime createdAt;
 
     public UserDTO() {
     }
@@ -69,4 +75,19 @@ public class UserDTO {
         this.userRole = userRole;
     }
 
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }

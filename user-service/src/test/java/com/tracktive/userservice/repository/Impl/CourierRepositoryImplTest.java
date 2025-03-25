@@ -25,7 +25,7 @@ class CourierRepositoryImplTest {
     @Test
     void addCourier() {
         CourierDTO courierDTO = new CourierDTO();
-        courierDTO.setCourierId("33130e6b-2296-4deb-82d5-ab04a4fbf30e");
+        courierDTO.setCourierId("99998c87-1674-4448-89e9-1fe00286ab4d");
         courierDTO.setDrivingLicenseNumber("2342342342");
         courierDTO.setPlateNumber("SWG6868");
         courierDTO.setPreferredDeliveryZone("MELAKA");
@@ -46,7 +46,7 @@ class CourierRepositoryImplTest {
 
     @Test
     void selectCourierById() {
-        String id = "33130e6b-2296-4deb-82d5-ab04a4fbf30e";
+        String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
         Optional<CourierDTO> courierDTO = courierRepository.selectCourierById(id);
         CourierDTO result = courierDTO.get();
         assertEquals(id, result.getCourierId());
@@ -54,14 +54,14 @@ class CourierRepositoryImplTest {
 
     @Test
     void lockCourierById() {
-        String id = "33130e6b-2296-4deb-82d5-ab04a4fbf30e";
+        String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
         Optional<CourierDTO> courierDTO = courierRepository.selectCourierById(id);
         logger.info("Acquired lock for user: " + courierDTO.get().getCourierId());
     }
 
     @Test
     void updateCourier() {
-        Optional<CourierDTO> courierDTO = courierRepository.selectCourierById("33130e6b-2296-4deb-82d5-ab04a4fbf30e");
+        Optional<CourierDTO> courierDTO = courierRepository.selectCourierById("99998c87-1674-4448-89e9-1fe00286ab4d");
         CourierDTO updateCourierDTO = courierDTO.get();
         logger.info("User Name:{}", updateCourierDTO.getBankName());
         updateCourierDTO.setBankName("PUBLIC BANK");
@@ -70,7 +70,7 @@ class CourierRepositoryImplTest {
 
     @Test
     void deleteById() {
-        String id = "33130e6b-2296-4deb-82d5-ab04a4fbf30e";
+        String id = "99998c87-1674-4448-89e9-1fe00286ab4d";
         boolean deleteResult = courierRepository.deleteById(id);
         Optional<CourierDTO> courierDTO = courierRepository.selectCourierById(id);
         assertEquals(courierDTO, Optional.empty());

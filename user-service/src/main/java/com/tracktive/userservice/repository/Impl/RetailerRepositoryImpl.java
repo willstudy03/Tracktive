@@ -1,6 +1,7 @@
 package com.tracktive.userservice.repository.Impl;
 
 import com.tracktive.userservice.exception.DatabaseOperationException;
+import com.tracktive.userservice.exception.ForeignKeyConstraintException;
 import com.tracktive.userservice.exception.UserAlreadyExistsException;
 import com.tracktive.userservice.model.DAO.RetailerDAO;
 import com.tracktive.userservice.model.DTO.RetailerDTO;
@@ -11,9 +12,11 @@ import com.tracktive.userservice.util.RetailerConverter;
 import com.tracktive.userservice.util.SupplierConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -61,6 +64,12 @@ public class RetailerRepositoryImpl implements RetailerRepository {
             return retailerDAO.addRetailer(retailer) > 0;
         } catch (DuplicateKeyException e) {
             throw new UserAlreadyExistsException("Retailer with id " + retailerDTO.getRetailerId() + " already exists", e);
+        } catch (DataIntegrityViolationException e) {
+            Throwable rootCause = e.getRootCause(); // Get the root cause
+            if (rootCause instanceof SQLIntegrityConstraintViolationException) {
+                throw new ForeignKeyConstraintException("User with ID " + retailerDTO.getRetailerId() + " does not exist.", e);
+            }
+            throw new DatabaseOperationException("Database integrity constraint violation occurred.", e);
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("Failed to add retailer to the database", e);
         }
