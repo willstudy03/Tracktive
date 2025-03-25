@@ -4,6 +4,7 @@ import com.tracktive.productservice.model.Enum.ProductCategory;
 import com.tracktive.productservice.model.Enum.ProductStatus;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
 * Description: Product POJO
@@ -26,9 +27,9 @@ public class Product {
 
     private ProductStatus productStatus;
 
-    private String updatedAt;
+    private LocalDateTime updatedAt;
 
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     public Product() {
     }
@@ -99,19 +100,19 @@ public class Product {
         this.productStatus = productStatus;
     }
 
-    public String getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }
