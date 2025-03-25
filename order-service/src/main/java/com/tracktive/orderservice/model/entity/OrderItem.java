@@ -2,6 +2,7 @@ package com.tracktive.orderservice.model.entity;
 
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
 * Description: OrderItem POJO
@@ -28,9 +29,9 @@ public class OrderItem {
 
     private BigDecimal subtotal;
 
-    private String updatedAt;
+    private LocalDateTime updatedAt;
 
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     public OrderItem() {
     }
@@ -119,19 +120,19 @@ public class OrderItem {
         this.subtotal = subtotal;
     }
 
-    public String getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }

@@ -3,6 +3,7 @@ package com.tracktive.orderservice.model.entity;
 import com.tracktive.orderservice.model.Enum.OrderStatus;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
 * Description: Order POJO
@@ -27,9 +28,9 @@ public class Order {
 
     private OrderStatus orderStatus;
 
-    private String updatedAt;
+    private LocalDateTime updatedAt;
 
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     public Order() {
     }
@@ -109,19 +110,19 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
-    public String getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }
