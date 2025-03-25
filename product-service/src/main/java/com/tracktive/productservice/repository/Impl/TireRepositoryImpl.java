@@ -1,6 +1,7 @@
 package com.tracktive.productservice.repository.Impl;
 
 import com.tracktive.productservice.exception.DatabaseOperationException;
+import com.tracktive.productservice.exception.ForeignKeyConstraintException;
 import com.tracktive.productservice.exception.ProductAlreadyExistsException;
 import com.tracktive.productservice.model.DAO.TireDAO;
 import com.tracktive.productservice.model.DTO.TireDTO;
@@ -9,9 +10,11 @@ import com.tracktive.productservice.repository.TireRepository;
 import com.tracktive.productservice.util.TireConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -68,6 +71,12 @@ public class TireRepositoryImpl implements TireRepository {
             return tireDAO.addTire(tire) > 0;
         } catch (DuplicateKeyException e) {
             throw new ProductAlreadyExistsException("Tire with id " + tireDTO.getId() + "or same sku " + tireDTO.getTireSku() + " already exists", e);
+        } catch (DataIntegrityViolationException e) {
+            Throwable rootCause = e.getRootCause(); // Get the root cause
+            if (rootCause instanceof SQLIntegrityConstraintViolationException) {
+                throw new ForeignKeyConstraintException("Product with ID " + tireDTO.getId() + " does not exist.", e);
+            }
+            throw new DatabaseOperationException("Database integrity constraint violation occurred.", e);
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("Failed to add tire to the database", e);
         }
@@ -79,7 +88,7 @@ public class TireRepositoryImpl implements TireRepository {
             Tire tire = TireConverter.toEntity(tireDTO);
             return tireDAO.updateTire(tire) > 0;
         } catch (DuplicateKeyException e) {
-            throw new ProductAlreadyExistsException("A tire with the same SKU or brand name already exists", e);
+            throw new ProductAlreadyExistsException("A tire with the same SKU already exists", e);
         } catch (DataAccessException e) {
             throw new DatabaseOperationException("Failed to update tire in the database", e);
         }
