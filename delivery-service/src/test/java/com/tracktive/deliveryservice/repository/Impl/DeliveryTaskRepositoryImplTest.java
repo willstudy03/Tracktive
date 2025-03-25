@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,7 +82,7 @@ class DeliveryTaskRepositoryImplTest {
         deliveryTask.setDestinationAddress("456, Jalan Ampang, Kuala Lumpur, Malaysia");
         deliveryTask.setCurrentLatitude(3.1390);
         deliveryTask.setCurrentLongitude(101.6869);
-        deliveryTask.setStartedAt("2025-03-21 10:00:00");
+        deliveryTask.setStartedAt(LocalDateTime.now());
         deliveryTask.setCompletedAt(null); // Not completed yet
         deliveryTask.setDeliveryStatus(DeliveryStatus.IN_TRANSIT); // Example enum value
 

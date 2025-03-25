@@ -2,6 +2,9 @@ package com.tracktive.deliveryservice.model.entity;
 
 import com.tracktive.deliveryservice.model.Enum.DeliveryStatus;
 import com.tracktive.deliveryservice.model.Enum.DeliveryType;
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDateTime;
 
 /**
 * Description: Delivery POJO
@@ -28,20 +31,20 @@ public class DeliveryTask {
 
     private Double currentLongitude;
 
-    private String startedAt;
+    private LocalDateTime startedAt;
 
-    private String completedAt;
+    private LocalDateTime completedAt;
 
     private DeliveryStatus deliveryStatus;
 
-    private String updatedAt;
+    private LocalDateTime updatedAt;
 
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     public DeliveryTask() {
     }
 
-    public DeliveryTask(String id, String orderId, String courierId, String recipientId, DeliveryType deliveryType, String pickUpAddress, String destinationAddress, Double currentLatitude, Double currentLongitude, String startedAt, String completedAt, DeliveryStatus deliveryStatus) {
+    public DeliveryTask(String id, String orderId, String courierId, String recipientId, DeliveryType deliveryType, String pickUpAddress, String destinationAddress, Double currentLatitude, Double currentLongitude, LocalDateTime startedAt, LocalDateTime completedAt, DeliveryStatus deliveryStatus) {
         this.id = id;
         this.orderId = orderId;
         this.courierId = courierId;
@@ -128,19 +131,19 @@ public class DeliveryTask {
         this.currentLongitude = currentLongitude;
     }
 
-    public String getStartedAt() {
+    public LocalDateTime getStartedAt() {
         return startedAt;
     }
 
-    public void setStartedAt(String startedAt) {
+    public void setStartedAt(LocalDateTime startedAt) {
         this.startedAt = startedAt;
     }
 
-    public String getCompletedAt() {
+    public LocalDateTime getCompletedAt() {
         return completedAt;
     }
 
-    public void setCompletedAt(String completedAt) {
+    public void setCompletedAt(LocalDateTime completedAt) {
         this.completedAt = completedAt;
     }
 
@@ -152,19 +155,19 @@ public class DeliveryTask {
         this.deliveryStatus = deliveryStatus;
     }
 
-    public String getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
-    public String getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }
