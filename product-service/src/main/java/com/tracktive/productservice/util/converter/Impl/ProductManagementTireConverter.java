@@ -1,6 +1,7 @@
 package com.tracktive.productservice.util.converter.Impl;
 
 import com.tracktive.productservice.model.DTO.ProductDTO;
+import com.tracktive.productservice.model.DTO.ProductManagementDTO;
 import com.tracktive.productservice.model.DTO.ProductManagementTireDTO;
 import com.tracktive.productservice.model.DTO.TireDTO;
 import com.tracktive.productservice.service.TireService;
@@ -27,7 +28,7 @@ public class ProductManagementTireConverter implements ProductManagementConverte
     }
 
     @Override
-    public ProductManagementTireDTO convert(ProductDTO productDTO) {
+    public ProductManagementTireDTO read(ProductDTO productDTO) {
         ProductManagementTireDTO productManagementTireDTO = new ProductManagementTireDTO();
         BeanUtils.copyProperties(productDTO, productManagementTireDTO);
 
@@ -45,6 +46,33 @@ public class ProductManagementTireConverter implements ProductManagementConverte
             productManagementTireDTO.setTireType(tireDTO.getTireType());
             productManagementTireDTO.setRunFlat(tireDTO.getRunFlat());
         }
+        return productManagementTireDTO;
+    }
+
+    @Override
+    public ProductManagementTireDTO create(ProductManagementDTO productManagementDTO) {
+        // Convert to ProductManagementTireDTO to access tire-specific properties
+        if (!(productManagementDTO instanceof ProductManagementTireDTO)) {
+            throw new IllegalArgumentException("Invalid DTO type for tire product creation.");
+        }
+
+        ProductManagementTireDTO productManagementTireDTO = (ProductManagementTireDTO) productManagementDTO;
+
+        TireDTO tireDTO = new TireDTO();
+        tireDTO.setId(productManagementTireDTO.getProductId());
+        tireDTO.setTireSku(productManagementTireDTO.getTireSku());
+        tireDTO.setWidth(productManagementTireDTO.getWidth());
+        tireDTO.setAspectRatio(productManagementTireDTO.getAspectRatio());
+        tireDTO.setRimDiameter(productManagementTireDTO.getRimDiameter());
+        tireDTO.setConstructionType(productManagementTireDTO.getConstructionType());
+        tireDTO.setLoadIndex(productManagementTireDTO.getLoadIndex());
+        tireDTO.setSpeedRating(productManagementTireDTO.getSpeedRating());
+        tireDTO.setTireSeason(productManagementTireDTO.getTireSeason());
+        tireDTO.setTreadPattern(productManagementTireDTO.getTreadPattern());
+        tireDTO.setTireType(productManagementTireDTO.getTireType());
+        tireDTO.setRunFlat(productManagementTireDTO.getRunFlat());
+
+        tireService.addTire(tireDTO);
         return productManagementTireDTO;
     }
 }

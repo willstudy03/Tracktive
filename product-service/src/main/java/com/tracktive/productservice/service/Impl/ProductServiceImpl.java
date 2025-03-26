@@ -3,18 +3,23 @@ package com.tracktive.productservice.service.Impl;
 import com.tracktive.productservice.exception.LockAcquisitionException;
 import com.tracktive.productservice.exception.ProductNotFoundException;
 import com.tracktive.productservice.model.DTO.ProductDTO;
+import com.tracktive.productservice.model.DTO.ProductRequestDTO;
 import com.tracktive.productservice.repository.ProductRepository;
 import com.tracktive.productservice.service.ProductService;
+import com.tracktive.productservice.util.converter.Impl.ProductConverter;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
 * Description: Product Service Implementation
@@ -25,11 +30,13 @@ import java.util.Objects;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final Validator validator;
     private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     @Autowired
-    public ProductServiceImpl(ProductRepository productRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, Validator validator) {
         this.productRepository = productRepository;
+        this.validator = validator;
     }
 
     @Override
@@ -68,26 +75,40 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void addProduct(ProductDTO productDTO) {
-        validateProductDTO(productDTO);
+    public ProductDTO addProduct(ProductRequestDTO productRequestDTO) {
+
+        validateProductRequest(productRequestDTO);
+
+        ProductDTO productDTO = ProductConverter.toDTO(productRequestDTO);
+
         boolean result = productRepository.addProduct(productDTO);
         if (!result) {
             logger.error("Failed to add product with id: {}", productDTO.getProductId());
             throw new RuntimeException("Failed to add product with id: " + productDTO.getProductId());
         }
         logger.info("Product [{}] added successfully", productDTO.getProductId());
+
+        // Fetch the inserted product details (if needed)
+        return productRepository.selectProductById(productDTO.getProductId())
+                .orElseThrow(() -> new ProductNotFoundException("Failed to fetch product after insertion"));
     }
 
     @Override
     @Transactional
-    public void updateProduct(ProductDTO productDTO) {
+    public ProductDTO updateProduct(ProductDTO productDTO) {
+
         validateProductDTO(productDTO);
+
         boolean result = productRepository.updateProduct(productDTO);
+
         if (!result) {
             logger.warn("Product not found for update with id: {}", productDTO.getProductId());
             throw new ProductNotFoundException("Product not found with id: " + productDTO.getProductId());
         }
         logger.info("Product [{}] updated successfully", productDTO.getProductId());
+
+        return productRepository.selectProductById(productDTO.getProductId())
+                .orElseThrow(() -> new ProductNotFoundException("Failed to fetch product after update"));
     }
 
     @Override
@@ -108,12 +129,17 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    private void validateProductDTO(ProductDTO productDTO) {
-
-        if (Objects.isNull(productDTO)) {
-            throw new IllegalArgumentException("ProductDTO cannot be null");
+    private void validateProductRequest(ProductRequestDTO productRequestDTO) {
+        Set<ConstraintViolation<ProductRequestDTO>> violations = validator.validate(productRequestDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for ProductRequestDTO", violations);
         }
+    }
 
-        //@TODO: PARAMETERS VALIDATION
+    private void validateProductDTO(ProductDTO productDTO) {
+        Set<ConstraintViolation<ProductDTO>> violations = validator.validate(productDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for ProductDTO", violations);
+        }
     }
 }

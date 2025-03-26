@@ -9,5 +9,6 @@ import com.tracktive.productservice.model.DTO.ProductManagementDTO;
 * @date 25/3/2025
 */
 public interface ProductManagementConverterFactory {
-    ProductManagementDTO convertProduct(ProductDTO productDTO);
+    ProductManagementDTO readProduct(ProductDTO productDTO);
+    ProductManagementDTO createProduct(ProductManagementDTO productManagementDTO);
 }

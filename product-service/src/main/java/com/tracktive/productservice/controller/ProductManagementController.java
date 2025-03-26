@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
 * Description: Product Management API Entry Point
 * @author William Theo
@@ -23,6 +25,12 @@ public class ProductManagementController {
     @Autowired
     public ProductManagementController(ProductManagementService productManagementService) {
         this.productManagementService = productManagementService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProductManagementDTO>> getProducts(){
+        List<ProductManagementDTO> products = productManagementService.selectAllProducts();
+        return ResponseEntity.ok().body(products);
     }
 
     @GetMapping("/{productId}")

@@ -1,6 +1,7 @@
 package com.tracktive.productservice.service;
 
 import com.tracktive.productservice.model.DTO.ProductDTO;
+import com.tracktive.productservice.model.DTO.ProductRequestDTO;
 
 import java.util.List;
 
@@ -17,9 +18,9 @@ public interface ProductService {
     // Lock a product by ID
     ProductDTO lockProductById(String id);
     // Insert a new product
-    void addProduct(ProductDTO productDTO);
+    ProductDTO addProduct(ProductRequestDTO productRequestDTO);
     // Update product info
-    void updateProduct(ProductDTO productDTO);
+    ProductDTO updateProduct(ProductDTO productDTO);
     // Delete product by ID
     void deleteById(String id);
 }

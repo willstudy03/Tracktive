@@ -4,6 +4,7 @@ import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.DTO.ProductManagementDTO;
 import com.tracktive.productservice.service.ProductManagementService;
 import com.tracktive.productservice.service.ProductService;
+import com.tracktive.productservice.util.converter.Impl.ProductConverter;
 import com.tracktive.productservice.util.factory.ProductManagementConverterFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,13 +35,16 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 
     @Override
     public List<ProductManagementDTO> selectAllProducts() {
-        return List.of();
+        return productService.selectAllProducts()
+                .stream()
+                .map(ProductConverter::toProductManagementDTO)
+                .toList();
     }
 
     @Override
     public ProductManagementDTO selectProductById(String productId) {
         ProductDTO product = productService.selectProductById(productId);
-        return productManagementConverterFactory.convertProduct(product);
+        return productManagementConverterFactory.readProduct(product);
     }
 
     @Override

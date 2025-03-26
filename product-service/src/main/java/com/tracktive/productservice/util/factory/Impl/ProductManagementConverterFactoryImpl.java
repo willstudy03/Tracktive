@@ -3,7 +3,6 @@ package com.tracktive.productservice.util.factory.Impl;
 import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.DTO.ProductManagementDTO;
 import com.tracktive.productservice.model.Enum.ProductCategory;
-import com.tracktive.productservice.model.entity.Product;
 import com.tracktive.productservice.util.converter.Impl.ProductManagementTireConverter;
 import com.tracktive.productservice.util.converter.ProductManagementConverter;
 import com.tracktive.productservice.util.factory.ProductManagementConverterFactory;
@@ -36,10 +35,19 @@ public class ProductManagementConverterFactoryImpl implements ProductManagementC
     }
 
     @Override
-    public ProductManagementDTO convertProduct(ProductDTO productDTO){
+    public ProductManagementDTO readProduct(ProductDTO productDTO){
         ProductManagementConverter<? extends ProductManagementDTO> converter = converterMap.get(productDTO.getProductCategory());
         if (!Objects.isNull(converter)){
-            return converter.convert(productDTO);
+            return converter.read(productDTO);
+        }
+        return null;
+    }
+
+    @Override
+    public ProductManagementDTO createProduct(ProductManagementDTO productManagementDTO) {
+        ProductManagementConverter<? extends ProductManagementDTO> converter = converterMap.get(productManagementDTO.getProductCategory());
+        if (!Objects.isNull(converter)){
+            return converter.create(productManagementDTO);
         }
         return null;
     }

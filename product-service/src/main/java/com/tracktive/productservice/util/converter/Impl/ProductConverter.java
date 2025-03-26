@@ -1,10 +1,13 @@
 package com.tracktive.productservice.util.converter.Impl;
 
 import com.tracktive.productservice.model.DTO.ProductDTO;
+import com.tracktive.productservice.model.DTO.ProductManagementDTO;
+import com.tracktive.productservice.model.DTO.ProductRequestDTO;
 import com.tracktive.productservice.model.VO.ProductVO;
 import com.tracktive.productservice.model.entity.Product;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
 * Description: Util for convert Product Model
@@ -31,6 +34,18 @@ public class ProductConverter {
        productDTO.setUpdatedAt(product.getUpdatedAt());
        productDTO.setCreatedAt(product.getCreatedAt());
        return productDTO;
+    }
+
+    public static ProductDTO toDTO(ProductRequestDTO requestDTO) {
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setProductId(UUID.randomUUID().toString());
+        productDTO.setProductCategory(requestDTO.getProductCategory());
+        productDTO.setProductBrand(requestDTO.getProductBrand());
+        productDTO.setProductName(requestDTO.getProductName());
+        productDTO.setProductDescription(requestDTO.getProductDescription());
+        productDTO.setRecommendedPrice(requestDTO.getRecommendedPrice());
+        productDTO.setProductStatus(requestDTO.getProductStatus());
+        return productDTO;
     }
 
     public static Product toEntity(ProductDTO productDTO){
@@ -63,5 +78,39 @@ public class ProductConverter {
         productVO.setRecommendedPrice(productDTO.getRecommendedPrice());
         productVO.setProductStatus(productDTO.getProductStatus());
         return productVO;
+    }
+
+    public static ProductManagementDTO toProductManagementDTO (ProductDTO productDTO){
+        if (Objects.isNull(productDTO)) {
+            return null;
+        }
+        ProductManagementDTO productManagementDTO = new ProductManagementDTO();
+        productManagementDTO.setProductId(productDTO.getProductId());
+        productManagementDTO.setProductCategory(productDTO.getProductCategory());
+        productManagementDTO.setProductBrand(productDTO.getProductBrand());
+        productManagementDTO.setProductName(productDTO.getProductName());
+        productManagementDTO.setProductDescription(productDTO.getProductDescription());
+        productManagementDTO.setRecommendedPrice(productDTO.getRecommendedPrice());
+        productManagementDTO.setProductStatus(productDTO.getProductStatus());
+        productManagementDTO.setUpdatedAt(productDTO.getUpdatedAt());
+        productManagementDTO.setCreatedAt(productDTO.getCreatedAt());
+        return productManagementDTO;
+    }
+
+    public static ProductDTO toDTO(ProductManagementDTO productManagementDTO){
+        if (Objects.isNull(productManagementDTO)) {
+            return null;
+        }
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setProductId(productManagementDTO.getProductId());
+        productDTO.setProductCategory(productManagementDTO.getProductCategory());
+        productDTO.setProductBrand(productManagementDTO.getProductBrand());
+        productDTO.setProductName(productManagementDTO.getProductName());
+        productDTO.setProductDescription(productManagementDTO.getProductDescription());
+        productDTO.setRecommendedPrice(productManagementDTO.getRecommendedPrice());
+        productDTO.setProductStatus(productManagementDTO.getProductStatus());
+        productDTO.setUpdatedAt(productManagementDTO.getUpdatedAt());
+        productDTO.setCreatedAt(productManagementDTO.getCreatedAt());
+        return productDTO;
     }
 }

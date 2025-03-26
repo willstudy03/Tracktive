@@ -6,18 +6,8 @@ import com.tracktive.productservice.util.annotation.ValidEnum;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
-
-/**
-* Description: Product DTO
-* @author William Theo
-* @date 7/3/2025
-*/
-public class ProductDTO {
-
-    @NotBlank(message = "Product ID cannot be blank")
-    private String productId;
+public class ProductRequestDTO {
 
     @NotNull(message = "Product Category is required")
     @ValidEnum(enumClass = ProductCategory.class, message = "Invalid Product Category")
@@ -39,33 +29,21 @@ public class ProductDTO {
     @Digits(integer = 10, fraction = 2, message = "Price must be a valid decimal with up to 10 digits and 2 decimal places")
     private BigDecimal recommendedPrice;
 
+
     @NotNull(message = "Product Status is required")
     @ValidEnum(enumClass = ProductStatus.class, message = "Invalid Product Status")
     private ProductStatus productStatus;
 
-    private LocalDateTime updatedAt;
-
-    private LocalDateTime createdAt;
-
-    public ProductDTO() {
+    public ProductRequestDTO() {
     }
 
-    public ProductDTO(String productId, ProductCategory productCategory, String productBrand, String productName, String productDescription, BigDecimal recommendedPrice, ProductStatus productStatus) {
-        this.productId = productId;
+    public ProductRequestDTO(ProductCategory productCategory, String productBrand, String productName, String productDescription, BigDecimal recommendedPrice, ProductStatus productStatus) {
         this.productCategory = productCategory;
         this.productBrand = productBrand;
         this.productName = productName;
         this.productDescription = productDescription;
         this.recommendedPrice = recommendedPrice;
         this.productStatus = productStatus;
-    }
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
     }
 
     public ProductCategory getProductCategory() {
@@ -114,21 +92,5 @@ public class ProductDTO {
 
     public void setProductStatus(ProductStatus productStatus) {
         this.productStatus = productStatus;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }
