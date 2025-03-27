@@ -88,7 +88,6 @@ public class ProductServiceImpl implements ProductService {
         }
         logger.info("Product [{}] added successfully", productDTO.getProductId());
 
-        // Fetch the inserted product details (if needed)
         return productRepository.selectProductById(productDTO.getProductId())
                 .orElseThrow(() -> new ProductNotFoundException("Failed to fetch product after insertion"));
     }

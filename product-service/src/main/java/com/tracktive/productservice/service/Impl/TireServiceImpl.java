@@ -85,6 +85,7 @@ public class TireServiceImpl implements TireService {
     @Override
     @Transactional
     public void addTire(TireDTO tireDTO) {
+
         validateTireDTO(tireDTO);
         boolean result = tireRepository.addTire(tireDTO);
         if (!result) {

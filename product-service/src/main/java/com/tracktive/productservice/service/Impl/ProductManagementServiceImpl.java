@@ -1,14 +1,7 @@
 package com.tracktive.productservice.service.Impl;
 
-import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.DTO.ProductManagementDTO;
 import com.tracktive.productservice.service.ProductManagementService;
-import com.tracktive.productservice.service.ProductService;
-import com.tracktive.productservice.util.converter.Impl.ProductConverter;
-import com.tracktive.productservice.util.factory.ProductManagementConverterFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,31 +13,14 @@ import java.util.List;
 */
 @Service
 public class ProductManagementServiceImpl implements ProductManagementService {
-
-    private final ProductService productService;
-
-    private final ProductManagementConverterFactory productManagementConverterFactory;
-
-    private static final Logger logger = LoggerFactory.getLogger(ProductManagementServiceImpl.class);
-
-    @Autowired
-    public ProductManagementServiceImpl(ProductService productService, ProductManagementConverterFactory productManagementConverterFactory) {
-        this.productService = productService;
-        this.productManagementConverterFactory = productManagementConverterFactory;
-    }
-
     @Override
     public List<ProductManagementDTO> selectAllProducts() {
-        return productService.selectAllProducts()
-                .stream()
-                .map(ProductConverter::toProductManagementDTO)
-                .toList();
+        return List.of();
     }
 
     @Override
     public ProductManagementDTO selectProductById(String productId) {
-        ProductDTO product = productService.selectProductById(productId);
-        return productManagementConverterFactory.readProduct(product);
+        return null;
     }
 
     @Override

@@ -19,6 +19,7 @@ public class ProductConverter {
     // Private constructor to prevent instantiation
     private ProductConverter(){}
 
+    // Product Query
     public static ProductDTO toDTO(Product product){
         if (Objects.isNull(product)){
             return null;
@@ -36,6 +37,7 @@ public class ProductConverter {
        return productDTO;
     }
 
+    // Product Creation
     public static ProductDTO toDTO(ProductRequestDTO requestDTO) {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setProductId(UUID.randomUUID().toString());
@@ -80,37 +82,4 @@ public class ProductConverter {
         return productVO;
     }
 
-    public static ProductManagementDTO toProductManagementDTO (ProductDTO productDTO){
-        if (Objects.isNull(productDTO)) {
-            return null;
-        }
-        ProductManagementDTO productManagementDTO = new ProductManagementDTO();
-        productManagementDTO.setProductId(productDTO.getProductId());
-        productManagementDTO.setProductCategory(productDTO.getProductCategory());
-        productManagementDTO.setProductBrand(productDTO.getProductBrand());
-        productManagementDTO.setProductName(productDTO.getProductName());
-        productManagementDTO.setProductDescription(productDTO.getProductDescription());
-        productManagementDTO.setRecommendedPrice(productDTO.getRecommendedPrice());
-        productManagementDTO.setProductStatus(productDTO.getProductStatus());
-        productManagementDTO.setUpdatedAt(productDTO.getUpdatedAt());
-        productManagementDTO.setCreatedAt(productDTO.getCreatedAt());
-        return productManagementDTO;
-    }
-
-    public static ProductDTO toDTO(ProductManagementDTO productManagementDTO){
-        if (Objects.isNull(productManagementDTO)) {
-            return null;
-        }
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setProductId(productManagementDTO.getProductId());
-        productDTO.setProductCategory(productManagementDTO.getProductCategory());
-        productDTO.setProductBrand(productManagementDTO.getProductBrand());
-        productDTO.setProductName(productManagementDTO.getProductName());
-        productDTO.setProductDescription(productManagementDTO.getProductDescription());
-        productDTO.setRecommendedPrice(productManagementDTO.getRecommendedPrice());
-        productDTO.setProductStatus(productManagementDTO.getProductStatus());
-        productDTO.setUpdatedAt(productManagementDTO.getUpdatedAt());
-        productDTO.setCreatedAt(productManagementDTO.getCreatedAt());
-        return productDTO;
-    }
 }
