@@ -1,7 +1,12 @@
 package com.tracktive.productservice.service.Impl;
 
 import com.tracktive.productservice.model.DTO.ProductManagementDTO;
+import com.tracktive.productservice.service.ProductService;
 import com.tracktive.productservice.service.ProductManagementService;
+import com.tracktive.productservice.service.TireService;
+import com.tracktive.productservice.util.converter.Impl.ProductConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,9 +18,24 @@ import java.util.List;
 */
 @Service
 public class ProductManagementServiceImpl implements ProductManagementService {
+
+    private final ProductService productService;
+
+    private final TireService tireService;
+
+    private static final Logger logger = LoggerFactory.getLogger(ProductManagementServiceImpl.class);
+
+    public ProductManagementServiceImpl(ProductService productService, TireService tireService) {
+        this.productService = productService;
+        this.tireService = tireService;
+    }
+
     @Override
     public List<ProductManagementDTO> selectAllProducts() {
-        return List.of();
+        return productService.selectAllProducts()
+                .stream()
+                .map(ProductConverter::toProductManagementDTO)
+                .toList();
     }
 
     @Override

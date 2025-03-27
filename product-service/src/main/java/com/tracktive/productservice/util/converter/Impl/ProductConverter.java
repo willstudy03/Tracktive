@@ -82,4 +82,21 @@ public class ProductConverter {
         return productVO;
     }
 
+    public static ProductManagementDTO toProductManagementDTO(ProductDTO productDTO){
+        if (Objects.isNull(productDTO)){
+            return null;
+        }
+        ProductManagementDTO productManagementDTO = new ProductManagementDTO();
+        productManagementDTO.setProductId(productDTO.getProductId());
+        productManagementDTO.setProductCategory(productDTO.getProductCategory());
+        productManagementDTO.setProductBrand(productDTO.getProductBrand());
+        productManagementDTO.setProductName(productDTO.getProductName());
+        productManagementDTO.setProductDescription(productDTO.getProductDescription());
+        productManagementDTO.setRecommendedPrice(productDTO.getRecommendedPrice());
+        productManagementDTO.setProductStatus(productDTO.getProductStatus());
+        productManagementDTO.setUpdatedAt(productDTO.getUpdatedAt());
+        productManagementDTO.setCreatedAt(productDTO.getCreatedAt());
+        return productManagementDTO;
+    }
+
 }
