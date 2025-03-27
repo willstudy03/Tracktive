@@ -1,10 +1,14 @@
 package com.tracktive.productservice.service.Impl;
 
+import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.DTO.ProductManagementDTO;
+import com.tracktive.productservice.model.DTO.ProductManagementTireDTO;
+import com.tracktive.productservice.model.DTO.TireDTO;
 import com.tracktive.productservice.service.ProductService;
 import com.tracktive.productservice.service.ProductManagementService;
 import com.tracktive.productservice.service.TireService;
 import com.tracktive.productservice.util.converter.Impl.ProductConverter;
+import com.tracktive.productservice.util.converter.Impl.ProductManagementConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -40,7 +44,14 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 
     @Override
     public ProductManagementDTO selectProductById(String productId) {
-        return null;
+
+        ProductDTO product = productService.selectProductById(productId);
+
+        TireDTO tire = tireService.selectTireById(productId);
+
+        ProductManagementTireDTO productManagementTireDTO = ProductManagementConverter.toProductManagementTireDTO(product, tire);
+
+        return productManagementTireDTO;
     }
 
     @Override
