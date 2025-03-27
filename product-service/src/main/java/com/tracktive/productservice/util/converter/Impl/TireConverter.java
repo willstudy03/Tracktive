@@ -1,6 +1,7 @@
 package com.tracktive.productservice.util.converter.Impl;
 
 import com.tracktive.productservice.model.DTO.TireDTO;
+import com.tracktive.productservice.model.DTO.TireRequestDTO;
 import com.tracktive.productservice.model.entity.Tire;
 import java.util.Objects;
 
@@ -32,6 +33,27 @@ public class TireConverter {
         tireDTO.setTireType(tire.getTireType());
         tireDTO.setRunFlat(tire.getRunFlat());
         return tireDTO;
+    }
+
+    public static TireDTO toDTO(TireRequestDTO tireRequestDTO){
+        if (Objects.isNull(tireRequestDTO)){
+            return null;
+        }
+        TireDTO tireDTO = new TireDTO();
+        tireDTO.setId(tireRequestDTO.getId());
+        tireDTO.setTireSku(tireRequestDTO.getTireSku());
+        tireDTO.setWidth(tireRequestDTO.getWidth());
+        tireDTO.setAspectRatio(tireRequestDTO.getAspectRatio());
+        tireDTO.setRimDiameter(tireRequestDTO.getRimDiameter());
+        tireDTO.setConstructionType(tireRequestDTO.getConstructionType());
+        tireDTO.setLoadIndex(tireRequestDTO.getLoadIndex());
+        tireDTO.setSpeedRating(tireRequestDTO.getSpeedRating());
+        tireDTO.setTireSeason(tireRequestDTO.getTireSeason());
+        tireDTO.setTreadPattern(tireRequestDTO.getTreadPattern());
+        tireDTO.setTireType(tireRequestDTO.getTireType());
+        tireDTO.setRunFlat(tireRequestDTO.getRunFlat());
+        return tireDTO;
+
     }
 
     public static Tire toEntity(TireDTO tireDTO) {

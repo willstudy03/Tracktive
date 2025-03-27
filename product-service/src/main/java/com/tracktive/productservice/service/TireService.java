@@ -1,6 +1,7 @@
 package com.tracktive.productservice.service;
 
 import com.tracktive.productservice.model.DTO.TireDTO;
+import com.tracktive.productservice.model.DTO.TireRequestDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,9 +18,9 @@ public interface TireService {
     // Find Tire by SKU
     TireDTO selectTireBySKU(String sku);
     // Insert a new tire
-    void addTire(TireDTO tireDTO);
+    TireDTO addTire(TireRequestDTO tireRequestDTO);
     // Update tire info
-    void updateTire(TireDTO tireDTO);
+    TireDTO updateTire(TireDTO tireDTO);
     // Delete tire by ID
     void deleteById(String id);
 }

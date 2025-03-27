@@ -3,18 +3,23 @@ package com.tracktive.productservice.service.Impl;
 import com.tracktive.productservice.exception.LockAcquisitionException;
 import com.tracktive.productservice.exception.ProductNotFoundException;
 import com.tracktive.productservice.model.DTO.TireDTO;
+import com.tracktive.productservice.model.DTO.TireRequestDTO;
 import com.tracktive.productservice.repository.TireRepository;
 import com.tracktive.productservice.service.TireService;
+import com.tracktive.productservice.util.converter.Impl.TireConverter;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
 * Description: Tire Service Implementation
@@ -25,11 +30,15 @@ import java.util.Objects;
 public class TireServiceImpl implements TireService {
 
     private final TireRepository tireRepository;
+
+    private final Validator validator;
+
     private static final Logger logger = LoggerFactory.getLogger(TireServiceImpl.class);
 
     @Autowired
-    public TireServiceImpl(TireRepository tireRepository) {
+    public TireServiceImpl(TireRepository tireRepository, Validator validator) {
         this.tireRepository = tireRepository;
+        this.validator = validator;
     }
 
     @Override
@@ -84,34 +93,49 @@ public class TireServiceImpl implements TireService {
 
     @Override
     @Transactional
-    public void addTire(TireDTO tireDTO) {
+    public TireDTO addTire(TireRequestDTO tireRequestDTO) {
 
-        validateTireDTO(tireDTO);
+        validateTireRequestDTO(tireRequestDTO);
+
+        TireDTO tireDTO = TireConverter.toDTO(tireRequestDTO);
+
         boolean result = tireRepository.addTire(tireDTO);
         if (!result) {
             logger.error("Failed to add tire with id: {}", tireDTO.getId());
             throw new RuntimeException("Failed to add tire with id: " + tireDTO.getId());
         }
         logger.info("Tire [{}] added successfully", tireDTO.getId());
+
+        return tireRepository.selectTireById(tireDTO.getId())
+                .orElseThrow(() -> new ProductNotFoundException("Failed to fetch tire after insertion"));
     }
 
     @Override
     @Transactional
-    public void updateTire(TireDTO tireDTO) {
+    public TireDTO updateTire(TireDTO tireDTO) {
+
         validateTireDTO(tireDTO);
+
         boolean result = tireRepository.updateTire(tireDTO);
+
         if (!result) {
             logger.error("Failed to update tire with id: {}", tireDTO.getId());
             throw new RuntimeException("Failed to update tire with id: " + tireDTO.getId());
         }
         logger.info("Tire [{}] updated successfully", tireDTO.getId());
+
+        return tireRepository.selectTireById(tireDTO.getId())
+                .orElseThrow(() -> new ProductNotFoundException("Failed to fetch tire after insertion"));
     }
 
     @Override
     @Transactional
     public void deleteById(String id) {
+
         validateId(id);
+
         boolean result = tireRepository.deleteById(id);
+
         if (!result) {
             logger.error("Failed to delete tire with id: {}", id);
             throw new RuntimeException("Failed to delete tire with id: " + id);
@@ -133,9 +157,16 @@ public class TireServiceImpl implements TireService {
     }
 
     private void validateTireDTO(TireDTO tireDTO) {
-        if (Objects.isNull(tireDTO)) {
-            throw new IllegalArgumentException("TireDTO cannot be null");
+        Set<ConstraintViolation<TireDTO>> violations = validator.validate(tireDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for TireDTO", violations);
         }
-        //@TODO: VALIDATION
+    }
+
+    private void validateTireRequestDTO(TireRequestDTO tireRequestDTO) {
+        Set<ConstraintViolation<TireRequestDTO>> violations = validator.validate(tireRequestDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for TireRequestDTO", violations);
+        }
     }
 }
