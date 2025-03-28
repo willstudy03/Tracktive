@@ -3,8 +3,10 @@ package com.tracktive.productservice.service.Impl;
 import com.tracktive.productservice.exception.LockAcquisitionException;
 import com.tracktive.productservice.exception.ProductNotFoundException;
 import com.tracktive.productservice.model.DTO.SupplierProductDTO;
+import com.tracktive.productservice.model.DTO.SupplierProductRequestDTO;
 import com.tracktive.productservice.repository.SupplierProductRepository;
 import com.tracktive.productservice.service.SupplierProductService;
+import com.tracktive.productservice.util.converter.Impl.SupplierProductConverter;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,19 +77,24 @@ public class SupplierProductServiceImpl implements SupplierProductService {
 
     @Override
     @Transactional
-    public void addSupplierProduct(SupplierProductDTO supplierProductDTO) {
-        validateSupplierProductDTO(supplierProductDTO);
+    public SupplierProductDTO addSupplierProduct(SupplierProductRequestDTO supplierProductRequestDTO) {
+
+        SupplierProductDTO supplierProductDTO = SupplierProductConverter.toDTO(supplierProductRequestDTO);
+
         boolean result = supplierProductRepository.addSupplierProduct(supplierProductDTO);
         if (!result) {
             logger.error("Failed to add supplier product with id: {}", supplierProductDTO.getSupplierProductId());
             throw new RuntimeException("Failed to add supplier product with id: " + supplierProductDTO.getSupplierProductId());
         }
         logger.info("Supplier Product [{}] added successfully", supplierProductDTO.getSupplierProductId());
+
+        return supplierProductRepository.selectSupplierProductById(supplierProductDTO.getProductId())
+                .orElseThrow(() -> new ProductNotFoundException("Failed to fetch supplier product after insertion"));
     }
 
     @Override
     @Transactional
-    public void updateSupplierProduct(SupplierProductDTO supplierProductDTO) {
+    public SupplierProductDTO updateSupplierProduct(SupplierProductDTO supplierProductDTO) {
         validateSupplierProductDTO(supplierProductDTO);
         boolean result = supplierProductRepository.updateSupplierProduct(supplierProductDTO);
         if (!result) {
@@ -95,6 +102,9 @@ public class SupplierProductServiceImpl implements SupplierProductService {
             throw new RuntimeException("Failed to update supplier product with id: " + supplierProductDTO.getSupplierProductId());
         }
         logger.info("Supplier Product [{}] updated successfully", supplierProductDTO.getSupplierProductId());
+
+        return supplierProductRepository.selectSupplierProductById(supplierProductDTO.getProductId())
+                .orElseThrow(() -> new ProductNotFoundException("Failed to fetch supplier product after update"));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.tracktive.productservice.service;
 
 import com.tracktive.productservice.model.DTO.SupplierProductDTO;
+import com.tracktive.productservice.model.DTO.SupplierProductRequestDTO;
 
 import java.util.List;
 
@@ -23,10 +24,10 @@ public interface SupplierProductService {
     SupplierProductDTO lockSupplierProductById(String id);
 
     // Insert operation
-    void addSupplierProduct(SupplierProductDTO supplierProductDTO);
+    SupplierProductDTO addSupplierProduct(SupplierProductRequestDTO supplierProductRequestDTO);
 
     // Update operation
-    void updateSupplierProduct(SupplierProductDTO supplierProductDTO);
+    SupplierProductDTO updateSupplierProduct(SupplierProductDTO supplierProductDTO);
 
     // Delete operation
     void deleteSupplierProductById(String id);
