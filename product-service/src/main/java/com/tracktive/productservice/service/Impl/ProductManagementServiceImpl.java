@@ -51,18 +51,18 @@ public class ProductManagementServiceImpl implements ProductManagementService {
     }
 
     @Override
-    @Transactional
     public ProductManagementDTO createProduct(ProductManagementRequestDTO productManagementRequestDTO) {
         return productManagementFactory.addProduct(productManagementRequestDTO);
     }
 
     @Override
     public ProductManagementDTO updateProduct(ProductManagementDTO productManagementDTO) {
-        return null;
+        return productManagementFactory.updateProduct(productManagementDTO);
     }
 
     @Override
     public ProductManagementDTO deleteProduct(String productId) {
-        return null;
+        ProductDTO product = productService.selectProductById(productId);
+        return productManagementFactory.deleteProduct(product);
     }
 }

@@ -13,5 +13,5 @@ public interface ProductManagementConverter<R extends ProductManagementDTO>{
     R read(ProductDTO productDTO);
     R create(ProductManagementRequestDTO productManagementRequestDTO);
     R update(ProductManagementDTO productManagementDTO);
-    R delete(String id);
+    R delete(ProductDTO productDTO);
 }

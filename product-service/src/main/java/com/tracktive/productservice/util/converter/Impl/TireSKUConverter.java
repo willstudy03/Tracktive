@@ -1,6 +1,7 @@
 package com.tracktive.productservice.util.converter.Impl;
 
 import com.tracktive.productservice.model.DTO.ProductManagementRequestTireDTO;
+import com.tracktive.productservice.model.DTO.ProductManagementTireDTO;
 import com.tracktive.productservice.model.Enum.TireSeason;
 import com.tracktive.productservice.model.Enum.TireType;
 import com.tracktive.productservice.model.Enum.TreadPattern;
@@ -13,6 +14,21 @@ import com.tracktive.productservice.model.Enum.TreadPattern;
 public class TireSKUConverter {
 
     public static String generateSKU(ProductManagementRequestTireDTO tire) {
+        String brandCode = getShortenedCode(tire.getProductBrand(), 4);
+        String productCode = getShortenedCode(tire.getProductName(), 3);
+        String sizeCode = tire.getWidth() + "/" + tire.getAspectRatio() + "-" + tire.getRimDiameter();
+        String constructionCode = tire.getConstructionType().substring(0, 1).toUpperCase(); // 'R' for Radial
+        String loadSpeedCode = tire.getLoadIndex() + tire.getSpeedRating();
+        String seasonCode = getSeasonCode(tire.getTireSeason());
+        String treadCode = getTreadCode(tire.getTreadPattern());
+        String typeCode = getTypeCode(tire.getTireType());
+        String runFlatCode = tire.getRunFlat() ? "Y" : "N";
+
+        return String.format("%s-%s-%s-%s-%s-%s-%s-%s-%s",
+                brandCode, productCode, sizeCode, constructionCode, loadSpeedCode, seasonCode, treadCode, typeCode, runFlatCode);
+    }
+
+    public static String generateSKU(ProductManagementTireDTO tire) {
         String brandCode = getShortenedCode(tire.getProductBrand(), 4);
         String productCode = getShortenedCode(tire.getProductName(), 3);
         String sizeCode = tire.getWidth() + "/" + tire.getAspectRatio() + "-" + tire.getRimDiameter();

@@ -55,11 +55,19 @@ public class ProductManagementFactoryImpl implements ProductManagementFactory {
 
     @Override
     public ProductManagementDTO updateProduct(ProductManagementDTO productManagementDTO) {
-        return null;
+        ProductManagementConverter<? extends ProductManagementDTO> converter = converterMap.get(productManagementDTO.getProductCategory());
+        if (!Objects.isNull(converter)){
+            return converter.update(productManagementDTO);
+        }
+        throw new ProductManagementConverterNotFoundException("Product Management Converter with Category " + productManagementDTO.getProductCategory() + " Not Found");
     }
 
     @Override
     public ProductManagementDTO deleteProduct(ProductDTO productDTO) {
-        return null;
+        ProductManagementConverter<? extends ProductManagementDTO> converter = converterMap.get(productDTO.getProductCategory());
+        if (!Objects.isNull(converter)){
+            return converter.delete(productDTO);
+        }
+        throw new ProductManagementConverterNotFoundException("Product Management Converter with Category " + productDTO.getProductCategory() + " Not Found");
     }
 }

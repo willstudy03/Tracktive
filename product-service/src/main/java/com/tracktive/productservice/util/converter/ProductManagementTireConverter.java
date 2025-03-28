@@ -79,12 +79,46 @@ public class ProductManagementTireConverter implements ProductManagementConverte
     @Override
     @Transactional
     public ProductManagementTireDTO update(ProductManagementDTO productManagementDTO) {
-        return null;
+
+        ProductDTO productUpdateRequest = new ProductDTO();
+
+        BeanUtils.copyProperties(productManagementDTO, productUpdateRequest);
+
+        ProductDTO product = productService.updateProduct(productUpdateRequest);
+
+        TireDTO tireUpdateRequest = new TireDTO();
+
+        BeanUtils.copyProperties(productManagementDTO, tireUpdateRequest);
+
+        tireUpdateRequest.setId(product.getProductId());
+
+        tireUpdateRequest.setTireSku(TireSKUConverter.generateSKU((ProductManagementTireDTO) productManagementDTO));
+
+        TireDTO tire = tireService.updateTire(tireUpdateRequest);
+
+        ProductManagementTireDTO result = new ProductManagementTireDTO();
+
+        BeanUtils.copyProperties(product, result);
+
+        BeanUtils.copyProperties(tire, result);
+
+        return result;
     }
 
     @Override
     @Transactional
-    public ProductManagementTireDTO delete(String id) {
-        return null;
+    public ProductManagementTireDTO delete(ProductDTO productDTO) {
+
+        ProductManagementTireDTO productManagementTireDTO = new ProductManagementTireDTO();
+        BeanUtils.copyProperties(productDTO, productManagementTireDTO);
+
+        TireDTO tireDTO = tireService.selectTireById(productDTO.getProductId());
+        if (!Objects.isNull(tireDTO)){
+            BeanUtils.copyProperties(tireDTO, productManagementTireDTO);
+        }
+
+        productService.deleteById(productDTO.getProductId());
+
+        return productManagementTireDTO;
     }
 }

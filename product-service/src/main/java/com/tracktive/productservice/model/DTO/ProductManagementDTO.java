@@ -1,5 +1,7 @@
 package com.tracktive.productservice.model.DTO;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tracktive.productservice.model.Enum.ProductCategory;
 import com.tracktive.productservice.model.Enum.ProductStatus;
 
@@ -11,6 +13,10 @@ import java.time.LocalDateTime;
 * @author William Theo
 * @date 25/3/2025
 */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "productCategory", visible = true)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = ProductManagementTireDTO.class, name = "TIRE")
+})
 public class ProductManagementDTO {
 
     private String productId;

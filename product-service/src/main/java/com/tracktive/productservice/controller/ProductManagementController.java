@@ -43,4 +43,16 @@ public class ProductManagementController {
         ProductManagementDTO product = productManagementService.createProduct(productManagementRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
+
+    @PutMapping
+    public ResponseEntity<ProductManagementDTO> updateProduct(@RequestBody ProductManagementDTO productManagementDTO) {
+        ProductManagementDTO product = productManagementService.updateProduct(productManagementDTO);
+        return ResponseEntity.ok(product);
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<String> deleteProduct(@PathVariable String productId) {
+        ProductManagementDTO product = productManagementService.deleteProduct(productId);
+        return ResponseEntity.ok("Product with ID " + product.getProductId() + " deleted successfully.");
+    }
 }

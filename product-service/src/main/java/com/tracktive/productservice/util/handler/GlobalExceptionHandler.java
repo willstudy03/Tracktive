@@ -1,6 +1,8 @@
 package com.tracktive.productservice.util.handler;
 
 import com.tracktive.productservice.exception.ForeignKeyConstraintException;
+import com.tracktive.productservice.exception.ProductAlreadyExistsException;
+import com.tracktive.productservice.exception.ProductNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -55,4 +57,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<String> handleProductNotFound(ProductNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(ProductAlreadyExistsException.class)
+    public ResponseEntity<String> handleProductAlreadyExist(ProductAlreadyExistsException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
 }
