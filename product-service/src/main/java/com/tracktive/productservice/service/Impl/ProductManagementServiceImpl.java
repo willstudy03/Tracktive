@@ -3,7 +3,6 @@ package com.tracktive.productservice.service.Impl;
 import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.DTO.ProductManagementDTO;
 import com.tracktive.productservice.model.DTO.ProductManagementRequestDTO;
-import com.tracktive.productservice.model.DTO.ProductManagementRequestTireDTO;
 import com.tracktive.productservice.service.ProductManagementService;
 import com.tracktive.productservice.service.ProductService;
 import com.tracktive.productservice.util.converter.Impl.ProductConverter;
@@ -45,22 +44,26 @@ public class ProductManagementServiceImpl implements ProductManagementService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ProductManagementDTO selectProductById(String productId) {
         ProductDTO product = productService.selectProductById(productId);
         return productManagementFactory.selectProduct(product);
     }
 
     @Override
+    @Transactional
     public ProductManagementDTO createProduct(ProductManagementRequestDTO productManagementRequestDTO) {
         return productManagementFactory.addProduct(productManagementRequestDTO);
     }
 
     @Override
+    @Transactional
     public ProductManagementDTO updateProduct(ProductManagementDTO productManagementDTO) {
         return productManagementFactory.updateProduct(productManagementDTO);
     }
 
     @Override
+    @Transactional
     public ProductManagementDTO deleteProduct(String productId) {
         ProductDTO product = productService.selectProductById(productId);
         return productManagementFactory.deleteProduct(product);

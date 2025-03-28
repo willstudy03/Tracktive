@@ -3,6 +3,11 @@ package com.tracktive.productservice.model.DTO;
 import com.tracktive.productservice.model.Enum.TireSeason;
 import com.tracktive.productservice.model.Enum.TireType;
 import com.tracktive.productservice.model.Enum.TreadPattern;
+import com.tracktive.productservice.util.annotation.ValidEnum;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 /**
 * Description: Product Management Tire DTO
@@ -11,26 +16,46 @@ import com.tracktive.productservice.model.Enum.TreadPattern;
 */
 public class ProductManagementTireDTO extends ProductManagementDTO{
 
+
     private String tireSku;
 
+    @NotNull(message = "Width is required")
+    @Min(value = 100, message = "Width must be at least 100mm")
+    @Max(value = 400, message = "Width cannot exceed 400mm")
     private Integer width;
 
+    @NotNull(message = "Aspect ratio is required")
+    @Min(value = 20, message = "Aspect ratio must be at least 20")
+    @Max(value = 80, message = "Aspect ratio cannot exceed 80")
     private Integer aspectRatio;
 
+    @NotNull(message = "Rim diameter is required")
+    @Min(value = 10, message = "Rim diameter must be at least 10 inches")
+    @Max(value = 30, message = "Rim diameter cannot exceed 30 inches")
     private Integer rimDiameter;
 
+    @NotBlank(message = "Construction type is required")
     private String constructionType;
 
+    @NotBlank(message = "Load index is required")
     private String loadIndex;
 
+    @NotBlank(message = "Speed rating is required")
     private String speedRating;
 
+    @NotBlank(message = "Tire Season is required")
+    @ValidEnum(enumClass = TireSeason.class, message = "Invalid Tire season")
     private TireSeason tireSeason;
 
+    @NotBlank(message = "Tread Pattern is required")
+    @ValidEnum(enumClass =TreadPattern.class, message = "Invalid Tread Pattern")
     private TreadPattern treadPattern;
 
+    @NotBlank(message = "Tire Type is required")
+    @ValidEnum(enumClass =TireType.class, message = "Invalid Tire Type")
     private TireType tireType;
 
+    @NotNull(message = "Run-flat status is required")
     private Boolean runFlat;
 
     public ProductManagementTireDTO() {

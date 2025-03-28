@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tracktive.productservice.model.Enum.ProductCategory;
 import com.tracktive.productservice.model.Enum.ProductStatus;
+import com.tracktive.productservice.util.annotation.ValidEnum;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
@@ -19,16 +21,28 @@ import java.math.BigDecimal;
 
 public class ProductManagementRequestDTO {
 
+    @NotNull(message = "Product Category is required")
+    @ValidEnum(enumClass = ProductCategory.class, message = "Invalid Product Category")
     private ProductCategory productCategory;
 
+    @NotBlank(message = "Product Brand is required")
+    @Size(max = 100, message = "Product Brand cannot exceed 100 characters")
     private String productBrand;
 
+    @NotBlank(message = "Product Name is required")
+    @Size(max = 150, message = "Product Name cannot exceed 150 characters")
     private String productName;
 
+    @Size(max = 500, message = "Product Description cannot exceed 500 characters")
     private String productDescription;
 
+    @NotNull(message = "Price is required")  // Use NotNull for BigDecimal
+    @DecimalMin(value = "0.0", inclusive = true, message = "Price must be greater or equal than 0")
+    @Digits(integer = 10, fraction = 2, message = "Price must be a valid decimal with up to 10 digits and 2 decimal places")
     private BigDecimal recommendedPrice;
 
+    @NotNull(message = "Product Status is required")
+    @ValidEnum(enumClass = ProductStatus.class, message = "Invalid Product Status")
     private ProductStatus productStatus;
 
     public ProductManagementRequestDTO() {

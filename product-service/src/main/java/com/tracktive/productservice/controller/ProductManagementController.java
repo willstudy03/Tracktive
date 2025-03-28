@@ -3,6 +3,7 @@ package com.tracktive.productservice.controller;
 import com.tracktive.productservice.model.DTO.ProductManagementDTO;
 import com.tracktive.productservice.model.DTO.ProductManagementRequestDTO;
 import com.tracktive.productservice.service.ProductManagementService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,13 +40,13 @@ public class ProductManagementController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductManagementDTO> addProduct(@RequestBody ProductManagementRequestDTO productManagementRequestDTO){
+    public ResponseEntity<ProductManagementDTO> addProduct(@Valid @RequestBody ProductManagementRequestDTO productManagementRequestDTO){
         ProductManagementDTO product = productManagementService.createProduct(productManagementRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
     @PutMapping
-    public ResponseEntity<ProductManagementDTO> updateProduct(@RequestBody ProductManagementDTO productManagementDTO) {
+    public ResponseEntity<ProductManagementDTO> updateProduct(@Valid @RequestBody ProductManagementDTO productManagementDTO) {
         ProductManagementDTO product = productManagementService.updateProduct(productManagementDTO);
         return ResponseEntity.ok(product);
     }
