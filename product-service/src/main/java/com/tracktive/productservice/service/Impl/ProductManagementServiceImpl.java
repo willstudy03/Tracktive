@@ -2,16 +2,17 @@ package com.tracktive.productservice.service.Impl;
 
 import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.DTO.ProductManagementDTO;
-import com.tracktive.productservice.model.DTO.ProductManagementTireDTO;
-import com.tracktive.productservice.model.DTO.TireDTO;
-import com.tracktive.productservice.service.ProductService;
+import com.tracktive.productservice.model.DTO.ProductManagementRequestDTO;
+import com.tracktive.productservice.model.DTO.ProductManagementRequestTireDTO;
 import com.tracktive.productservice.service.ProductManagementService;
-import com.tracktive.productservice.service.TireService;
+import com.tracktive.productservice.service.ProductService;
 import com.tracktive.productservice.util.converter.Impl.ProductConverter;
-import com.tracktive.productservice.util.converter.Impl.ProductManagementConverter;
+import com.tracktive.productservice.util.factory.ProductManagementFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,13 +26,14 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 
     private final ProductService productService;
 
-    private final TireService tireService;
+    private final ProductManagementFactory productManagementFactory;
 
     private static final Logger logger = LoggerFactory.getLogger(ProductManagementServiceImpl.class);
 
-    public ProductManagementServiceImpl(ProductService productService, TireService tireService) {
+    @Autowired
+    public ProductManagementServiceImpl(ProductService productService, ProductManagementFactory productManagementFactory) {
         this.productService = productService;
-        this.tireService = tireService;
+        this.productManagementFactory = productManagementFactory;
     }
 
     @Override
@@ -44,19 +46,14 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 
     @Override
     public ProductManagementDTO selectProductById(String productId) {
-
         ProductDTO product = productService.selectProductById(productId);
-
-        TireDTO tire = tireService.selectTireById(productId);
-
-        ProductManagementTireDTO productManagementTireDTO = ProductManagementConverter.toProductManagementTireDTO(product, tire);
-
-        return productManagementTireDTO;
+        return productManagementFactory.selectProduct(product);
     }
 
     @Override
-    public ProductManagementDTO createProduct(ProductManagementDTO productManagementDTO) {
-        return null;
+    @Transactional
+    public ProductManagementDTO createProduct(ProductManagementRequestDTO productManagementRequestDTO) {
+        return productManagementFactory.addProduct(productManagementRequestDTO);
     }
 
     @Override

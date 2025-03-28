@@ -1,43 +1,40 @@
 package com.tracktive.productservice.model.DTO;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tracktive.productservice.model.Enum.ProductCategory;
 import com.tracktive.productservice.model.Enum.ProductStatus;
-import com.tracktive.productservice.util.annotation.ValidEnum;
-import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 
-public class ProductRequestDTO {
+/**
+* Description: Product Management Request DTO
+* @author William Theo
+* @date 28/3/2025
+*/
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "productCategory", visible = true)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = ProductManagementRequestTireDTO.class, name = "TIRE")
+})
 
-    @NotNull(message = "Product Category is required")
-    @ValidEnum(enumClass = ProductCategory.class, message = "Invalid Product Category")
+public class ProductManagementRequestDTO {
+
     private ProductCategory productCategory;
 
-    @NotBlank(message = "Product Brand is required")
-    @Size(min = 5, max = 100, message = "Product Brand must be between 5 to 100 characters")
     private String productBrand;
 
-    @NotBlank(message = "Product Name is required")
-    @Size(min = 5, max = 150, message = "Product Name must be between  100 characters")
     private String productName;
 
-    @Size(max = 500, message = "Product Description cannot exceed 500 characters")
     private String productDescription;
 
-    @NotNull(message = "Price is required")  // Use NotNull for BigDecimal
-    @DecimalMin(value = "0.0", inclusive = true, message = "Price must be greater or equal than 0")
-    @Digits(integer = 10, fraction = 2, message = "Price must be a valid decimal with up to 10 digits and 2 decimal places")
     private BigDecimal recommendedPrice;
 
-
-    @NotNull(message = "Product Status is required")
-    @ValidEnum(enumClass = ProductStatus.class, message = "Invalid Product Status")
     private ProductStatus productStatus;
 
-    public ProductRequestDTO() {
+    public ProductManagementRequestDTO() {
     }
 
-    public ProductRequestDTO(ProductCategory productCategory, String productBrand, String productName, String productDescription, BigDecimal recommendedPrice, ProductStatus productStatus) {
+    public ProductManagementRequestDTO(ProductCategory productCategory, String productBrand, String productName, String productDescription, BigDecimal recommendedPrice, ProductStatus productStatus) {
         this.productCategory = productCategory;
         this.productBrand = productBrand;
         this.productName = productName;

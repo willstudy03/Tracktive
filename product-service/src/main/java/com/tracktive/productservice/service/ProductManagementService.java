@@ -1,6 +1,7 @@
 package com.tracktive.productservice.service;
 
 import com.tracktive.productservice.model.DTO.ProductManagementDTO;
+import com.tracktive.productservice.model.DTO.ProductManagementRequestDTO;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface ProductManagementService {
 
     ProductManagementDTO selectProductById(String productId);
 
-    ProductManagementDTO createProduct(ProductManagementDTO productManagementDTO);
+    ProductManagementDTO createProduct(ProductManagementRequestDTO productManagementRequestDTO);
 
     ProductManagementDTO updateProduct(ProductManagementDTO productManagementDTO);
 
