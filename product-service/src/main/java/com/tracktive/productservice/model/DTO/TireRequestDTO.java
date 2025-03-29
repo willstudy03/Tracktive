@@ -47,7 +47,6 @@ public class TireRequestDTO {
     @NotBlank(message = "Speed rating is required")
     private String speedRating;
 
-
     @NotNull(message = "Tire Season is required")
     @ValidEnum(enumClass = TireSeason.class, message = "Invalid Tire season")
     private TireSeason tireSeason;

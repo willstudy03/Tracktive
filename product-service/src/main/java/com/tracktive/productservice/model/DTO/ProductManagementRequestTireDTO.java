@@ -3,6 +3,7 @@ package com.tracktive.productservice.model.DTO;
 import com.tracktive.productservice.model.Enum.TireSeason;
 import com.tracktive.productservice.model.Enum.TireType;
 import com.tracktive.productservice.model.Enum.TreadPattern;
+import com.tracktive.productservice.util.annotation.ValidEnum;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -39,13 +40,16 @@ public class ProductManagementRequestTireDTO extends ProductManagementRequestDTO
     @NotBlank(message = "Speed rating is required")
     private String speedRating;
 
-    @NotBlank(message = "Tire Season is required")
+    @NotNull(message = "Tire Season is required")
+    @ValidEnum(enumClass = TireSeason.class, message = "Invalid Tire season")
     private TireSeason tireSeason;
 
-    @NotBlank(message = "Tread Pattern is required")
+    @NotNull(message = "Tread Pattern is required")
+    @ValidEnum(enumClass =TreadPattern.class, message = "Invalid Tread Pattern")
     private TreadPattern treadPattern;
 
-    @NotBlank(message = "Tire Type is required")
+    @NotNull(message = "Tire Type is required")
+    @ValidEnum(enumClass =TireType.class, message = "Invalid Tire Type")
     private TireType tireType;
 
     @NotNull(message = "Run-flat status is required")
@@ -115,27 +119,27 @@ public class ProductManagementRequestTireDTO extends ProductManagementRequestDTO
         this.speedRating = speedRating;
     }
 
-    public @NotBlank(message = "Tire Season is required") TireSeason getTireSeason() {
+    public @NotNull(message = "Tire Season is required") TireSeason getTireSeason() {
         return tireSeason;
     }
 
-    public void setTireSeason(@NotBlank(message = "Tire Season is required") TireSeason tireSeason) {
+    public void setTireSeason(@NotNull(message = "Tire Season is required") TireSeason tireSeason) {
         this.tireSeason = tireSeason;
     }
 
-    public @NotBlank(message = "Tread Pattern is required") TreadPattern getTreadPattern() {
+    public @NotNull(message = "Tread Pattern is required") TreadPattern getTreadPattern() {
         return treadPattern;
     }
 
-    public void setTreadPattern(@NotBlank(message = "Tread Pattern is required") TreadPattern treadPattern) {
+    public void setTreadPattern(@NotNull(message = "Tread Pattern is required") TreadPattern treadPattern) {
         this.treadPattern = treadPattern;
     }
 
-    public @NotBlank(message = "Tire Type is required") TireType getTireType() {
+    public @NotNull(message = "Tire Type is required") TireType getTireType() {
         return tireType;
     }
 
-    public void setTireType(@NotBlank(message = "Tire Type is required") TireType tireType) {
+    public void setTireType(@NotNull(message = "Tire Type is required") TireType tireType) {
         this.tireType = tireType;
     }
 

@@ -6,6 +6,7 @@ import com.tracktive.productservice.model.entity.SupplierProduct;
 import org.springframework.beans.BeanUtils;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
 * Description: Util for convert Supplier Product Model
@@ -40,6 +41,7 @@ public class SupplierProductConverter {
             return null;
         }
         SupplierProductDTO dto = new SupplierProductDTO();
+        dto.setSupplierProductId(UUID.randomUUID().toString());
         BeanUtils.copyProperties(supplierProductRequestDTO, dto);
         return  dto;
     }

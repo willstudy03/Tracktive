@@ -4,9 +4,13 @@ import com.tracktive.productservice.exception.LockAcquisitionException;
 import com.tracktive.productservice.exception.ProductNotFoundException;
 import com.tracktive.productservice.model.DTO.SupplierProductDTO;
 import com.tracktive.productservice.model.DTO.SupplierProductRequestDTO;
+import com.tracktive.productservice.model.DTO.TireDTO;
 import com.tracktive.productservice.repository.SupplierProductRepository;
 import com.tracktive.productservice.service.SupplierProductService;
 import com.tracktive.productservice.util.converter.Impl.SupplierProductConverter;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
 * Description: Supplier Product Service Implementation
@@ -28,11 +33,14 @@ public class SupplierProductServiceImpl implements SupplierProductService {
 
     private final SupplierProductRepository supplierProductRepository;
 
+    private final Validator validator;
+
     private static final Logger logger = LoggerFactory.getLogger(SupplierProductServiceImpl.class);
 
     @Autowired
-    public SupplierProductServiceImpl(SupplierProductRepository supplierProductRepository) {
+    public SupplierProductServiceImpl(SupplierProductRepository supplierProductRepository, Validator validator) {
         this.supplierProductRepository = supplierProductRepository;
+        this.validator = validator;
     }
 
     @Override
@@ -88,7 +96,7 @@ public class SupplierProductServiceImpl implements SupplierProductService {
         }
         logger.info("Supplier Product [{}] added successfully", supplierProductDTO.getSupplierProductId());
 
-        return supplierProductRepository.selectSupplierProductById(supplierProductDTO.getProductId())
+        return supplierProductRepository.selectSupplierProductById(supplierProductDTO.getSupplierProductId())
                 .orElseThrow(() -> new ProductNotFoundException("Failed to fetch supplier product after insertion"));
     }
 
@@ -103,7 +111,7 @@ public class SupplierProductServiceImpl implements SupplierProductService {
         }
         logger.info("Supplier Product [{}] updated successfully", supplierProductDTO.getSupplierProductId());
 
-        return supplierProductRepository.selectSupplierProductById(supplierProductDTO.getProductId())
+        return supplierProductRepository.selectSupplierProductById(supplierProductDTO.getSupplierProductId())
                 .orElseThrow(() -> new ProductNotFoundException("Failed to fetch supplier product after update"));
     }
 
@@ -132,9 +140,17 @@ public class SupplierProductServiceImpl implements SupplierProductService {
     }
 
     private void validateSupplierProductDTO(SupplierProductDTO supplierProductDTO) {
-        if (Objects.isNull(supplierProductDTO)) {
-            throw new IllegalArgumentException("SupplierProductDTO cannot be null");
+        Set<ConstraintViolation<SupplierProductDTO>> violations = validator.validate(supplierProductDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for Supplier Product DTO", violations);
         }
-        //TODO: Validation
     }
+
+    private void validateSupplierProductRequestDTO(SupplierProductRequestDTO supplierProductRequestDTO) {
+        Set<ConstraintViolation<SupplierProductRequestDTO>> violations = validator.validate(supplierProductRequestDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for Supplier Product Request DTO", violations);
+        }
+    }
+
 }

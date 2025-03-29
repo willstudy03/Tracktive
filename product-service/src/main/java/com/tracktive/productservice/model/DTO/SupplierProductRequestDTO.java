@@ -14,6 +14,9 @@ import java.math.BigDecimal;
 public class SupplierProductRequestDTO {
 
     @NotBlank(message = "Product ID is required")
+    private String supplierId;
+
+    @NotBlank(message = "Supplier ID is required")
     private String productId;
 
     @NotNull(message = "Price is required")
@@ -36,12 +39,21 @@ public class SupplierProductRequestDTO {
     public SupplierProductRequestDTO() {
     }
 
-    public SupplierProductRequestDTO(String productId, BigDecimal price, BigDecimal discountPercentage, Integer stockQuantity, ProductStatus productStatus) {
+    public SupplierProductRequestDTO(String supplierId, String productId, BigDecimal price, BigDecimal discountPercentage, Integer stockQuantity, ProductStatus productStatus) {
+        this.supplierId = supplierId;
         this.productId = productId;
         this.price = price;
         this.discountPercentage = discountPercentage;
         this.stockQuantity = stockQuantity;
         this.productStatus = productStatus;
+    }
+
+    public @NotBlank(message = "Product ID is required") String getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(@NotBlank(message = "Product ID is required") String supplierId) {
+        this.supplierId = supplierId;
     }
 
     public @NotBlank(message = "Product ID is required") String getProductId() {

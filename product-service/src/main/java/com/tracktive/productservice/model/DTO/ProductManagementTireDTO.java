@@ -43,15 +43,15 @@ public class ProductManagementTireDTO extends ProductManagementDTO{
     @NotBlank(message = "Speed rating is required")
     private String speedRating;
 
-    @NotBlank(message = "Tire Season is required")
+    @NotNull(message = "Tire Season is required")
     @ValidEnum(enumClass = TireSeason.class, message = "Invalid Tire season")
     private TireSeason tireSeason;
 
-    @NotBlank(message = "Tread Pattern is required")
+    @NotNull(message = "Tread Pattern is required")
     @ValidEnum(enumClass =TreadPattern.class, message = "Invalid Tread Pattern")
     private TreadPattern treadPattern;
 
-    @NotBlank(message = "Tire Type is required")
+    @NotNull(message = "Tire Type is required")
     @ValidEnum(enumClass =TireType.class, message = "Invalid Tire Type")
     private TireType tireType;
 
