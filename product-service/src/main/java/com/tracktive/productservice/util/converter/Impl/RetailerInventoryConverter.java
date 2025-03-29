@@ -1,9 +1,12 @@
 package com.tracktive.productservice.util.converter.Impl;
 
 import com.tracktive.productservice.model.DTO.RetailerInventoryDTO;
+import com.tracktive.productservice.model.DTO.RetailerInventoryRequestDTO;
 import com.tracktive.productservice.model.entity.RetailerInventory;
+import org.springframework.beans.BeanUtils;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
 * Description: Util for convert Retailer Inventory Entity
@@ -29,6 +32,16 @@ public class RetailerInventoryConverter {
         dto.setProductStatus(retailerInventory.getProductStatus());
         dto.setUpdatedAt(retailerInventory.getUpdatedAt());
         dto.setCreatedAt(retailerInventory.getCreatedAt());
+        return dto;
+    }
+
+    public static RetailerInventoryDTO toDTO(RetailerInventoryRequestDTO retailerInventoryRequestDTO){
+        if (Objects.isNull(retailerInventoryRequestDTO)){
+            return null;
+        }
+        RetailerInventoryDTO dto = new RetailerInventoryDTO();
+        dto.setRetailerInventoryId(UUID.randomUUID().toString());
+        BeanUtils.copyProperties(retailerInventoryRequestDTO, dto);
         return dto;
     }
 

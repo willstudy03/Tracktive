@@ -3,29 +3,37 @@ package com.tracktive.productservice.service.Impl;
 import com.tracktive.productservice.exception.LockAcquisitionException;
 import com.tracktive.productservice.exception.ProductNotFoundException;
 import com.tracktive.productservice.model.DTO.RetailerInventoryDTO;
+import com.tracktive.productservice.model.DTO.RetailerInventoryRequestDTO;
 import com.tracktive.productservice.repository.RetailerInventoryRepository;
 import com.tracktive.productservice.service.RetailerInventoryService;
+import com.tracktive.productservice.util.converter.Impl.RetailerInventoryConverter;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Service
 public class RetailerInventoryServiceImpl implements RetailerInventoryService {
 
     private final RetailerInventoryRepository retailerInventoryRepository;
 
+    private final Validator validator;
+
     private static final Logger logger = LoggerFactory.getLogger(RetailerInventoryServiceImpl.class);
 
     @Autowired
-    public RetailerInventoryServiceImpl(RetailerInventoryRepository retailerInventoryRepository) {
+    public RetailerInventoryServiceImpl(RetailerInventoryRepository retailerInventoryRepository, Validator validator) {
         this.retailerInventoryRepository = retailerInventoryRepository;
+        this.validator = validator;
     }
 
     @Override
@@ -70,26 +78,40 @@ public class RetailerInventoryServiceImpl implements RetailerInventoryService {
 
     @Override
     @Transactional
-    public void addRetailerInventory(RetailerInventoryDTO retailerInventoryDTO) {
-        validateRetailerInventoryDTO(retailerInventoryDTO);
+    public RetailerInventoryDTO addRetailerInventory(RetailerInventoryRequestDTO retailerInventoryRequestDTO) {
+
+        validateRetailerInventoryRequestDTO(retailerInventoryRequestDTO);
+
+        RetailerInventoryDTO retailerInventoryDTO = RetailerInventoryConverter.toDTO(retailerInventoryRequestDTO);
+
         boolean result = retailerInventoryRepository.addRetailerInventory(retailerInventoryDTO);
+
         if (!result) {
             logger.error("Failed to add retailer inventory with id: {}", retailerInventoryDTO.getRetailerInventoryId());
             throw new RuntimeException("Failed to add retailer inventory with id: " + retailerInventoryDTO.getRetailerInventoryId());
         }
         logger.info("Retailer Inventory [{}] added successfully", retailerInventoryDTO.getRetailerInventoryId());
+
+        return retailerInventoryRepository.selectRetailerInventoryById(retailerInventoryDTO.getRetailerInventoryId())
+                .orElseThrow(() -> new ProductNotFoundException("Failed to fetch retailer inventory after insertion"));
     }
 
     @Override
     @Transactional
-    public void updateRetailerInventory(RetailerInventoryDTO retailerInventoryDTO) {
+    public RetailerInventoryDTO updateRetailerInventory(RetailerInventoryDTO retailerInventoryDTO) {
+
         validateRetailerInventoryDTO(retailerInventoryDTO);
+
         boolean result = retailerInventoryRepository.updateRetailerInventory(retailerInventoryDTO);
+
         if (!result) {
             logger.error("Failed to update retailer inventory with id: {}", retailerInventoryDTO.getRetailerInventoryId());
-            throw new RuntimeException("Failed to update retailer inventory with id: " + retailerInventoryDTO.getRetailerInventoryId());
+            throw new ProductNotFoundException("Failed to update retailer inventory with id: " + retailerInventoryDTO.getRetailerInventoryId());
         }
         logger.info("Retailer Inventory [{}] updated successfully", retailerInventoryDTO.getRetailerInventoryId());
+
+        return retailerInventoryRepository.selectRetailerInventoryById(retailerInventoryDTO.getRetailerInventoryId())
+                .orElseThrow(() -> new ProductNotFoundException("Failed to fetch retailer inventory after insertion"));
     }
 
     @Override
@@ -99,7 +121,7 @@ public class RetailerInventoryServiceImpl implements RetailerInventoryService {
         boolean result = retailerInventoryRepository.deleteRetailerInventoryById(id);
         if (!result) {
             logger.error("Failed to delete retailer inventory with id: {}", id);
-            throw new RuntimeException("Failed to delete retailer inventory with id: " + id);
+            throw new ProductNotFoundException("Failed to delete retailer inventory with id: " + id);
         }
         logger.info("Retailer Inventory [{}] deleted successfully", id);
     }
@@ -117,8 +139,16 @@ public class RetailerInventoryServiceImpl implements RetailerInventoryService {
     }
 
     private void validateRetailerInventoryDTO(RetailerInventoryDTO retailerInventoryDTO) {
-        if (Objects.isNull(retailerInventoryDTO)) {
-            throw new IllegalArgumentException("RetailerInventoryDTO cannot be null");
+        Set<ConstraintViolation<RetailerInventoryDTO>> violations = validator.validate(retailerInventoryDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for Retailer Inventory DTO", violations);
+        }
+    }
+
+    private void validateRetailerInventoryRequestDTO(RetailerInventoryRequestDTO retailerInventoryRequestDTO) {
+        Set<ConstraintViolation<RetailerInventoryRequestDTO>> violations = validator.validate(retailerInventoryRequestDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for Retailer Inventory Request DTO", violations);
         }
     }
 }

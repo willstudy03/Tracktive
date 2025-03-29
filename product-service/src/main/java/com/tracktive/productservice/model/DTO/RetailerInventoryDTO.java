@@ -1,6 +1,11 @@
 package com.tracktive.productservice.model.DTO;
 
 import com.tracktive.productservice.model.Enum.ProductStatus;
+import com.tracktive.productservice.util.annotation.ValidEnum;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -11,16 +16,25 @@ import java.time.LocalDateTime;
 */
 public class RetailerInventoryDTO {
 
+    @NotBlank(message = "Retailer Inventory ID is required")
     private String retailerInventoryId;
 
+    @NotBlank(message = "Retailer ID is required")
     private String retailerId;
 
+    @NotBlank(message = "Product ID is required")
     private String productId;
 
+    @NotNull(message = "Stock quantity is required")
+    @Min(value = 0, message = "Stock quantity cannot be negative")
     private Integer stockQuantity;
 
+    @NotNull(message = "Reorder level is required")
+    @Min(value = 0, message = "Reorder level cannot be negative")
     private Integer reorderLevel;
 
+    @NotNull(message = "Product status is required")
+    @ValidEnum(enumClass = ProductStatus.class, message = "Invalid Product Status")
     private ProductStatus productStatus;
 
     private LocalDateTime updatedAt;

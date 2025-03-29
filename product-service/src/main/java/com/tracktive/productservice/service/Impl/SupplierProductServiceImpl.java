@@ -4,7 +4,6 @@ import com.tracktive.productservice.exception.LockAcquisitionException;
 import com.tracktive.productservice.exception.ProductNotFoundException;
 import com.tracktive.productservice.model.DTO.SupplierProductDTO;
 import com.tracktive.productservice.model.DTO.SupplierProductRequestDTO;
-import com.tracktive.productservice.model.DTO.TireDTO;
 import com.tracktive.productservice.repository.SupplierProductRepository;
 import com.tracktive.productservice.service.SupplierProductService;
 import com.tracktive.productservice.util.converter.Impl.SupplierProductConverter;
@@ -15,7 +14,6 @@ import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,6 +85,8 @@ public class SupplierProductServiceImpl implements SupplierProductService {
     @Transactional
     public SupplierProductDTO addSupplierProduct(SupplierProductRequestDTO supplierProductRequestDTO) {
 
+        validateSupplierProductRequestDTO(supplierProductRequestDTO);
+
         SupplierProductDTO supplierProductDTO = SupplierProductConverter.toDTO(supplierProductRequestDTO);
 
         boolean result = supplierProductRepository.addSupplierProduct(supplierProductDTO);
@@ -122,7 +122,7 @@ public class SupplierProductServiceImpl implements SupplierProductService {
         boolean result = supplierProductRepository.deleteSupplierProductById(id);
         if (!result) {
             logger.error("Failed to delete supplier product with id: {}", id);
-            throw new RuntimeException("Failed to delete supplier product with id: " + id);
+            throw new ProductNotFoundException("Failed to delete supplier product with id: " + id);
         }
         logger.info("Supplier Product [{}] deleted successfully", id);
     }

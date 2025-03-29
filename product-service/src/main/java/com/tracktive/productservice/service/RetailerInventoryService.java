@@ -1,6 +1,7 @@
 package com.tracktive.productservice.service;
 
 import com.tracktive.productservice.model.DTO.RetailerInventoryDTO;
+import com.tracktive.productservice.model.DTO.RetailerInventoryRequestDTO;
 
 import java.util.List;
 
@@ -23,10 +24,10 @@ public interface RetailerInventoryService {
     RetailerInventoryDTO lockRetailerInventoryById(String id);
 
     // Insert operation
-    void addRetailerInventory(RetailerInventoryDTO retailerInventoryDTO);
+    RetailerInventoryDTO addRetailerInventory(RetailerInventoryRequestDTO retailerInventoryRequestDTO);
 
     // Update operation
-    void updateRetailerInventory(RetailerInventoryDTO retailerInventoryDTO);
+    RetailerInventoryDTO updateRetailerInventory(RetailerInventoryDTO retailerInventoryDTO);
 
     // Delete operation
     void deleteRetailerInventoryById(String id);
