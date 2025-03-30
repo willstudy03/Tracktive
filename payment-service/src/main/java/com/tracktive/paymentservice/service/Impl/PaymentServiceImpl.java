@@ -3,8 +3,13 @@ package com.tracktive.paymentservice.service.Impl;
 import com.tracktive.paymentservice.exception.LockAcquisitionException;
 import com.tracktive.paymentservice.exception.PaymentNotFoundException;
 import com.tracktive.paymentservice.model.DTO.PaymentDTO;
+import com.tracktive.paymentservice.model.DTO.PaymentRequestDTO;
 import com.tracktive.paymentservice.repository.PaymentRepository;
 import com.tracktive.paymentservice.service.PaymentService;
+import com.tracktive.paymentservice.util.converter.PaymentConverter;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
 * Description: Payment Service Implementation
@@ -25,11 +31,14 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
 
+    private final Validator validator;
+
     private static final Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class);
 
     @Autowired
-    public PaymentServiceImpl(PaymentRepository paymentRepository) {
+    public PaymentServiceImpl(PaymentRepository paymentRepository, Validator validator) {
         this.paymentRepository = paymentRepository;
+        this.validator = validator;
     }
 
     @Override
@@ -74,26 +83,38 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional
-    public void addPayment(PaymentDTO paymentDTO) {
-        validatePaymentDTO(paymentDTO);
+    public PaymentDTO addPayment(PaymentRequestDTO paymentRequestDTO) {
+
+        validatePaymentRequestDTO(paymentRequestDTO);
+
+        PaymentDTO paymentDTO = PaymentConverter.toDTO(paymentRequestDTO);
+
         boolean result = paymentRepository.addPayment(paymentDTO);
         if (!result) {
             logger.error("Failed to add payment with id: {}", paymentDTO.getId());
             throw new RuntimeException("Failed to add payment with id: " + paymentDTO.getId());
         }
         logger.info("Payment [{}] added successfully", paymentDTO.getId());
+
+        return paymentRepository.selectPaymentById(paymentDTO.getId())
+                .orElseThrow(() -> new PaymentNotFoundException("Failed to fetch payment after insertion"));
     }
 
     @Override
     @Transactional
-    public void updatePayment(PaymentDTO paymentDTO) {
+    public PaymentDTO updatePayment(PaymentDTO paymentDTO) {
+
         validatePaymentDTO(paymentDTO);
+
         boolean result = paymentRepository.updatePayment(paymentDTO);
         if (!result) {
             logger.error("Failed to update payment with id: {}", paymentDTO.getId());
             throw new PaymentNotFoundException("Failed to update payment with id: " + paymentDTO.getId());
         }
         logger.info("Payment [{}] updated successfully", paymentDTO.getId());
+
+        return paymentRepository.selectPaymentById(paymentDTO.getId())
+                .orElseThrow(() -> new PaymentNotFoundException("Failed to fetch payment after update"));
     }
 
     @Override
@@ -121,9 +142,16 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private void validatePaymentDTO(PaymentDTO paymentDTO) {
-        if (Objects.isNull(paymentDTO)) {
-            throw new IllegalArgumentException("paymentDTO cannot be null");
+        Set<ConstraintViolation<PaymentDTO>> violations = validator.validate(paymentDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for paymentDTO", violations);
         }
-        //@TODO: PARAMETERS VALIDATION
+    }
+
+    private void validatePaymentRequestDTO(PaymentRequestDTO paymentRequestDTO) {
+        Set<ConstraintViolation<PaymentRequestDTO>> violations = validator.validate(paymentRequestDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for paymentRequestDTO", violations);
+        }
     }
 }

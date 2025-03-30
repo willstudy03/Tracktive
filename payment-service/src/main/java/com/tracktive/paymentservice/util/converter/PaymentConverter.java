@@ -1,9 +1,12 @@
-package com.tracktive.paymentservice.util;
+package com.tracktive.paymentservice.util.converter;
 
 import com.tracktive.paymentservice.model.DTO.PaymentDTO;
+import com.tracktive.paymentservice.model.DTO.PaymentRequestDTO;
 import com.tracktive.paymentservice.model.entity.Payment;
+import org.springframework.beans.BeanUtils;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
 * Description: Util for convert Payment model
@@ -31,6 +34,16 @@ public class PaymentConverter {
         paymentDTO.setPaymentStatus(payment.getPaymentStatus());
         paymentDTO.setUpdatedAt(payment.getUpdatedAt());
         paymentDTO.setCreatedAt(payment.getCreatedAt());
+        return paymentDTO;
+    }
+
+    public static PaymentDTO toDTO(PaymentRequestDTO paymentRequestDTO){
+        if (Objects.isNull(paymentRequestDTO)) {
+            return null;
+        }
+        PaymentDTO paymentDTO = new PaymentDTO();
+        paymentDTO.setId(UUID.randomUUID().toString());
+        BeanUtils.copyProperties(paymentRequestDTO, paymentDTO);
         return paymentDTO;
     }
 

@@ -6,7 +6,7 @@ import com.tracktive.paymentservice.model.DAO.PaymentTransactionDAO;
 import com.tracktive.paymentservice.model.DTO.PaymentTransactionDTO;
 import com.tracktive.paymentservice.model.entity.PaymentTransaction;
 import com.tracktive.paymentservice.repository.PaymentTransactionRepository;
-import com.tracktive.paymentservice.util.PaymentTransactionConverter;
+import com.tracktive.paymentservice.util.converter.PaymentTransactionConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;

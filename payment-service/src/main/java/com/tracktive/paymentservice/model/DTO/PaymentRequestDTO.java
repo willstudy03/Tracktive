@@ -9,16 +9,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
-* Description: Payment DTO
+* Description: Payment Request DTO
 * @author William Theo
-* @date 24/3/2025
+* @date 30/3/2025
 */
-public class PaymentDTO {
-
-    private String id;
+public class PaymentRequestDTO {
 
     @NotBlank(message = "Order ID is required")
     private String orderId;
@@ -46,15 +43,10 @@ public class PaymentDTO {
     @ValidEnum(enumClass = PaymentStatus.class, message = "Invalid Payment Status")
     private PaymentStatus paymentStatus;
 
-    private LocalDateTime updatedAt;
-
-    private LocalDateTime createdAt;
-
-    public PaymentDTO() {
+    public PaymentRequestDTO() {
     }
 
-    public PaymentDTO(String id, String orderId, String userId, String currency, BigDecimal amount, BigDecimal totalPaidAmount, PaymentMethod paymentMethod, PaymentStatus paymentStatus) {
-        this.id = id;
+    public PaymentRequestDTO(String orderId, String userId, String currency, BigDecimal amount, BigDecimal totalPaidAmount, PaymentMethod paymentMethod, PaymentStatus paymentStatus) {
         this.orderId = orderId;
         this.userId = userId;
         this.currency = currency;
@@ -64,83 +56,59 @@ public class PaymentDTO {
         this.paymentStatus = paymentStatus;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getOrderId() {
+    public @NotBlank(message = "Order ID is required") String getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(String orderId) {
+    public void setOrderId(@NotBlank(message = "Order ID is required") String orderId) {
         this.orderId = orderId;
     }
 
-    public String getUserId() {
+    public @NotBlank(message = "User ID is required") String getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(@NotBlank(message = "User ID is required") String userId) {
         this.userId = userId;
     }
 
-    public String getCurrency() {
+    public @NotBlank(message = "Currency is required") @Pattern(regexp = "^[A-Z]{3}$", message = "Invalid currency format (Use ISO 4217, e.g., USD, MYR, EUR)") String getCurrency() {
         return currency;
     }
 
-    public void setCurrency(String currency) {
+    public void setCurrency(@NotBlank(message = "Currency is required") @Pattern(regexp = "^[A-Z]{3}$", message = "Invalid currency format (Use ISO 4217, e.g., USD, MYR, EUR)") String currency) {
         this.currency = currency;
     }
 
-    public BigDecimal getAmount() {
+    public @NotNull(message = "Amount is required") @DecimalMin(value = "0.01", message = "Amount must be greater than 0") BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
+    public void setAmount(@NotNull(message = "Amount is required") @DecimalMin(value = "0.01", message = "Amount must be greater than 0") BigDecimal amount) {
         this.amount = amount;
     }
 
-    public BigDecimal getTotalPaidAmount() {
+    public @NotNull(message = "Total Paid Amount is required") @DecimalMin(value = "0.00", message = "Total Paid Amount must be at least 0") BigDecimal getTotalPaidAmount() {
         return totalPaidAmount;
     }
 
-    public void setTotalPaidAmount(BigDecimal totalPaidAmount) {
+    public void setTotalPaidAmount(@NotNull(message = "Total Paid Amount is required") @DecimalMin(value = "0.00", message = "Total Paid Amount must be at least 0") BigDecimal totalPaidAmount) {
         this.totalPaidAmount = totalPaidAmount;
     }
 
-    public PaymentMethod getPaymentMethod() {
+    public @NotNull(message = "Payment Method is required") PaymentMethod getPaymentMethod() {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(PaymentMethod paymentMethod) {
+    public void setPaymentMethod(@NotNull(message = "Payment Method is required") PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 
-    public PaymentStatus getPaymentStatus() {
+    public @NotNull(message = "Payment Status is required") PaymentStatus getPaymentStatus() {
         return paymentStatus;
     }
 
-    public void setPaymentStatus(PaymentStatus paymentStatus) {
+    public void setPaymentStatus(@NotNull(message = "Payment Status is required") PaymentStatus paymentStatus) {
         this.paymentStatus = paymentStatus;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }

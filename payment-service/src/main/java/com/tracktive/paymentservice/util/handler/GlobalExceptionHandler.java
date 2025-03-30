@@ -1,7 +1,7 @@
-package com.tracktive.deliveryservice.util.handler;
+package com.tracktive.paymentservice.util.handler;
 
-import com.tracktive.deliveryservice.exception.DeliveryTaskAlreadyExistException;
-import com.tracktive.deliveryservice.exception.DeliveryTaskNotFoundException;
+import com.tracktive.paymentservice.exception.PaymentAlreadyExistException;
+import com.tracktive.paymentservice.exception.PaymentNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ import java.util.Map;
 /**
 * Description: Global Exception Handler
 * @author William Theo
-* @date 30/3/2025
+* @date 27/3/2025
 */
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -50,13 +50,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
     }
 
-    @ExceptionHandler(DeliveryTaskNotFoundException.class)
-    public ResponseEntity<String> handleDeliveryTaskNotFoundException(DeliveryTaskNotFoundException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    @ExceptionHandler(PaymentNotFoundException.class)
+    public ResponseEntity<String> handlePaymentNotFoundException(PaymentNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
-    @ExceptionHandler(DeliveryTaskAlreadyExistException.class)
-    public ResponseEntity<String> handleDeliveryTaskAlreadyExistException(DeliveryTaskAlreadyExistException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    @ExceptionHandler(PaymentAlreadyExistException.class)
+    public ResponseEntity<String> handlePaymentAlreadyExistException(PaymentAlreadyExistException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
+
 }

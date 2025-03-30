@@ -1,4 +1,4 @@
-package com.tracktive.paymentservice.util;
+package com.tracktive.paymentservice.util.converter;
 
 import com.tracktive.paymentservice.model.DTO.PaymentTransactionDTO;
 import com.tracktive.paymentservice.model.entity.PaymentTransaction;
