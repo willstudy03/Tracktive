@@ -3,8 +3,13 @@ package com.tracktive.orderservice.service.Impl;
 import com.tracktive.orderservice.exception.CartItemNotFoundException;
 import com.tracktive.orderservice.exception.LockAcquisitionException;
 import com.tracktive.orderservice.model.DTO.CartItemDTO;
+import com.tracktive.orderservice.model.DTO.CartItemRequestDTO;
 import com.tracktive.orderservice.repository.CartItemRepository;
 import com.tracktive.orderservice.service.CartItemService;
+import com.tracktive.orderservice.util.converter.CartItemConverter;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
 * Description: Cart Item Service Implementation
@@ -24,11 +30,15 @@ import java.util.Objects;
 public class CartItemServiceImpl implements CartItemService {
 
     private final CartItemRepository cartItemRepository;
+
+    private final Validator validator;
+
     private static final Logger logger = LoggerFactory.getLogger(CartItemServiceImpl.class);
 
     @Autowired
-    public CartItemServiceImpl(CartItemRepository cartItemRepository) {
+    public CartItemServiceImpl(CartItemRepository cartItemRepository, Validator validator) {
         this.cartItemRepository = cartItemRepository;
+        this.validator = validator;
     }
 
     @Override
@@ -73,26 +83,39 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     @Transactional
-    public void addCartItem(CartItemDTO cartItemDTO) {
-        validateCartItemDTO(cartItemDTO);
+    public CartItemDTO addCartItem(CartItemRequestDTO cartItemRequestDTO) {
+
+        validateCartItemRequestDTO(cartItemRequestDTO);
+
+        CartItemDTO cartItemDTO = CartItemConverter.toDTO(cartItemRequestDTO);
+
+
         boolean result = cartItemRepository.addCartItem(cartItemDTO);
         if (!result) {
             logger.error("Failed to add cart item with id: {}", cartItemDTO.getId());
             throw new RuntimeException("Failed to add cart item with id: " + cartItemDTO.getId());
         }
         logger.info("Cart Item [{}] added successfully", cartItemDTO.getId());
+
+        return cartItemRepository.selectCartItemById(cartItemDTO.getId())
+                .orElseThrow(() -> new CartItemNotFoundException("Failed to find Cart Item after added to cart"));
     }
 
     @Override
     @Transactional
-    public void updateCartItem(CartItemDTO cartItemDTO) {
+    public CartItemDTO updateCartItem(CartItemDTO cartItemDTO) {
+
         validateCartItemDTO(cartItemDTO);
+
         boolean result = cartItemRepository.updateCartItem(cartItemDTO);
         if (!result) {
             logger.error("Failed to update cart item with id: {}", cartItemDTO.getId());
             throw new CartItemNotFoundException("Failed to update cart item with id: " + cartItemDTO.getId());
         }
         logger.info("Cart Item [{}] updated successfully", cartItemDTO.getId());
+
+        return cartItemRepository.selectCartItemById(cartItemDTO.getId())
+                .orElseThrow(() -> new CartItemNotFoundException("Failed to find Cart Item after update"));
     }
 
     @Override
@@ -120,11 +143,16 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     private void validateCartItemDTO(CartItemDTO cartItemDTO) {
-
-        if (Objects.isNull(cartItemDTO)) {
-            throw new IllegalArgumentException("cartItemDTO cannot be null");
+        Set<ConstraintViolation<CartItemDTO>> violations = validator.validate(cartItemDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for cartItemDTO", violations);
         }
+    }
 
-        //@TODO: PARAMETERS VALIDATION
+    private void validateCartItemRequestDTO(CartItemRequestDTO cartItemRequestDTO) {
+        Set<ConstraintViolation<CartItemRequestDTO>> violations = validator.validate(cartItemRequestDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for cartItemRequestDTO", violations);
+        }
     }
 }

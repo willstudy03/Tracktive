@@ -1,9 +1,12 @@
-package com.tracktive.orderservice.util;
+package com.tracktive.orderservice.util.converter;
 
 import com.tracktive.orderservice.model.DTO.CartItemDTO;
+import com.tracktive.orderservice.model.DTO.CartItemRequestDTO;
 import com.tracktive.orderservice.model.entity.CartItem;
+import org.springframework.beans.BeanUtils;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
 * Description: Util for convert Cart Item Model
@@ -32,6 +35,16 @@ public class CartItemConverter {
         cartItemDTO.setSubtotal(cartItem.getSubtotal());
         cartItemDTO.setUpdatedAt(cartItem.getUpdatedAt());
         cartItemDTO.setCreatedAt(cartItem.getCreatedAt());
+        return cartItemDTO;
+    }
+
+    public static CartItemDTO toDTO(CartItemRequestDTO cartItemRequestDTO){
+        if (Objects.isNull(cartItemRequestDTO)) {
+            return null;
+        }
+        CartItemDTO cartItemDTO = new CartItemDTO();
+        cartItemDTO.setId(UUID.randomUUID().toString());
+        BeanUtils.copyProperties(cartItemRequestDTO, cartItemDTO);
         return cartItemDTO;
     }
 

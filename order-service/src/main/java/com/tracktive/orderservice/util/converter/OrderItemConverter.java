@@ -1,4 +1,4 @@
-package com.tracktive.orderservice.util;
+package com.tracktive.orderservice.util.converter;
 
 import com.tracktive.orderservice.model.DTO.OrderItemDTO;
 import com.tracktive.orderservice.model.entity.OrderItem;

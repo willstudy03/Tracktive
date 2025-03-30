@@ -6,7 +6,7 @@ import com.tracktive.orderservice.model.DAO.OrderDAO;
 import com.tracktive.orderservice.model.DTO.OrderDTO;
 import com.tracktive.orderservice.model.entity.Order;
 import com.tracktive.orderservice.repository.OrderRepository;
-import com.tracktive.orderservice.util.OrderConverter;
+import com.tracktive.orderservice.util.converter.OrderConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;

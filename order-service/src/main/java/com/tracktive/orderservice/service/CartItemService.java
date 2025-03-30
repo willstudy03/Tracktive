@@ -1,6 +1,7 @@
 package com.tracktive.orderservice.service;
 
 import com.tracktive.orderservice.model.DTO.CartItemDTO;
+import com.tracktive.orderservice.model.DTO.CartItemRequestDTO;
 
 import java.util.List;
 
@@ -21,10 +22,10 @@ public interface CartItemService {
     CartItemDTO lockCartItemById(String id);
 
     // Insert operation
-    void addCartItem(CartItemDTO cartItemDTO);
+    CartItemDTO addCartItem(CartItemRequestDTO cartItemRequestDTO);
 
     // Update operation
-    void updateCartItem(CartItemDTO cartItemDTO);
+    CartItemDTO updateCartItem(CartItemDTO cartItemDTO);
 
     // Delete operation
     void deleteCartItemById(String id);

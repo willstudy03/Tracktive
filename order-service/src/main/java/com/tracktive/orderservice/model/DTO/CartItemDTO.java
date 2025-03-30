@@ -1,5 +1,7 @@
 package com.tracktive.orderservice.model.DTO;
 
+import jakarta.validation.constraints.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -10,22 +12,36 @@ import java.time.LocalDateTime;
 */
 public class CartItemDTO {
 
+    @NotBlank(message = "Cart Item ID is required")
     private String id;
 
+    @NotBlank(message = "Retailer ID is required")
     private String retailerId;
 
+    @NotBlank(message = "Supplier Product ID is required")
     private String supplierProductId;
 
+    @NotBlank(message = "Supplier ID is required")
     private String supplierId;
 
+    @NotBlank(message = "Product ID is required")
     private String productId;
 
+    @NotNull(message = "Quantity is required")
+    @Min(value = 1, message = "Quantity must be at least 1")
     private Integer quantity;
 
+    @NotNull(message = "Price snapshot is required")
+    @DecimalMin(value = "0.01", message = "Price snapshot must be greater than 0")
     private BigDecimal priceSnapshot;
 
+    @NotNull(message = "Discount snapshot is required")
+    @DecimalMin(value = "0.00", message = "Discount snapshot cannot be negative")
+    @DecimalMax(value = "100.00", message = "Discount snapshot cannot exceed 100")
     private BigDecimal discountSnapshot;
 
+    @NotNull(message = "Subtotal is required")
+    @DecimalMin(value = "0.00", message = "Subtotal cannot be negative")
     private BigDecimal subtotal;
 
     private LocalDateTime updatedAt;
