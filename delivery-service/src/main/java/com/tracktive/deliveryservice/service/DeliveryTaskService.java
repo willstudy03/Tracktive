@@ -1,6 +1,7 @@
 package com.tracktive.deliveryservice.service;
 
 import com.tracktive.deliveryservice.model.DTO.DeliveryTaskDTO;
+import com.tracktive.deliveryservice.model.DTO.DeliveryTaskRequestDTO;
 
 import java.util.List;
 /**
@@ -22,10 +23,10 @@ public interface DeliveryTaskService {
     DeliveryTaskDTO lockDeliveryTaskById(String id);
 
     // Insert operation
-    void addDeliveryTask(DeliveryTaskDTO deliveryTaskDTO);
+    DeliveryTaskDTO addDeliveryTask(DeliveryTaskRequestDTO deliveryTaskRequestDTO);
 
     // Update operation
-    void updateDeliveryTask(DeliveryTaskDTO deliveryTaskDTO);
+    DeliveryTaskDTO updateDeliveryTask(DeliveryTaskDTO deliveryTaskDTO);
 
     // Delete operation
     void deleteDeliveryTaskById(String id);

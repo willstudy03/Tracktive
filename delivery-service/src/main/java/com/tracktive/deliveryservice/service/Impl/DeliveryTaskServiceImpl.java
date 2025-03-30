@@ -3,8 +3,13 @@ package com.tracktive.deliveryservice.service.Impl;
 import com.tracktive.deliveryservice.exception.DeliveryTaskNotFoundException;
 import com.tracktive.deliveryservice.exception.LockAcquisitionException;
 import com.tracktive.deliveryservice.model.DTO.DeliveryTaskDTO;
+import com.tracktive.deliveryservice.model.DTO.DeliveryTaskRequestDTO;
 import com.tracktive.deliveryservice.repository.DeliveryTaskRepository;
 import com.tracktive.deliveryservice.service.DeliveryTaskService;
+import com.tracktive.deliveryservice.util.converter.DeliveryTaskConverter;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
 * Description: Delivery Task Service Implementation
@@ -25,11 +31,14 @@ public class DeliveryTaskServiceImpl implements DeliveryTaskService {
 
     private final DeliveryTaskRepository deliveryTaskRepository;
 
+    private final Validator validator;
+
     private static final Logger logger = LoggerFactory.getLogger(DeliveryTaskServiceImpl.class);
 
     @Autowired
-    public DeliveryTaskServiceImpl(DeliveryTaskRepository deliveryTaskRepository) {
+    public DeliveryTaskServiceImpl(DeliveryTaskRepository deliveryTaskRepository, Validator validator) {
         this.deliveryTaskRepository = deliveryTaskRepository;
+        this.validator = validator;
     }
 
     @Override
@@ -84,26 +93,38 @@ public class DeliveryTaskServiceImpl implements DeliveryTaskService {
 
     @Override
     @Transactional
-    public void addDeliveryTask(DeliveryTaskDTO deliveryTaskDTO) {
-        validateDeliveryTaskDTO(deliveryTaskDTO);
+    public DeliveryTaskDTO addDeliveryTask(DeliveryTaskRequestDTO deliveryTaskRequestDTO) {
+
+        validateDeliveryTaskRequestDTO(deliveryTaskRequestDTO);
+
+        DeliveryTaskDTO deliveryTaskDTO = DeliveryTaskConverter.toDTO(deliveryTaskRequestDTO);
+
         boolean result = deliveryTaskRepository.addDeliveryTask(deliveryTaskDTO);
         if (!result) {
             logger.error("Failed to add delivery task with id: {}", deliveryTaskDTO.getId());
             throw new RuntimeException("Failed to add delivery task with id: " + deliveryTaskDTO.getId());
         }
         logger.info("Delivery Task [{}] added successfully", deliveryTaskDTO.getId());
+
+        return deliveryTaskRepository.selectDeliveryTaskById(deliveryTaskDTO.getId())
+                .orElseThrow(() -> new DeliveryTaskNotFoundException("Failed to find delivery task after insertion"));
     }
 
     @Override
     @Transactional
-    public void updateDeliveryTask(DeliveryTaskDTO deliveryTaskDTO) {
+    public DeliveryTaskDTO updateDeliveryTask(DeliveryTaskDTO deliveryTaskDTO) {
+
         validateDeliveryTaskDTO(deliveryTaskDTO);
+
         boolean result = deliveryTaskRepository.updateDeliveryTask(deliveryTaskDTO);
         if (!result) {
             logger.error("Failed to update delivery task with id: {}", deliveryTaskDTO.getId());
             throw new DeliveryTaskNotFoundException("Failed to update delivery task with id: " + deliveryTaskDTO.getId());
         }
         logger.info("Delivery Task [{}] updated successfully", deliveryTaskDTO.getId());
+
+        return deliveryTaskRepository.selectDeliveryTaskById(deliveryTaskDTO.getId())
+                .orElseThrow(() -> new DeliveryTaskNotFoundException("Failed to find delivery task after insertion"));
     }
 
     @Override
@@ -137,9 +158,16 @@ public class DeliveryTaskServiceImpl implements DeliveryTaskService {
     }
 
     private void validateDeliveryTaskDTO(DeliveryTaskDTO deliveryTaskDTO) {
-        if (Objects.isNull(deliveryTaskDTO)) {
-            throw new IllegalArgumentException("deliveryTaskDTO cannot be null");
+        Set<ConstraintViolation<DeliveryTaskDTO>> violations = validator.validate(deliveryTaskDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for Delivery Task DTO", violations);
         }
-        //@TODO: PARAMETERS VALIDATION
+    }
+
+    private void validateDeliveryTaskRequestDTO(DeliveryTaskRequestDTO deliveryTaskRequestDTO) {
+        Set<ConstraintViolation<DeliveryTaskRequestDTO>> violations = validator.validate(deliveryTaskRequestDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for Delivery Task Request DTO", violations);
+        }
     }
 }

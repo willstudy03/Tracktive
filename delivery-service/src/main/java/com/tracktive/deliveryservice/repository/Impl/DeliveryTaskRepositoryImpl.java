@@ -6,7 +6,7 @@ import com.tracktive.deliveryservice.model.DAO.DeliveryTaskDAO;
 import com.tracktive.deliveryservice.model.DTO.DeliveryTaskDTO;
 import com.tracktive.deliveryservice.model.entity.DeliveryTask;
 import com.tracktive.deliveryservice.repository.DeliveryTaskRepository;
-import com.tracktive.deliveryservice.util.DeliveryTaskConverter;
+import com.tracktive.deliveryservice.util.converter.DeliveryTaskConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;

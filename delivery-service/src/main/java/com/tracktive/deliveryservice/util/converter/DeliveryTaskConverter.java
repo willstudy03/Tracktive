@@ -1,9 +1,12 @@
-package com.tracktive.deliveryservice.util;
+package com.tracktive.deliveryservice.util.converter;
 
 import com.tracktive.deliveryservice.model.DTO.DeliveryTaskDTO;
+import com.tracktive.deliveryservice.model.DTO.DeliveryTaskRequestDTO;
 import com.tracktive.deliveryservice.model.entity.DeliveryTask;
+import org.springframework.beans.BeanUtils;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
 * Description: Util for convert Delivery Task Model
@@ -34,6 +37,16 @@ public class DeliveryTaskConverter {
         deliveryTaskDTO.setDeliveryStatus(deliveryTask.getDeliveryStatus());
         deliveryTaskDTO.setUpdatedAt(deliveryTask.getUpdatedAt());
         deliveryTaskDTO.setCreatedAt(deliveryTask.getCreatedAt());
+        return deliveryTaskDTO;
+    }
+
+    public static DeliveryTaskDTO toDTO(DeliveryTaskRequestDTO deliveryTaskRequestDTO) {
+        if (Objects.isNull(deliveryTaskRequestDTO)) {
+            return null;
+        }
+        DeliveryTaskDTO deliveryTaskDTO = new DeliveryTaskDTO();
+        deliveryTaskDTO.setId(UUID.randomUUID().toString());
+        BeanUtils.copyProperties(deliveryTaskRequestDTO, deliveryTaskDTO);
         return deliveryTaskDTO;
     }
 
