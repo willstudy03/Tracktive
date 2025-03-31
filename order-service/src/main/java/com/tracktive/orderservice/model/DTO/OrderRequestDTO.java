@@ -7,17 +7,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
-* Description: Order DTO
+* Description: Order Request DTO
 * @author William Theo
-* @date 16/3/2025
+* @date 31/3/2025
 */
-public class OrderDTO {
-
-    @NotBlank(message = "Order ID is required")
-    private String id;
+public class OrderRequestDTO {
 
     @NotBlank(message = "Retailer ID is required")
     private String retailerId;
@@ -40,15 +36,10 @@ public class OrderDTO {
     @ValidEnum(enumClass = OrderStatus.class, message = "Invalid Order Status")
     private OrderStatus orderStatus;
 
-    private LocalDateTime updatedAt;
-
-    private LocalDateTime createdAt;
-
-    public OrderDTO() {
+    public OrderRequestDTO() {
     }
 
-    public OrderDTO(String id, String retailerId, String supplierId, String paymentId, String deliveryTaskId, BigDecimal totalAmount, String deliveryAddress, OrderStatus orderStatus) {
-        this.id = id;
+    public OrderRequestDTO(String retailerId, String supplierId, String paymentId, String deliveryTaskId, BigDecimal totalAmount, String deliveryAddress, OrderStatus orderStatus) {
         this.retailerId = retailerId;
         this.supplierId = supplierId;
         this.paymentId = paymentId;
@@ -56,14 +47,6 @@ public class OrderDTO {
         this.totalAmount = totalAmount;
         this.deliveryAddress = deliveryAddress;
         this.orderStatus = orderStatus;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getRetailerId() {
@@ -120,21 +103,5 @@ public class OrderDTO {
 
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }

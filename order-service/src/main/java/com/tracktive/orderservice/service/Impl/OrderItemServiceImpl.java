@@ -79,6 +79,8 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Transactional
     public OrderItemDTO addOrderItem(OrderItemRequestDTO orderItemRequestDTO) {
 
+        validateOrderItemRequestDTO(orderItemRequestDTO);
+
         OrderItemDTO orderItemDTO = OrderItemConverter.toDTO(orderItemRequestDTO);
 
         boolean result = orderItemRepository.addOrderItem(orderItemDTO);

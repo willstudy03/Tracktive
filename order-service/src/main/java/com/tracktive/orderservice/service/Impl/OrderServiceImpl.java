@@ -3,8 +3,13 @@ package com.tracktive.orderservice.service.Impl;
 import com.tracktive.orderservice.exception.LockAcquisitionException;
 import com.tracktive.orderservice.exception.OrderNotFoundException;
 import com.tracktive.orderservice.model.DTO.OrderDTO;
+import com.tracktive.orderservice.model.DTO.OrderRequestDTO;
 import com.tracktive.orderservice.repository.OrderRepository;
 import com.tracktive.orderservice.service.OrderService;
+import com.tracktive.orderservice.util.converter.OrderConverter;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
 * Description: Order Service Implementation
@@ -25,11 +31,14 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
 
+    private final Validator validator;
+
     private static final Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, Validator validator) {
         this.orderRepository = orderRepository;
+        this.validator = validator;
     }
 
     @Override
@@ -80,26 +89,38 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void addOrder(OrderDTO orderDTO) {
-        validateOrderDTO(orderDTO);
+    public OrderDTO addOrder(OrderRequestDTO orderRequestDTO) {
+
+        validateOrderRequestDTO(orderRequestDTO);
+
+        OrderDTO orderDTO = OrderConverter.toDTO(orderRequestDTO);
+
         boolean result = orderRepository.addOrder(orderDTO);
         if (!result) {
             logger.error("Failed to add order with id: {}", orderDTO.getId());
             throw new RuntimeException("Failed to add order with id: " + orderDTO.getId());
         }
         logger.info("Order [{}] added successfully", orderDTO.getId());
+
+        return orderRepository.selectOrderById(orderDTO.getId())
+                .orElseThrow(() -> new OrderNotFoundException("Order Not Found After Insertion"));
     }
 
     @Override
     @Transactional
-    public void updateOrder(OrderDTO orderDTO) {
+    public OrderDTO updateOrder(OrderDTO orderDTO) {
+
         validateOrderDTO(orderDTO);
+
         boolean result = orderRepository.updateOrder(orderDTO);
         if (!result) {
             logger.error("Failed to update order with id: {}", orderDTO.getId());
             throw new OrderNotFoundException("Failed to update order with id: " + orderDTO.getId());
         }
         logger.info("Order [{}] updated successfully", orderDTO.getId());
+
+        return orderRepository.selectOrderById(orderDTO.getId())
+                .orElseThrow(() -> new OrderNotFoundException("Order Not Found After Update"));
     }
 
     @Override
@@ -134,9 +155,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void validateOrderDTO(OrderDTO orderDTO) {
-        if (Objects.isNull(orderDTO)) {
-            throw new IllegalArgumentException("orderDTO cannot be null");
+        Set<ConstraintViolation<OrderDTO>> violations = validator.validate(orderDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for orderDTO", violations);
         }
-        //@TODO: PARAMETERS VALIDATION
+    }
+
+    private void validateOrderRequestDTO(OrderRequestDTO orderRequestDTO) {
+        Set<ConstraintViolation<OrderRequestDTO>> violations = validator.validate(orderRequestDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for orderRequestDTO", violations);
+        }
     }
 }

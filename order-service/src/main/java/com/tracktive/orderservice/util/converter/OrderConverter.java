@@ -1,9 +1,12 @@
 package com.tracktive.orderservice.util.converter;
 
 import com.tracktive.orderservice.model.DTO.OrderDTO;
+import com.tracktive.orderservice.model.DTO.OrderRequestDTO;
 import com.tracktive.orderservice.model.entity.Order;
+import org.springframework.beans.BeanUtils;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
 * Description: Util for convert Order Model
@@ -31,6 +34,16 @@ public class OrderConverter {
         orderDTO.setOrderStatus(order.getOrderStatus());
         orderDTO.setUpdatedAt(order.getUpdatedAt());
         orderDTO.setCreatedAt(order.getCreatedAt());
+        return orderDTO;
+    }
+
+    public static OrderDTO toDTO(OrderRequestDTO orderRequestDTO) {
+        if (Objects.isNull(orderRequestDTO)) {
+            return null;
+        }
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setId(UUID.randomUUID().toString());
+        BeanUtils.copyProperties(orderRequestDTO, orderDTO);
         return orderDTO;
     }
 

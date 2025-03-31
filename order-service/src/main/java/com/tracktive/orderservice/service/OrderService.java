@@ -1,6 +1,7 @@
 package com.tracktive.orderservice.service;
 
 import com.tracktive.orderservice.model.DTO.OrderDTO;
+import com.tracktive.orderservice.model.DTO.OrderRequestDTO;
 
 import java.util.List;
 
@@ -23,10 +24,10 @@ public interface OrderService {
     OrderDTO lockOrderById(String id);
 
     // Insert operation
-    void addOrder(OrderDTO orderDTO);
+    OrderDTO addOrder(OrderRequestDTO orderRequestDTO);
 
     // Update operation
-    void updateOrder(OrderDTO orderDTO);
+    OrderDTO updateOrder(OrderDTO orderDTO);
 
     // Delete operation
     void deleteOrderById(String id);
