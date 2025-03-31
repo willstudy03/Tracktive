@@ -3,8 +3,13 @@ package com.tracktive.orderservice.service.Impl;
 import com.tracktive.orderservice.exception.LockAcquisitionException;
 import com.tracktive.orderservice.exception.OrderItemNotFoundException;
 import com.tracktive.orderservice.model.DTO.OrderItemDTO;
+import com.tracktive.orderservice.model.DTO.OrderItemRequestDTO;
 import com.tracktive.orderservice.repository.OrderItemRepository;
 import com.tracktive.orderservice.service.OrderItemService;
+import com.tracktive.orderservice.util.converter.OrderItemConverter;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
 * Description: Order Item Service Implementation
@@ -25,11 +31,14 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     private final OrderItemRepository orderItemRepository;
 
+    private final Validator validator;
+
     private static final Logger logger = LoggerFactory.getLogger(OrderItemServiceImpl.class);
 
     @Autowired
-    public OrderItemServiceImpl(OrderItemRepository orderItemRepository) {
+    public OrderItemServiceImpl(OrderItemRepository orderItemRepository, Validator validator) {
         this.orderItemRepository = orderItemRepository;
+        this.validator = validator;
     }
 
     @Override
@@ -68,26 +77,36 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     @Transactional
-    public void addOrderItem(OrderItemDTO orderItemDTO) {
-        validateOrderItemDTO(orderItemDTO);
+    public OrderItemDTO addOrderItem(OrderItemRequestDTO orderItemRequestDTO) {
+
+        OrderItemDTO orderItemDTO = OrderItemConverter.toDTO(orderItemRequestDTO);
+
         boolean result = orderItemRepository.addOrderItem(orderItemDTO);
         if (!result) {
             logger.error("Failed to add order item with id: {}", orderItemDTO.getId());
             throw new RuntimeException("Failed to add order item with id: " + orderItemDTO.getId());
         }
         logger.info("Order Item [{}] added successfully", orderItemDTO.getId());
+
+        return orderItemRepository.selectOrderItemById(orderItemDTO.getId())
+                .orElseThrow(() -> new OrderItemNotFoundException("Order Item Not Found after insertion"));
     }
 
     @Override
     @Transactional
-    public void updateOrderItem(OrderItemDTO orderItemDTO) {
+    public OrderItemDTO updateOrderItem(OrderItemDTO orderItemDTO) {
+
         validateOrderItemDTO(orderItemDTO);
+
         boolean result = orderItemRepository.updateOrderItem(orderItemDTO);
         if (!result) {
             logger.error("Failed to update order item with id: {}", orderItemDTO.getId());
             throw new OrderItemNotFoundException("Failed to update order item with id: " + orderItemDTO.getId());
         }
         logger.info("Order Item [{}] updated successfully", orderItemDTO.getId());
+
+        return orderItemRepository.selectOrderItemById(orderItemDTO.getId())
+                .orElseThrow(() -> new OrderItemNotFoundException("Order Item Not Found after update"));
     }
 
     @Override
@@ -109,9 +128,16 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     private void validateOrderItemDTO(OrderItemDTO orderItemDTO) {
-        if (Objects.isNull(orderItemDTO)) {
-            throw new IllegalArgumentException("orderItemDTO cannot be null");
+        Set<ConstraintViolation<OrderItemDTO>> violations = validator.validate(orderItemDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for orderItemDTO", violations);
         }
-        //@TODO: PARAMETERS VALIDATION
+    }
+
+    private void validateOrderItemRequestDTO(OrderItemRequestDTO orderItemRequestDTO) {
+        Set<ConstraintViolation<OrderItemRequestDTO>> violations = validator.validate(orderItemRequestDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for orderItemRequestDTO", violations);
+        }
     }
 }

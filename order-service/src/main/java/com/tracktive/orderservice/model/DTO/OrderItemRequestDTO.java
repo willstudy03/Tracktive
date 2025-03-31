@@ -3,17 +3,13 @@ package com.tracktive.orderservice.model.DTO;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
-* Description: Order Item DTO
+* Description: Order Item Request DTO
 * @author William Theo
-* @date 19/3/2025
+* @date 30/3/2025
 */
-public class OrderItemDTO {
-
-    @NotBlank(message = "Order Item ID is required")
-    private String id;
+public class OrderItemRequestDTO {
 
     @NotBlank(message = "Order ID is required")
     private String orderId;
@@ -44,15 +40,10 @@ public class OrderItemDTO {
     @DecimalMin(value = "0.00", message = "Subtotal cannot be negative")
     private BigDecimal subtotal;
 
-    private LocalDateTime updatedAt;
-
-    private LocalDateTime createdAt;
-
-    public OrderItemDTO() {
+    public OrderItemRequestDTO() {
     }
 
-    public OrderItemDTO(String id, String orderId, String supplierProductId, String supplierId, String productId, Integer quantity, BigDecimal priceSnapshot, BigDecimal discountSnapshot, BigDecimal subtotal) {
-        this.id = id;
+    public OrderItemRequestDTO(String orderId, String supplierProductId, String supplierId, String productId, Integer quantity, BigDecimal priceSnapshot, BigDecimal discountSnapshot, BigDecimal subtotal) {
         this.orderId = orderId;
         this.supplierProductId = supplierProductId;
         this.supplierId = supplierId;
@@ -61,14 +52,6 @@ public class OrderItemDTO {
         this.priceSnapshot = priceSnapshot;
         this.discountSnapshot = discountSnapshot;
         this.subtotal = subtotal;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getOrderId() {
@@ -133,21 +116,5 @@ public class OrderItemDTO {
 
     public void setSubtotal(BigDecimal subtotal) {
         this.subtotal = subtotal;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }
