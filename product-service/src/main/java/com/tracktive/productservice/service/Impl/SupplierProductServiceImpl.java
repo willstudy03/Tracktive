@@ -1,7 +1,9 @@
 package com.tracktive.productservice.service.Impl;
 
+import com.tracktive.productservice.exception.InsufficientStockException;
 import com.tracktive.productservice.exception.LockAcquisitionException;
 import com.tracktive.productservice.exception.ProductNotFoundException;
+import com.tracktive.productservice.exception.StockDeductionException;
 import com.tracktive.productservice.model.DTO.SupplierProductDTO;
 import com.tracktive.productservice.model.DTO.SupplierProductRequestDTO;
 import com.tracktive.productservice.repository.SupplierProductRepository;
@@ -117,6 +119,47 @@ public class SupplierProductServiceImpl implements SupplierProductService {
 
     @Override
     @Transactional
+    public SupplierProductDTO deductSupplierProductStock(String supplierProductId, int quantity){
+
+        validateId(supplierProductId);
+
+        validateStockQuantity(quantity);
+
+        // First get the current product to check availability
+        SupplierProductDTO product = supplierProductRepository.selectSupplierProductById(supplierProductId)
+                .orElseThrow(() -> {
+                    logger.warn("Supplier product not found with id: {}", supplierProductId);
+                    return new ProductNotFoundException("Supplier product not found with id: " + supplierProductId);
+                });
+
+        // Verify sufficient stock (double-check even though we validated earlier)
+        if (product.getStockQuantity() < quantity) {
+            logger.error("Insufficient stock for product {}: requested {}, available {}",
+                    supplierProductId, quantity, product.getStockQuantity());
+            throw new InsufficientStockException("Insufficient stock for product: " + supplierProductId);
+        }
+
+        // Update the stock quantity
+        product.setStockQuantity(product.getStockQuantity() - quantity);
+
+        // Save the updated product
+        boolean result = supplierProductRepository.updateSupplierProduct(product);
+        if (!result) {
+            logger.error("Failed to deduct stock for product with id: {}", supplierProductId);
+            throw new StockDeductionException("Failed to deduct stock for product with id: " + supplierProductId);
+        }
+
+        logger.info("Successfully deducted {} units from product {}", quantity, supplierProductId);
+
+        // Return the updated product
+        return supplierProductRepository.selectSupplierProductById(supplierProductId)
+                .orElseThrow(() -> new ProductNotFoundException("Failed to fetch supplier product after stock deduction"));
+
+    }
+
+
+    @Override
+    @Transactional
     public void deleteSupplierProductById(String id) {
         validateId(id);
         boolean result = supplierProductRepository.deleteSupplierProductById(id);
@@ -125,6 +168,12 @@ public class SupplierProductServiceImpl implements SupplierProductService {
             throw new ProductNotFoundException("Failed to delete supplier product with id: " + id);
         }
         logger.info("Supplier Product [{}] deleted successfully", id);
+    }
+
+    private void validateStockQuantity(int quantity){
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("Quantity to deduct must be greater than zero");
+        }
     }
 
     private void validateId(String id){

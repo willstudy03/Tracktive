@@ -29,6 +29,8 @@ public interface SupplierProductService {
     // Update operation
     SupplierProductDTO updateSupplierProduct(SupplierProductDTO supplierProductDTO);
 
+    SupplierProductDTO deductSupplierProductStock(String supplierProductId, int quantity);
+
     // Delete operation
     void deleteSupplierProductById(String id);
 }

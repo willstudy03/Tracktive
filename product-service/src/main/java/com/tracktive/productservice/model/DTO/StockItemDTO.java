@@ -12,7 +12,7 @@ import jakarta.validation.constraints.NotNull;
 public class StockItemDTO {
 
     @NotBlank(message = "Product ID is required")
-    private String supplierProductDTO;
+    private String supplierProductID;
 
     @NotNull(message = "Quantity is required")
     @Min(value = 1, message = "Quantity must be at least 1")
@@ -21,17 +21,17 @@ public class StockItemDTO {
     public StockItemDTO() {
     }
 
-    public StockItemDTO(String supplierProductDTO, Integer quantity) {
-        this.supplierProductDTO = supplierProductDTO;
+    public StockItemDTO(String supplierProductID, Integer quantity) {
+        this.supplierProductID = supplierProductID;
         this.quantity = quantity;
     }
 
-    public @NotBlank(message = "Product ID is required") String getSupplierProductDTO() {
-        return supplierProductDTO;
+    public @NotBlank(message = "Product ID is required") String getSupplierProductID() {
+        return supplierProductID;
     }
 
-    public void setSupplierProductDTO(@NotBlank(message = "Product ID is required") String supplierProductDTO) {
-        this.supplierProductDTO = supplierProductDTO;
+    public void setSupplierProductID(@NotBlank(message = "Product ID is required") String supplierProductID) {
+        this.supplierProductID = supplierProductID;
     }
 
     public @NotNull(message = "Quantity is required") @Min(value = 1, message = "Quantity must be at least 1") Integer getQuantity() {
