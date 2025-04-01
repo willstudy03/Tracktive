@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "stock_management";
+
+service StockManagementService {
+    rpc ValidateStock (StockManagementRequest) returns (StockManagementResponse);
+    rpc DeductStock (StockManagementRequest) returns (StockManagementResponse);
+}
+
+message StockManagementRequest {
+    repeated StockItem stockItems = 1;
+}
+
+message StockItem {
+    string supplierProductId = 1;
+    int32 quantity = 2;
+}
+
+message StockValidationResult {
+    string supplierProductId = 1;
+    bool valid = 2;
+    string resultMessage = 3;
+}
+
+message StockManagementResponse {
+    repeated StockValidationResult results = 1;
+}
