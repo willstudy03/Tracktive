@@ -7,7 +7,7 @@ package com.tracktive.productservice.model.DTO;
 */
 public class StockValidationResultDTO {
 
-    private String supplierProductId;
+    private SupplierProductDTO supplierProductDTO;
 
     private boolean valid;
 
@@ -16,18 +16,18 @@ public class StockValidationResultDTO {
     public StockValidationResultDTO() {
     }
 
-    public StockValidationResultDTO(String supplierProductId, boolean valid, String resultMessage) {
-        this.supplierProductId = supplierProductId;
+    public StockValidationResultDTO(SupplierProductDTO supplierProductDTO, boolean valid, String resultMessage) {
+        this.supplierProductDTO = supplierProductDTO;
         this.valid = valid;
         this.resultMessage = resultMessage;
     }
 
-    public String getSupplierProductId() {
-        return supplierProductId;
+    public SupplierProductDTO getSupplierProductDTO() {
+        return supplierProductDTO;
     }
 
-    public void setSupplierProductId(String supplierProductId) {
-        this.supplierProductId = supplierProductId;
+    public void setSupplierProductDTO(SupplierProductDTO supplierProductDTO) {
+        this.supplierProductDTO = supplierProductDTO;
     }
 
     public boolean isValid() {

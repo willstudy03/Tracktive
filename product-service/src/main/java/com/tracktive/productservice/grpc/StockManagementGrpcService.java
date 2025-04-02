@@ -10,10 +10,7 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import stock_management.StockManagementRequest;
-import stock_management.StockManagementResponse;
-import stock_management.StockManagementServiceGrpc;
-import stock_management.StockValidationResult;
+import stock_management.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,11 +52,26 @@ public class StockManagementGrpcService extends StockManagementServiceGrpc.Stock
         StockManagementResponse.Builder responseBuilder = StockManagementResponse.newBuilder();
 
         for (StockValidationResultDTO dto : responseDTO.getResults()) {
+            // Convert SupplierProductDTO to gRPC SupplierProduct
+            SupplierProduct supplierProduct = SupplierProduct.newBuilder()
+                    .setSupplierProductId(dto.getSupplierProductDTO().getSupplierProductId())
+                    .setSupplierId(dto.getSupplierProductDTO().getSupplierId())
+                    .setProductId(dto.getSupplierProductDTO().getProductId())
+                    .setPrice(dto.getSupplierProductDTO().getPrice().doubleValue())  // Convert BigDecimal to double
+                    .setDiscountPercentage(dto.getSupplierProductDTO().getDiscountPercentage().doubleValue())
+                    .setStockQuantity(dto.getSupplierProductDTO().getStockQuantity())
+                    .setProductStatus(ProductStatus.valueOf(dto.getSupplierProductDTO().getProductStatus().name())) // Enum mapping
+                    .setUpdatedAt(dto.getSupplierProductDTO().getUpdatedAt().toString()) // Convert LocalDateTime to String
+                    .setCreatedAt(dto.getSupplierProductDTO().getCreatedAt().toString())
+                    .build();
+
+            // Build gRPC StockValidationResult
             StockValidationResult grpcResult = StockValidationResult.newBuilder()
-                    .setSupplierProductId(dto.getSupplierProductId())
+                    .setSupplierProduct(supplierProduct)
                     .setValid(dto.isValid())
                     .setResultMessage(dto.getResultMessage())
                     .build();
+
             responseBuilder.addResults(grpcResult);
         }
 
@@ -90,13 +102,30 @@ public class StockManagementGrpcService extends StockManagementServiceGrpc.Stock
         StockManagementResponse.Builder responseBuilder = StockManagementResponse.newBuilder();
 
         for (StockValidationResultDTO dto : responseDTO.getResults()) {
+            // Convert SupplierProductDTO to gRPC SupplierProduct
+            SupplierProduct supplierProduct = SupplierProduct.newBuilder()
+                    .setSupplierProductId(dto.getSupplierProductDTO().getSupplierProductId())
+                    .setSupplierId(dto.getSupplierProductDTO().getSupplierId())
+                    .setProductId(dto.getSupplierProductDTO().getProductId())
+                    .setPrice(dto.getSupplierProductDTO().getPrice().doubleValue())  // Convert BigDecimal to double
+                    .setDiscountPercentage(dto.getSupplierProductDTO().getDiscountPercentage().doubleValue())
+                    .setStockQuantity(dto.getSupplierProductDTO().getStockQuantity())
+                    .setProductStatus(ProductStatus.valueOf(dto.getSupplierProductDTO().getProductStatus().name())) // Enum mapping
+                    .setUpdatedAt(dto.getSupplierProductDTO().getUpdatedAt().toString()) // Convert LocalDateTime to String
+                    .setCreatedAt(dto.getSupplierProductDTO().getCreatedAt().toString())
+                    .build();
+
+            // Build gRPC StockValidationResult
             StockValidationResult grpcResult = StockValidationResult.newBuilder()
-                    .setSupplierProductId(dto.getSupplierProductId())
+                    .setSupplierProduct(supplierProduct)
                     .setValid(dto.isValid())
                     .setResultMessage(dto.getResultMessage())
                     .build();
+
             responseBuilder.addResults(grpcResult);
         }
+
+
 
         StockManagementResponse response = responseBuilder.build();
 

@@ -43,7 +43,7 @@ public class StockManagementServiceImpl implements StockManagementService {
                 .map(stockItemDTO -> {
                     SupplierProductDTO supplierProductDTO = supplierProductService.selectSupplierProductById(stockItemDTO.getSupplierProductID());
                     boolean isAvailable = supplierProductDTO.getStockQuantity() >= stockItemDTO.getQuantity();
-                    return new StockValidationResultDTO(stockItemDTO.getSupplierProductID(), isAvailable, isAvailable ? "Stock available" : "Insufficient stock");
+                    return new StockValidationResultDTO(supplierProductDTO, isAvailable, isAvailable ? "Stock available" : "Insufficient stock");
                 })
                 .collect(Collectors.toList());
 
@@ -62,7 +62,7 @@ public class StockManagementServiceImpl implements StockManagementService {
                 .map(stockItemDTO -> {
                     SupplierProductDTO supplierProductDTO = supplierProductService.lockSupplierProductById(stockItemDTO.getSupplierProductID());
                     boolean isAvailable = supplierProductDTO.getStockQuantity() >= stockItemDTO.getQuantity();
-                    return new StockValidationResultDTO(stockItemDTO.getSupplierProductID(), isAvailable, isAvailable ? "Stock available" : "Insufficient stock");
+                    return new StockValidationResultDTO(supplierProductDTO, isAvailable, isAvailable ? "Stock available" : "Insufficient stock");
                 })
                 .collect(Collectors.toList());
 
@@ -82,7 +82,7 @@ public class StockManagementServiceImpl implements StockManagementService {
             );
 
             deductionResults.add(new StockValidationResultDTO(
-                    stockItemDTO.getSupplierProductID(),
+                    updatedProduct,
                     true,
                     "Stock deducted successfully. Remaining: " + updatedProduct.getStockQuantity()
             ));
