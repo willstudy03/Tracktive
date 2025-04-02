@@ -17,8 +17,27 @@ message StockItem {
     int32 quantity = 2;
 }
 
-message StockValidationResult {
+message SupplierProduct {
     string supplierProductId = 1;
+    string supplierId = 2;
+    string productId = 3;
+    double price = 4;
+    double discountPercentage = 5;
+    int32 stockQuantity = 6;
+    ProductStatus productStatus = 7;
+    string updatedAt = 8;
+    string createdAt = 9;
+}
+
+enum ProductStatus {
+    ACTIVE = 0;
+    INACTIVE = 1;
+    DISCONTINUED = 2;
+    OUT_OF_STOCK = 3;
+}
+
+message StockValidationResult {
+    SupplierProduct supplierProduct = 1;
     bool valid = 2;
     string resultMessage = 3;
 }
