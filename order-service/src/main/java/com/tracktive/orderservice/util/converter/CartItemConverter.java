@@ -1,6 +1,7 @@
 package com.tracktive.orderservice.util.converter;
 
 import com.tracktive.orderservice.model.DTO.CartItemDTO;
+import com.tracktive.orderservice.model.DTO.CartItemManagementResponseDTO;
 import com.tracktive.orderservice.model.DTO.CartItemRequestDTO;
 import com.tracktive.orderservice.model.entity.CartItem;
 import org.springframework.beans.BeanUtils;
@@ -65,5 +66,14 @@ public class CartItemConverter {
         cartItem.setUpdatedAt(cartItemDTO.getUpdatedAt());
         cartItem.setCreatedAt(cartItemDTO.getCreatedAt());
         return cartItem;
+    }
+
+    public static CartItemManagementResponseDTO toCartItemManagementResponseDTO (CartItemDTO cartItemDTO){
+        if (Objects.isNull(cartItemDTO)) {
+            return null;
+        }
+        CartItemManagementResponseDTO cartItemManagementResponseDTO = new CartItemManagementResponseDTO();
+        BeanUtils.copyProperties(cartItemDTO, cartItemManagementResponseDTO);
+        return cartItemManagementResponseDTO;
     }
 }
