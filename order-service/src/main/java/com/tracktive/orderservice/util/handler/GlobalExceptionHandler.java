@@ -1,6 +1,7 @@
 package com.tracktive.orderservice.util.handler;
 
 import com.tracktive.orderservice.exception.*;
+import io.grpc.StatusRuntimeException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -76,6 +77,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<String> handleOrderNotFoundException(OrderNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(CartSupplierMismatchException.class)
+    public ResponseEntity<String> handleCartSupplierMismatchException(CartSupplierMismatchException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(StockUnavailableException.class)
+    public ResponseEntity<String> handleStockUnavailableException(StockUnavailableException exception){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(StatusRuntimeException.class)
+    public ResponseEntity<String> handleGrpcException(StatusRuntimeException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 }

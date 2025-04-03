@@ -1,5 +1,6 @@
 package com.tracktive.orderservice.service.Impl;
 
+import com.tracktive.orderservice.exception.CartSupplierMismatchException;
 import com.tracktive.orderservice.exception.StockUnavailableException;
 import com.tracktive.orderservice.grpc.StockManagementServiceGrpcClient;
 import com.tracktive.orderservice.model.DTO.*;
@@ -7,6 +8,9 @@ import com.tracktive.orderservice.service.CartItemManagementService;
 import com.tracktive.orderservice.service.CartItemService;
 import com.tracktive.orderservice.util.PriceCalculatorUtil;
 import com.tracktive.orderservice.util.converter.CartItemConverter;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 /**
 * Description: Cart Item Management Service Implementation
@@ -28,17 +33,22 @@ public class CartItemManagementServiceImpl implements CartItemManagementService 
 
     private final StockManagementServiceGrpcClient stockManagementServiceGrpcClient;
 
+    private final Validator validator;
+
     private static final Logger log = LoggerFactory.getLogger(CartItemManagementServiceImpl.class);
 
     @Autowired
-    public CartItemManagementServiceImpl(CartItemService cartItemService, StockManagementServiceGrpcClient stockManagementServiceGrpcClient) {
+    public CartItemManagementServiceImpl(CartItemService cartItemService, StockManagementServiceGrpcClient stockManagementServiceGrpcClient, Validator validator) {
         this.cartItemService = cartItemService;
         this.stockManagementServiceGrpcClient = stockManagementServiceGrpcClient;
+        this.validator = validator;
     }
 
     @Override
     @Transactional
     public CartItemManagementResponseDTO addProductToCart(CartItemManagementRequestDTO cartItemManagementRequestDTO) {
+
+        validateCartItemManagementRequestDTO(cartItemManagementRequestDTO);
 
         // Retrieve the cart for the given retailer
         List<CartItemDTO> cart = cartItemService.selectAllByRetailerId(cartItemManagementRequestDTO.getRetailerId());
@@ -57,7 +67,7 @@ public class CartItemManagementServiceImpl implements CartItemManagementService 
                     .allMatch(cartItemDTO -> cartItemDTO.getSupplierId().equals(supplierProductDTO.getSupplierId()));
 
             if(!sameSupplier){
-                throw new IllegalArgumentException("You can only buy products from the same supplier");
+                throw new CartSupplierMismatchException("You can only buy products from the same supplier");
             }
         }
 
@@ -90,5 +100,12 @@ public class CartItemManagementServiceImpl implements CartItemManagementService 
                 .toCartItemManagementResponseDTO(cartItemService.addCartItem(cartItemRequestDTO));
 
         return  cartItemManagementResponseDTO;
+    }
+
+    private void validateCartItemManagementRequestDTO(CartItemManagementRequestDTO cartItemManagementRequestDTO) {
+        Set<ConstraintViolation<CartItemManagementRequestDTO>> violations = validator.validate(cartItemManagementRequestDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for cartItemManagementRequestDTO", violations);
+        }
     }
 }
