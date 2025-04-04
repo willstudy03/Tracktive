@@ -106,10 +106,7 @@ public class CartItemManagementServiceImpl implements CartItemManagementService 
                 totalPrice
         );
 
-        CartItemManagementResponseDTO cartItemManagementResponseDTO = CartItemConverter
-                .toCartItemManagementResponseDTO(cartItemService.addCartItem(cartItemRequestDTO));
-
-        return  cartItemManagementResponseDTO;
+        return CartItemConverter.toCartItemManagementResponseDTO(cartItemService.addCartItem(cartItemRequestDTO));
     }
 
     @Override
@@ -148,6 +145,12 @@ public class CartItemManagementServiceImpl implements CartItemManagementService 
         return CartItemConverter.toCartItemManagementResponseDTO(cartItemService.updateCartItem(cartItem));
     }
 
+    @Override
+    public void deleteCartItemById(String id) {
+        validateId(id);
+        cartItemService.deleteCartItemById(id);
+    }
+
     private void validateCartItemManagementRequestDTO(CartItemManagementRequestDTO cartItemManagementRequestDTO) {
         Set<ConstraintViolation<CartItemManagementRequestDTO>> violations = validator.validate(cartItemManagementRequestDTO);
         if (!violations.isEmpty()) {
@@ -165,6 +168,12 @@ public class CartItemManagementServiceImpl implements CartItemManagementService 
     private void validateRetailerId(String id) {
         if (Objects.isNull(id) || id.trim().isEmpty()) {
             throw new IllegalArgumentException("Retailer ID cannot be null or empty");
+        }
+    }
+
+    private void validateId(String id) {
+        if (Objects.isNull(id) || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("Cart Item ID cannot be null or empty");
         }
     }
 }

@@ -27,7 +27,7 @@ public class CartItemManagementController {
         this.cartItemManagementService = cartItemManagementService;
     }
 
-    @GetMapping("/{retailerId}")
+    @GetMapping("retailer/{retailerId}")
     public ResponseEntity<List<CartItemManagementResponseDTO>> getCartItems(@PathVariable String retailerId){
         List<CartItemManagementResponseDTO> cartItems = cartItemManagementService.selectCartItems(retailerId);
         return ResponseEntity.ok(cartItems);
@@ -43,5 +43,11 @@ public class CartItemManagementController {
     public ResponseEntity<CartItemManagementResponseDTO> updateCartItem(@RequestBody @Valid CartItemManagementResponseDTO cartItemManagementResponseDTO){
         CartItemManagementResponseDTO cartItem = cartItemManagementService.updateCartItem(cartItemManagementResponseDTO);
         return ResponseEntity.ok(cartItem);
+    }
+
+    @DeleteMapping("/{cartItemId}")
+    public ResponseEntity<String> deleteCartItem(@PathVariable String cartItemId){
+        cartItemManagementService.deleteCartItemById(cartItemId);
+        return ResponseEntity.ok("Cart Item with ID " + cartItemId + " deleted successfully.");
     }
 }

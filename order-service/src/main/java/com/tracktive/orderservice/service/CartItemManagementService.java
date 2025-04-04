@@ -17,4 +17,6 @@ public interface CartItemManagementService {
     CartItemManagementResponseDTO addCartItem(CartItemManagementRequestDTO cartItemManagementRequestDTO);
 
     CartItemManagementResponseDTO updateCartItem(CartItemManagementResponseDTO cartItemManagementResponseDTO);
+
+    void deleteCartItemById(String id);
 }
