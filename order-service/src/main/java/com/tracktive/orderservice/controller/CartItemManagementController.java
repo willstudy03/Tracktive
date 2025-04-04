@@ -28,7 +28,7 @@ public class CartItemManagementController {
     }
 
     @GetMapping("/{retailerId}")
-    public ResponseEntity<List<CartItemManagementResponseDTO>> getCartItem(@PathVariable String retailerId){
+    public ResponseEntity<List<CartItemManagementResponseDTO>> getCartItems(@PathVariable String retailerId){
         List<CartItemManagementResponseDTO> cartItems = cartItemManagementService.selectCartItems(retailerId);
         return ResponseEntity.ok(cartItems);
     }
@@ -37,5 +37,11 @@ public class CartItemManagementController {
     public ResponseEntity<CartItemManagementResponseDTO> addItemToCart(@RequestBody @Valid CartItemManagementRequestDTO cartItemManagementRequestDTO){
         CartItemManagementResponseDTO cartItem = cartItemManagementService.addCartItem(cartItemManagementRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(cartItem);
+    }
+
+    @PutMapping
+    public ResponseEntity<CartItemManagementResponseDTO> updateCartItem(@RequestBody @Valid CartItemManagementResponseDTO cartItemManagementResponseDTO){
+        CartItemManagementResponseDTO cartItem = cartItemManagementService.updateCartItem(cartItemManagementResponseDTO);
+        return ResponseEntity.ok(cartItem);
     }
 }

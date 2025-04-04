@@ -15,4 +15,6 @@ public interface CartItemManagementService {
     List<CartItemManagementResponseDTO> selectCartItems(String userId);
 
     CartItemManagementResponseDTO addCartItem(CartItemManagementRequestDTO cartItemManagementRequestDTO);
+
+    CartItemManagementResponseDTO updateCartItem(CartItemManagementResponseDTO cartItemManagementResponseDTO);
 }

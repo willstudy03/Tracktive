@@ -112,10 +112,53 @@ public class CartItemManagementServiceImpl implements CartItemManagementService 
         return  cartItemManagementResponseDTO;
     }
 
+    @Override
+    @Transactional
+    public CartItemManagementResponseDTO updateCartItem(CartItemManagementResponseDTO cartItemManagementResponseDTO) {
+
+        validateCartItemManagementResponseDTO(cartItemManagementResponseDTO);
+
+        CartItemDTO cartItem = cartItemService.lockCartItemById(cartItemManagementResponseDTO.getId());
+
+        // Send request to Stock Management Service Server
+        StockValidationResultDTO stockValidationResultDTO = stockManagementServiceGrpcClient.
+                validateStock(new StockItemDTO(cartItemManagementResponseDTO.getSupplierProductId(), cartItemManagementResponseDTO.getQuantity()));
+
+        // Extract DTO from response
+        SupplierProductDTO supplierProductDTO = stockValidationResultDTO.getSupplierProductDTO();
+
+        if (!stockValidationResultDTO.isValid()){
+            throw new StockUnavailableException("Stock Unavailable for product :" + stockValidationResultDTO
+                    .getSupplierProductDTO()
+                    .getSupplierProductId() + stockValidationResultDTO.getResultMessage());
+        }
+
+        // Use the utility class for price calculations
+        BigDecimal finalPrice = PriceCalculatorUtil.calculateFinalPrice(
+                BigDecimal.valueOf(supplierProductDTO.getPrice()),
+                BigDecimal.valueOf(supplierProductDTO.getDiscountPercentage()));
+
+        BigDecimal totalPrice = PriceCalculatorUtil.calculateTotalPrice(finalPrice, cartItemManagementResponseDTO.getQuantity());
+
+        cartItem.setQuantity(cartItemManagementResponseDTO.getQuantity());
+        cartItem.setPriceSnapshot(BigDecimal.valueOf(supplierProductDTO.getPrice()));
+        cartItem.setDiscountSnapshot(BigDecimal.valueOf(supplierProductDTO.getDiscountPercentage()));
+        cartItem.setSubtotal(totalPrice);
+
+        return CartItemConverter.toCartItemManagementResponseDTO(cartItemService.updateCartItem(cartItem));
+    }
+
     private void validateCartItemManagementRequestDTO(CartItemManagementRequestDTO cartItemManagementRequestDTO) {
         Set<ConstraintViolation<CartItemManagementRequestDTO>> violations = validator.validate(cartItemManagementRequestDTO);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException("Validation failed for cartItemManagementRequestDTO", violations);
+        }
+    }
+
+    private void validateCartItemManagementResponseDTO(CartItemManagementResponseDTO cartItemManagementResponseDTO) {
+        Set<ConstraintViolation<CartItemManagementResponseDTO>> violations = validator.validate(cartItemManagementResponseDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for cartItemManagementResponseDTO", violations);
         }
     }
 

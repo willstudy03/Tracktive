@@ -1,5 +1,9 @@
 package com.tracktive.orderservice.model.DTO;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 import java.math.BigDecimal;
 /**
 * Description: Cart Item Management Response DTO
@@ -8,16 +12,21 @@ import java.math.BigDecimal;
 */
 public class CartItemManagementResponseDTO {
 
+    @NotBlank(message = "CartItem ID is required")
     private String id;
 
+    @NotBlank(message = "Retailer ID cannot be blank")
     private String retailerId;
 
+    @NotBlank(message = "Supplier Product ID cannot be blank")
     private String supplierProductId;
 
     private String supplierId;
 
     private String productId;
 
+    @NotNull(message = "Quantity cannot be null")
+    @Positive(message = "Quantity must be greater than 0")
     private Integer quantity;
 
     private BigDecimal priceSnapshot;
