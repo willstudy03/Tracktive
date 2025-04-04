@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -45,8 +46,17 @@ public class CartItemManagementServiceImpl implements CartItemManagementService 
     }
 
     @Override
+    public List<CartItemManagementResponseDTO> selectCartItems(String retailerId) {
+        validateRetailerId(retailerId);
+        return cartItemService.selectAllByRetailerId(retailerId)
+                .stream()
+                .map(CartItemConverter::toCartItemManagementResponseDTO)
+                .toList();
+    }
+
+    @Override
     @Transactional
-    public CartItemManagementResponseDTO addProductToCart(CartItemManagementRequestDTO cartItemManagementRequestDTO) {
+    public CartItemManagementResponseDTO addCartItem(CartItemManagementRequestDTO cartItemManagementRequestDTO) {
 
         validateCartItemManagementRequestDTO(cartItemManagementRequestDTO);
 
@@ -106,6 +116,12 @@ public class CartItemManagementServiceImpl implements CartItemManagementService 
         Set<ConstraintViolation<CartItemManagementRequestDTO>> violations = validator.validate(cartItemManagementRequestDTO);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException("Validation failed for cartItemManagementRequestDTO", violations);
+        }
+    }
+
+    private void validateRetailerId(String id) {
+        if (Objects.isNull(id) || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("Retailer ID cannot be null or empty");
         }
     }
 }
