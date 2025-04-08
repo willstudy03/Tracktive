@@ -28,6 +28,8 @@ public class OrderEventProducer {
 
         OrderCreateEvent event = OrderCreateEvent.newBuilder()
                 .setOrderId(orderDTO.getId())
+                .setRetailerId(orderDTO.getRetailerId())
+                .setAmount(orderDTO.getTotalAmount().doubleValue())
                 .setEventType("ORDER_CREATED")
                 .build();
 
