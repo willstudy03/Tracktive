@@ -5,4 +5,18 @@ package com.tracktive.orderservice.model.DTO;
 * @date 4/4/2025
 */
 public class OrderActionResponseDTO {
+
+    String orderId;
+
+    public OrderActionResponseDTO(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
 }

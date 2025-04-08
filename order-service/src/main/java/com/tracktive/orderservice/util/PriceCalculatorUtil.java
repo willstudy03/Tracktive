@@ -1,6 +1,9 @@
 package com.tracktive.orderservice.util;
 
+import com.tracktive.orderservice.model.DTO.CartItemDTO;
+
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
 * Description:
@@ -36,5 +39,21 @@ public class PriceCalculatorUtil {
      */
     public static BigDecimal calculateTotalPrice(BigDecimal finalPrice, int quantity) {
         return finalPrice.multiply(BigDecimal.valueOf(quantity));
+    }
+
+    /**
+     * Calculates the total price of all cart items by summing their subtotals.
+     *
+     * @param cartItems List of CartItemDTO, each with its own subtotal.
+     * @return Total price for the entire cart.
+     */
+    public static BigDecimal calculateTotalCartPrice(List<CartItemDTO> cartItems) {
+        if (cartItems == null || cartItems.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+
+        return cartItems.stream()
+                .map(CartItemDTO::getSubtotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

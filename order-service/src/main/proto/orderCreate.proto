@@ -1,7 +1,8 @@
 syntax = "proto3";
 
-package createOrder.events;
+package OrderAction.events;
 option java_multiple_files = true;
-message createOrderEvent{
+message OrderCreateEvent{
     string orderId = 1;
+    string eventType = 2;
 }
