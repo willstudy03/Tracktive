@@ -1,12 +1,15 @@
 package com.tracktive.orderservice.kafka;
 
-import OrderAction.events.OrderCreateEvent;
-import com.tracktive.orderservice.model.DTO.OrderDTO;
+import OrderAction.events.StockDeductionEvent;
+import OrderAction.events.StockItem;
+import com.tracktive.orderservice.model.DTO.OrderItemDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
 * Description: Create Order Event Kafka Producer
@@ -24,13 +27,20 @@ public class OrderEventProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendOrderCreatedEvent(OrderDTO orderDTO){
+    public void sendOrderCreatedEvent(String orderId, List<OrderItemDTO> orderItemDTOS){
 
-        OrderCreateEvent event = OrderCreateEvent.newBuilder()
-                .setOrderId(orderDTO.getId())
-                .setRetailerId(orderDTO.getRetailerId())
-                .setAmount(orderDTO.getTotalAmount().doubleValue())
-                .setEventType("ORDER_CREATED")
+        // Map each OrderItemDTO into ItemStock (from protobuf)
+        List<StockItem> stockItems = orderItemDTOS.stream()
+                .map(item -> StockItem.newBuilder()
+                        .setSupplierProductId(item.getSupplierProductId())
+                        .setQuantity(item.getQuantity())
+                        .build())
+                .toList();
+
+        StockDeductionEvent event = StockDeductionEvent.newBuilder()
+                .setOrderId(orderItemDTOS.getFirst().getOrderId())
+                .addAllStockItems(stockItems)
+                .setEventType("STOCK_DEDUCTION")
                 .build();
 
         try{

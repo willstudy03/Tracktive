@@ -9,6 +9,7 @@ import com.tracktive.orderservice.service.OrderActionService;
 import com.tracktive.orderservice.service.OrderItemService;
 import com.tracktive.orderservice.service.OrderService;
 import com.tracktive.orderservice.util.PriceCalculatorUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +52,7 @@ public class OrderActionServiceImpl implements OrderActionService {
             throw new EmptyCartException("Order cannot be placed because the cart is empty. Add items to proceed.");
         }
 
-        // Building the response
+        // Building the resquest
         OrderRequestDTO orderRequestDTO = new OrderRequestDTO();
         orderRequestDTO.setRetailerId(orderActionRequestDTO.getRetailerId());
         orderRequestDTO.setSupplierId(cartItems.getFirst().getSupplierId());
@@ -61,8 +62,17 @@ public class OrderActionServiceImpl implements OrderActionService {
 
         OrderDTO newOrder = orderService.addOrder(orderRequestDTO);
 
-        // Send order created event
-        orderEventProducer.sendOrderCreatedEvent(newOrder);
+        // Convert CartItem into OrderItem
+        List<OrderItemDTO> orderItems = cartItems.stream()
+                .map(cartItemDTO -> {
+                        OrderItemRequestDTO orderItemRequestDTO = new OrderItemRequestDTO();
+                        orderItemRequestDTO.setOrderId(newOrder.getId());
+                        BeanUtils.copyProperties(cartItemDTO, orderItemRequestDTO);
+                        return orderItemService.addOrderItem(orderItemRequestDTO);})
+                .toList();
+
+        // Send order created event to notify inventory service to deduct stock
+        orderEventProducer.sendOrderCreatedEvent(newOrder.getId(), orderItems);
 
         return new OrderActionResponseDTO(newOrder.getId());
     }
