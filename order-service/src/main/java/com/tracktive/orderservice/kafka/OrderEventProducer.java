@@ -2,18 +2,15 @@ package com.tracktive.orderservice.kafka;
 
 import OrderAction.events.StockDeductionEvent;
 import OrderAction.events.StockItem;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.tracktive.orderservice.exception.FailedToPlaceOrderException;
 import com.tracktive.orderservice.model.DTO.OrderItemDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 /**
 * Description: Create Order Event Kafka Producer
