@@ -51,4 +51,18 @@ class StockManagementServiceImplTest {
         assertFalse(responseDTO.getResults().isEmpty());
         assertTrue(responseDTO.getResults().getFirst().isValid());
     }
+
+    @Test
+    void addStock() {
+        // Given: Mock stock item request
+        StockItemDTO itemDTO = new StockItemDTO("061084d7-5ec8-47a0-8d7e-81bb556290e9", 10);
+        List<StockItemDTO> stockItems = List.of(itemDTO);
+        StockManagementRequestDTO requestDTO = new StockManagementRequestDTO(stockItems);
+
+        StockManagementResponseDTO responseDTO = stockManagementService.addStock(requestDTO);
+
+        assertNotNull(responseDTO);
+        assertFalse(responseDTO.getResults().isEmpty());
+        assertTrue(responseDTO.getResults().getFirst().isValid());
+    }
 }

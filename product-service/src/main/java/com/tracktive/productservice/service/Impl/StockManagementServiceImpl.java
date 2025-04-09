@@ -1,5 +1,6 @@
 package com.tracktive.productservice.service.Impl;
 
+import com.tracktive.productservice.exception.ProductNotFoundException;
 import com.tracktive.productservice.exception.StockValidationException;
 import com.tracktive.productservice.model.DTO.*;
 import com.tracktive.productservice.service.StockManagementService;
@@ -90,6 +91,45 @@ public class StockManagementServiceImpl implements StockManagementService {
 
         // Step 4: Create and return response with deduction results
         return new StockManagementResponseDTO(deductionResults);
+    }
+
+    @Override
+    @Transactional
+    public StockManagementResponseDTO addStock(StockManagementRequestDTO stockManagementRequestDTO) {
+
+        validateStockManagementRequestDTO(stockManagementRequestDTO);
+
+        List<StockValidationResultDTO> results = new ArrayList<>();
+
+        for(StockItemDTO stockItemDTO: stockManagementRequestDTO.getStockItems()){
+
+            try{
+                SupplierProductDTO supplierProductDTO = supplierProductService.lockSupplierProductById(stockItemDTO.getSupplierProductID());
+
+                supplierProductDTO.setStockQuantity(supplierProductDTO.getStockQuantity() + stockItemDTO.getQuantity());
+
+                SupplierProductDTO updatedProduct = supplierProductService.updateSupplierProduct(supplierProductDTO);
+
+                results.add(new StockValidationResultDTO(
+                        updatedProduct,
+                        true,
+                        "Stock added successfully. New quantity: " + updatedProduct.getStockQuantity()
+                ));
+
+            } catch (ProductNotFoundException e) {
+                // Supplier might have deleted the product
+                results.add(new StockValidationResultDTO(
+                        null,
+                        false,
+                        "Product ID " + stockItemDTO.getSupplierProductID() + " not found. It may have been removed."
+                ));
+
+                logger.warn("Stock add failed: SupplierProduct ID {} not found", stockItemDTO.getSupplierProductID());
+
+            }
+        }
+
+        return new  StockManagementResponseDTO(results);
     }
 
     private void validateStockManagementRequestDTO(StockManagementRequestDTO stockManagementRequestDTO) {

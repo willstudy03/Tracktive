@@ -12,4 +12,5 @@ import com.tracktive.productservice.model.DTO.StockManagementResponseDTO;
 public interface StockManagementService {
     StockManagementResponseDTO validateStock(StockManagementRequestDTO stockManagementRequestDTO);
     StockManagementResponseDTO deductStock(StockManagementRequestDTO stockManagementRequestDTO);
+    StockManagementResponseDTO addStock(StockManagementRequestDTO stockManagementRequestDTO);
 }
