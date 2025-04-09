@@ -2,14 +2,18 @@ package com.tracktive.orderservice.kafka;
 
 import OrderAction.events.StockDeductionEvent;
 import OrderAction.events.StockItem;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.tracktive.orderservice.exception.FailedToPlaceOrderException;
 import com.tracktive.orderservice.model.DTO.OrderItemDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
 * Description: Create Order Event Kafka Producer
@@ -46,12 +50,12 @@ public class OrderEventProducer {
                 .setEventType("STOCK_DEDUCTION")
                 .build();
 
-        try{
+        try {
             kafkaTemplate.send("order", event.toByteArray());
             log.info("OrderEventProducer(STOCK_DEDUCTION_EVENT): Sent stock deduction Event with Order ID {}", orderId);
         } catch (Exception e) {
-            log.error("Error sending order event when creating an order:{}", e);
-            throw new RuntimeException(e);
+            log.error("OrderEventProducer(STOCK_DEDUCTION_EVENT): Failed to send event for Order ID {}. Error: {}", orderId, e.getMessage());
+            throw new FailedToPlaceOrderException(e.getMessage());
         }
     }
 }
