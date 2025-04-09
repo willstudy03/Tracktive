@@ -1,8 +1,8 @@
 package com.tracktive.productservice.kafka;
 
 import OrderAction.events.StockDeductionEvent;
-import OrderAction.events.StockItem;
 import com.google.protobuf.InvalidProtocolBufferException;
+import com.tracktive.productservice.exception.StockDeductionException;
 import com.tracktive.productservice.model.DTO.StockItemDTO;
 import com.tracktive.productservice.model.DTO.StockManagementRequestDTO;
 import com.tracktive.productservice.service.StockManagementService;
@@ -57,8 +57,13 @@ public class OrderEventConsumer {
             log.info("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Stock deduction completed for Order ID: {}", stockDeductionEvent.getOrderId());
 
             //  After deduction invoke producer to send event to notify next service.
+        } catch (StockDeductionException stockDeductionException) {
+            // TODO: To send back the STOCK_DEDUCTION_FAILED event
+
+
         } catch (InvalidProtocolBufferException e) {
             log.error("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Error deserializing event {}", e.getMessage());
+            // TODO: To send back the STOCK_DEDUCTION_FAILED event
         }
     }
 }

@@ -19,15 +19,18 @@ import java.util.List;
 @Service
 public class OrderEventProducer {
 
-    private static final Logger log = LoggerFactory.getLogger(OrderEventProducer.class);
     private KafkaTemplate<String, byte[]> kafkaTemplate;
+
+    private static final Logger log = LoggerFactory.getLogger(OrderEventProducer.class);
 
     @Autowired
     public OrderEventProducer(KafkaTemplate<String, byte[]> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendOrderCreatedEvent(String orderId, List<OrderItemDTO> orderItemDTOS){
+    public void sendStockDeductionEvent(String orderId, List<OrderItemDTO> orderItemDTOS){
+
+        log.info("OrderEventProducer(STOCK_DEDUCTION_EVENT): Prepare stock deduction with Order ID {}", orderId);
 
         // Map each OrderItemDTO into ItemStock (from protobuf)
         List<StockItem> stockItems = orderItemDTOS.stream()
@@ -45,6 +48,7 @@ public class OrderEventProducer {
 
         try{
             kafkaTemplate.send("order", event.toByteArray());
+            log.info("OrderEventProducer(STOCK_DEDUCTION_EVENT): Sent stock deduction Event with Order ID {}", orderId);
         } catch (Exception e) {
             log.error("Error sending order event when creating an order:{}", e);
             throw new RuntimeException(e);

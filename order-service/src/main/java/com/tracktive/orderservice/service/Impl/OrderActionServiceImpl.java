@@ -71,8 +71,8 @@ public class OrderActionServiceImpl implements OrderActionService {
                         return orderItemService.addOrderItem(orderItemRequestDTO);})
                 .toList();
 
-        // Send order created event to notify inventory service to deduct stock
-        orderEventProducer.sendOrderCreatedEvent(newOrder.getId(), orderItems);
+        // Send stock deduction event to notify inventory service to deduct stock
+        orderEventProducer.sendStockDeductionEvent(newOrder.getId(), orderItems);
 
         return new OrderActionResponseDTO(newOrder.getId());
     }
