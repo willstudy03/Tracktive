@@ -27,43 +27,56 @@ public class OrderEventConsumer {
 
     private final StockManagementService stockManagementService;
 
+    private final OrderEventProducer orderEventProducer;
+
     @Autowired
-    public OrderEventConsumer(StockManagementService stockManagementService) {
+    public OrderEventConsumer(StockManagementService stockManagementService, OrderEventProducer orderEventProducer) {
         this.stockManagementService = stockManagementService;
+        this.orderEventProducer = orderEventProducer;
     }
 
     @KafkaListener(topics = "order", groupId = "product-service")
     @Transactional
     public void consumeStockDeductionEvent(byte[] event){
-        try {
 
-            StockDeductionEvent stockDeductionEvent = StockDeductionEvent.parseFrom(event);
+        StockDeductionEvent stockDeductionEvent = null;
 
-            log.info("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Received Order Event with Order ID {}", stockDeductionEvent.getOrderId());
-
-            if (!stockDeductionEvent.getEventType().equals("STOCK_DEDUCTION")){
-                log.info("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Ignore event with unexpected event type: {}", stockDeductionEvent.getEventType());
-                return;
-            }
-
-            // Map Protobuf StockItems to DTOs
-            List<StockItemDTO> stockItemDTOs = stockDeductionEvent.getStockItemsList().stream()
-                    .map(item -> new StockItemDTO(item.getSupplierProductId(), item.getQuantity()))
-                    .toList();
-
-            // Deduct stock
-            stockManagementService.deductStock(new StockManagementRequestDTO(stockItemDTOs));
-
-            log.info("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Stock deduction completed for Order ID: {}", stockDeductionEvent.getOrderId());
-
-            //  After deduction invoke producer to send event to notify next service.
-        } catch (StockDeductionException stockDeductionException) {
-            // TODO: To send back the STOCK_DEDUCTION_FAILED event
-
-
+        try{
+            stockDeductionEvent = StockDeductionEvent.parseFrom(event);
         } catch (InvalidProtocolBufferException e) {
             log.error("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Error deserializing event {}", e.getMessage());
-            // TODO: To send back the STOCK_DEDUCTION_FAILED event
         }
+
+        // Check if stockDeductionEvent is null (in case of deserialization failure)
+        if (stockDeductionEvent == null) {
+            log.error("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Received null StockDeductionEvent, cannot process.");
+            return; // Exit the method if event is null
+        }
+
+        log.info("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Received Order Event with Order ID {}", stockDeductionEvent.getOrderId());
+
+        if (!stockDeductionEvent.getEventType().equals("STOCK_DEDUCTION")){
+            log.info("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Ignore event with unexpected event type: {}", stockDeductionEvent.getEventType());
+            return;
+        }
+
+        // Map Protobuf StockItems to DTOs
+        List<StockItemDTO> stockItemDTOs = stockDeductionEvent.getStockItemsList().stream()
+                .map(item -> new StockItemDTO(item.getSupplierProductId(), item.getQuantity()))
+                .toList();
+
+        // Deduct stock
+        try{
+            stockManagementService.deductStock(new StockManagementRequestDTO(stockItemDTOs));
+        } catch (StockDeductionException e){
+            log.info("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Stock deduction failed for Order ID: {}", stockDeductionEvent.getOrderId());
+            orderEventProducer.sendStockDeductionFailedEvent(stockDeductionEvent.getOrderId());
+            return;
+        }
+
+        log.info("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Stock deduction completed for Order ID: {}", stockDeductionEvent.getOrderId());
+
+        //  After deduction invoke producer to send event to notify next service.
+        orderEventProducer.sendStockDeductionSuccessEvent(stockDeductionEvent.getOrderId());
     }
 }
