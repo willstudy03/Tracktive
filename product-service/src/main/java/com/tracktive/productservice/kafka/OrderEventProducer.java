@@ -1,6 +1,6 @@
 package com.tracktive.productservice.kafka;
 
-import OrderAction.events.StockDeductionSuccessEvent;
+import OrderAction.events.StockDeductionResultEvent;
 import com.tracktive.productservice.exception.FailedToSendEventException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class OrderEventProducer {
 
         log.info("OrderEventProducer(STOCK_DEDUCTION_SUCCESS_EVENT): Prepare stock deduction success event with Order ID {}", orderId);
 
-        StockDeductionSuccessEvent event = StockDeductionSuccessEvent.newBuilder()
+        StockDeductionResultEvent event = StockDeductionResultEvent.newBuilder()
                 .setOrderId(orderId)
                 .setEventType("STOCK_DEDUCTION_SUCCESS")
                 .build();
@@ -51,7 +51,7 @@ public class OrderEventProducer {
 
         log.info("OrderEventProducer(STOCK_DEDUCTION_FAILED_EVENT): Prepare stock deduction failed event with Order ID {}", orderId);
 
-        StockDeductionSuccessEvent event = StockDeductionSuccessEvent.newBuilder()
+        StockDeductionResultEvent event = StockDeductionResultEvent.newBuilder()
                 .setOrderId(orderId)
                 .setEventType("STOCK_DEDUCTION_FAILED")
                 .build();
