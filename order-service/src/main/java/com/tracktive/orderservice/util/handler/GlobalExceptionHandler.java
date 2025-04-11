@@ -94,4 +94,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleGrpcException(StatusRuntimeException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
+
+    @ExceptionHandler(EmptyCartException.class)
+    public ResponseEntity<String> handleEmptyCartException(EmptyCartException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
 }

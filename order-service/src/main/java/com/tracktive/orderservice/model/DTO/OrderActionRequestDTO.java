@@ -1,4 +1,7 @@
 package com.tracktive.orderservice.model.DTO;
+
+import jakarta.validation.constraints.NotBlank;
+
 /**
 * Description: Order Placement Request DTO
 * @author William Theo
@@ -6,6 +9,7 @@ package com.tracktive.orderservice.model.DTO;
 */
 public class OrderActionRequestDTO {
 
+    @NotBlank(message = "Retailer ID cannot be blank")
     String retailerId;
 
     public OrderActionRequestDTO() {
