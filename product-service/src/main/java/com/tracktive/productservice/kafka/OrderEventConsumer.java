@@ -3,6 +3,7 @@ package com.tracktive.productservice.kafka;
 import OrderAction.events.StockDeductionEvent;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.tracktive.productservice.exception.StockDeductionException;
+import com.tracktive.productservice.exception.StockValidationException;
 import com.tracktive.productservice.model.DTO.StockItemDTO;
 import com.tracktive.productservice.model.DTO.StockManagementRequestDTO;
 import com.tracktive.productservice.service.StockManagementService;
@@ -10,8 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 
@@ -29,54 +31,91 @@ public class OrderEventConsumer {
 
     private final OrderEventProducer orderEventProducer;
 
+    private final TransactionTemplate transactionTemplate;
+
     @Autowired
-    public OrderEventConsumer(StockManagementService stockManagementService, OrderEventProducer orderEventProducer) {
+    public OrderEventConsumer(StockManagementService stockManagementService, OrderEventProducer orderEventProducer, TransactionTemplate transactionTemplate) {
         this.stockManagementService = stockManagementService;
         this.orderEventProducer = orderEventProducer;
+        this.transactionTemplate = transactionTemplate;
     }
 
-    @KafkaListener(topics = "order", groupId = "product-service")
-    @Transactional
-    public void consumeStockDeductionEvent(byte[] event){
+    @KafkaListener(topics = "stock-deduction-requests", groupId = "product-service")
+    public void consumeStockDeductionEvent(byte[] event, Acknowledgment ack) {
+        boolean processSucceeded = false;
 
-        StockDeductionEvent stockDeductionEvent = null;
+        try {
+            StockDeductionEvent stockDeductionEvent = StockDeductionEvent.parseFrom(event);
+            String orderId = stockDeductionEvent.getOrderId();
+            log.info("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Received Order Event with Order ID {}", orderId);
 
-        try{
-            stockDeductionEvent = StockDeductionEvent.parseFrom(event);
+            List<StockItemDTO> stockItemDTOs = stockDeductionEvent.getStockItemsList().stream()
+                    .map(item -> new StockItemDTO(item.getSupplierProductId(), item.getQuantity()))
+                    .toList();
+
+            processSucceeded = processStockDeduction(orderId, stockItemDTOs);
+
         } catch (InvalidProtocolBufferException e) {
-            log.error("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Error deserializing event {}", e.getMessage());
+            log.error("Deserialization error", e);
+            // Deserialization errors are non-recoverable, so we should acknowledge
+            processSucceeded = true;
+        } catch (Exception e) {
+            log.error("Unexpected error while processing StockDeductionEvent", e);
+            // Let Kafka retry for unexpected errors
+            processSucceeded = false;
+        } finally {
+            if (processSucceeded) {
+                ack.acknowledge(); // Only acknowledge if everything succeeded
+                log.info("Message acknowledged, processing completed successfully");
+            } else {
+                log.warn("Message not acknowledged, will be redelivered by Kafka");
+            }
         }
-
-        // Check if stockDeductionEvent is null (in case of deserialization failure)
-        if (stockDeductionEvent == null) {
-            log.error("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Received null StockDeductionEvent, cannot process.");
-            return; // Exit the method if event is null
-        }
-
-        log.info("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Received Order Event with Order ID {}", stockDeductionEvent.getOrderId());
-
-        if (!stockDeductionEvent.getEventType().equals("STOCK_DEDUCTION")){
-            log.info("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Ignore event with unexpected event type: {}", stockDeductionEvent.getEventType());
-            return;
-        }
-
-        // Map Protobuf StockItems to DTOs
-        List<StockItemDTO> stockItemDTOs = stockDeductionEvent.getStockItemsList().stream()
-                .map(item -> new StockItemDTO(item.getSupplierProductId(), item.getQuantity()))
-                .toList();
-
-        // Deduct stock
-        try{
-            stockManagementService.deductStock(new StockManagementRequestDTO(stockItemDTOs));
-        } catch (StockDeductionException e){
-            log.info("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Stock deduction failed for Order ID: {}", stockDeductionEvent.getOrderId());
-            orderEventProducer.sendStockDeductionFailedEvent(stockDeductionEvent.getOrderId());
-            return;
-        }
-
-        log.info("OrderEventConsumer(STOCK_DEDUCTION_EVENT): Stock deduction completed for Order ID: {}", stockDeductionEvent.getOrderId());
-
-        //  After deduction invoke producer to send event to notify next service.
-        orderEventProducer.sendStockDeductionSuccessEvent(stockDeductionEvent.getOrderId());
     }
+
+    private boolean processStockDeduction(String orderId, List<StockItemDTO> stockItems) {
+        try {
+            Boolean result = transactionTemplate.execute(status -> {
+                try {
+                    // 1. Deduct stock
+                    stockManagementService.deductStock(new StockManagementRequestDTO(stockItems));
+
+                    // 2. If deduction successful, send success event
+                    orderEventProducer.sendStockDeductionSuccessEvent(orderId);
+
+                    // If we get here, both stock deduction and success event sending succeeded
+                    log.info("Stock deduction and success event succeeded for Order ID: {}", orderId);
+                    return Boolean.TRUE;
+
+                } catch (StockValidationException | StockDeductionException e) {
+                    // 3. Stock deduction failed, mark for rollback
+                    status.setRollbackOnly();
+                    log.warn("Stock deduction failed for Order ID: {}", orderId, e);
+
+                    // 4. Try to send failure event (outside of transaction logic but still part of process)
+                    try {
+                        orderEventProducer.sendStockDeductionFailedEvent(orderId);
+                        log.info("Stock deduction failure event sent for Order ID: {}", orderId);
+                        return Boolean.TRUE; // Process completed successfully (with failure notification)
+                    } catch (Exception eventException) {
+                        log.error("Failed to send stock deduction failure event for Order ID: {}", orderId, eventException);
+                        return Boolean.FALSE; // Let Kafka retry the whole process
+                    }
+                } catch (Exception e) {
+                    // 5. Other failures (including event sending failure) - roll back transaction
+                    status.setRollbackOnly();
+                    log.error("Failed during transaction for Order ID: {}", orderId, e);
+                    return Boolean.FALSE; // Let Kafka retry the whole process
+                }
+            });
+
+            // Handle potential null result from transaction execution
+            return result != null && result;
+
+        } catch (Exception e) {
+            log.error("Transaction execution failed for Order ID: {}", orderId, e);
+            return false; // Let Kafka retry the whole process
+        }
+    }
+
 }

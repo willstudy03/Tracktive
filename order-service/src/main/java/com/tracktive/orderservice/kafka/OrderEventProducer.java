@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class OrderEventProducer {
 
-    private KafkaTemplate<String, byte[]> kafkaTemplate;
+    private final KafkaTemplate<String, byte[]> kafkaTemplate;
 
     private static final Logger log = LoggerFactory.getLogger(OrderEventProducer.class);
 
@@ -44,11 +44,10 @@ public class OrderEventProducer {
         StockDeductionEvent event = StockDeductionEvent.newBuilder()
                 .setOrderId(orderItemDTOS.getFirst().getOrderId())
                 .addAllStockItems(stockItems)
-                .setEventType("STOCK_DEDUCTION")
                 .build();
 
         try {
-            kafkaTemplate.send("order", event.toByteArray());
+            kafkaTemplate.send("stock-deduction-requests", event.toByteArray());
             log.info("OrderEventProducer(STOCK_DEDUCTION_EVENT): Sent stock deduction Event with Order ID {}", orderId);
         } catch (Exception e) {
             log.error("OrderEventProducer(STOCK_DEDUCTION_EVENT): Failed to send event for Order ID {}. Error: {}", orderId, e.getMessage());

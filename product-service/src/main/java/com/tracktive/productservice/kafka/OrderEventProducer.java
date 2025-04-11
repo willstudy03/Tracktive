@@ -35,7 +35,7 @@ public class OrderEventProducer {
                 .build();
 
         try {
-            kafkaTemplate.send("order", event.toByteArray());
+            kafkaTemplate.send("stock-deduction-results", event.toByteArray());
 
             log.info("OrderEventProducer(STOCK_DEDUCTION_SUCCESS_EVENT): Sent stock deduction success event with Order ID {}", orderId);
 
@@ -57,7 +57,7 @@ public class OrderEventProducer {
                 .build();
 
         try {
-            kafkaTemplate.send("order", event.toByteArray());
+            kafkaTemplate.send("stock-deduction-results", event.toByteArray());
 
             log.info("OrderEventProducer(STOCK_DEDUCTION_FAILED_EVENT): Sent stock deduction failed event with Order ID {}", orderId);
 
