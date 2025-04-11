@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package OrderAction.events;
+
+option java_multiple_files = true;
+
+message PaymentRequestEvent{
+
+    string orderId = 1;
+
+    string userId = 2;
+
+    double amount = 3;
+}

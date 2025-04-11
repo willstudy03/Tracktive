@@ -35,8 +35,6 @@ public class PaymentRequestDTO {
     @DecimalMin(value = "0.00", message = "Total Paid Amount must be at least 0")
     private BigDecimal totalPaidAmount;
 
-    @NotNull(message = "Payment Method is required")
-    @ValidEnum(enumClass = PaymentMethod.class, message = "Invalid Payment Method")
     private PaymentMethod paymentMethod;
 
     @NotNull(message = "Payment Status is required")
@@ -96,11 +94,11 @@ public class PaymentRequestDTO {
         this.totalPaidAmount = totalPaidAmount;
     }
 
-    public @NotNull(message = "Payment Method is required") PaymentMethod getPaymentMethod() {
+    public PaymentMethod getPaymentMethod() {
         return paymentMethod;
     }
 
-    public void setPaymentMethod(@NotNull(message = "Payment Method is required") PaymentMethod paymentMethod) {
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
 

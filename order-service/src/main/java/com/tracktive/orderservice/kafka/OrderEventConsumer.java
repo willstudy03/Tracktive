@@ -1,6 +1,12 @@
 package com.tracktive.orderservice.kafka;
 
+import OrderAction.events.StockDeductionResultEvent;
+import com.google.protobuf.InvalidProtocolBufferException;
+import com.tracktive.orderservice.model.DTO.OrderDTO;
+import com.tracktive.orderservice.model.Enum.OrderStatus;
 import com.tracktive.orderservice.service.OrderService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -21,6 +27,8 @@ public class OrderEventConsumer {
 
     private final TransactionTemplate transactionTemplate;
 
+    private static final Logger log = LoggerFactory.getLogger(OrderEventConsumer.class);
+
     @Autowired
     public OrderEventConsumer(OrderService orderService, OrderEventProducer orderEventProducer, TransactionTemplate transactionTemplate) {
         this.orderService = orderService;
@@ -29,7 +37,87 @@ public class OrderEventConsumer {
     }
 
     @KafkaListener(topics = "stock-deduction-results", groupId = "order-service")
-    public void consumeStockDeductionResultsEvent(byte[] event, Acknowledgment ack){
+    public void consumeStockDeductionResultsEvent(byte[] event, Acknowledgment ack) {
+        boolean processSucceeded = false;
 
+        try {
+            StockDeductionResultEvent stockDeductionResultEvent = StockDeductionResultEvent.parseFrom(event);
+            String orderId = stockDeductionResultEvent.getOrderId();
+            String eventType = stockDeductionResultEvent.getEventType();
+
+            log.info("OrderEventConsumer(STOCK_DEDUCTION_RESULTS_EVENT): Received {} event with Order ID {}",
+                    eventType, orderId);
+
+            processSucceeded = processStockDeductionResult(orderId, eventType);
+
+        } catch (InvalidProtocolBufferException e) {
+            log.error("Deserialization error for stock deduction result event", e);
+            // Deserialization errors are non-recoverable, so we should acknowledge
+            processSucceeded = true;
+        } catch (Exception e) {
+            log.error("Unexpected error while processing StockDeductionResultEvent", e);
+            processSucceeded = false;
+        } finally {
+            if (processSucceeded) {
+                ack.acknowledge();
+                log.info("Stock deduction result message acknowledged");
+            } else {
+                log.warn("Stock deduction result message not acknowledged, will be redelivered by Kafka");
+            }
+        }
+    }
+
+    private boolean processStockDeductionResult(String orderId, String eventType) {
+        try {
+            Boolean result = transactionTemplate.execute(status -> {
+                try {
+                    // Lock the order for update
+                    OrderDTO orderDTO = orderService.lockOrderById(orderId);
+                    if (orderDTO == null) {
+                        log.error("Order not found with ID: {}", orderId);
+                        return Boolean.FALSE;
+                    }
+
+                    switch (eventType) {
+                        case "STOCK_DEDUCTION_FAILED":
+                            orderDTO.setOrderStatus(OrderStatus.CANCELLED);
+                            orderService.updateOrder(orderDTO);
+                            log.info("Order status updated to CANCELLED for Order ID: {}", orderId);
+                            return Boolean.TRUE;
+
+                        case "STOCK_DEDUCTION_SUCCESS":
+                            orderDTO.setOrderStatus(OrderStatus.READY_FOR_PAYMENT);
+                            OrderDTO updatedOrder = orderService.updateOrder(orderDTO);
+
+                            try {
+                                // Send payment request - if this fails, the transaction will roll back
+                                orderEventProducer.sendPaymentRequestEvent(updatedOrder);
+                                log.info("Payment request sent successfully for Order ID: {}", orderId);
+                                return Boolean.TRUE;
+                            } catch (Exception e) {
+                                log.error("Failed to send payment request for Order ID: {}", orderId, e);
+                                // Explicitly mark transaction for rollback
+                                status.setRollbackOnly();
+                                return Boolean.FALSE;
+                            }
+
+                        default:
+                            log.warn("Unknown event type: {} for Order ID: {}", eventType, orderId);
+                            return Boolean.FALSE;
+                    }
+
+                } catch (Exception e) {
+                    log.error("Error processing stock deduction result for Order ID: {}", orderId, e);
+                    status.setRollbackOnly();
+                    return Boolean.FALSE;
+                }
+            });
+
+            return result != null && result;
+
+        } catch (Exception e) {
+            log.error("Transaction execution failed for Order ID: {}", orderId, e);
+            return false;
+        }
     }
 }
