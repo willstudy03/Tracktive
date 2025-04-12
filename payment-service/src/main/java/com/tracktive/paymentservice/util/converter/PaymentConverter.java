@@ -1,10 +1,13 @@
 package com.tracktive.paymentservice.util.converter;
 
+import OrderAction.events.PaymentRequestEvent;
 import com.tracktive.paymentservice.model.DTO.PaymentDTO;
 import com.tracktive.paymentservice.model.DTO.PaymentRequestDTO;
+import com.tracktive.paymentservice.model.Enum.PaymentStatus;
 import com.tracktive.paymentservice.model.entity.Payment;
 import org.springframework.beans.BeanUtils;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -45,6 +48,17 @@ public class PaymentConverter {
         paymentDTO.setId(UUID.randomUUID().toString());
         BeanUtils.copyProperties(paymentRequestDTO, paymentDTO);
         return paymentDTO;
+    }
+
+    public static PaymentRequestDTO toPaymentRequestDTO(PaymentRequestEvent event){
+        PaymentRequestDTO dto = new PaymentRequestDTO();
+        dto.setOrderId(event.getOrderId());
+        dto.setUserId(event.getUserId());
+        dto.setAmount(new BigDecimal(event.getAmount()));
+        dto.setTotalPaidAmount(BigDecimal.ZERO); // Using BigDecimal.ZERO instead of new BigDecimal(0)
+        dto.setPaymentStatus(PaymentStatus.PENDING);
+        dto.setCurrency("MYR");
+        return dto;
     }
 
     public static Payment toEntity(PaymentDTO paymentDTO) {
