@@ -2,7 +2,7 @@ package com.tracktive.paymentservice.model.Enum;
 
 public enum PaymentStatus {
     PENDING,         // Payment initiated but not completed yet
-    PROCESSING,      // Payment is being processed by Stripe
+    PROCESSED,      // Payment is being processed by the users (choose the payment option)
     COMPLETED,       // Payment was successfully made
     FAILED,          // Payment failed (e.g., declined, expired)
     CANCELED,        // Payment was canceled by the user or system
