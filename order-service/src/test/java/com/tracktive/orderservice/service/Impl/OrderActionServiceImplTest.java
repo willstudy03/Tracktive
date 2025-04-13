@@ -15,7 +15,7 @@ class OrderActionServiceImplTest {
     private OrderActionService orderActionService;
     @Test
     void placeOrder() {
-        OrderActionRequestDTO requestDTO = new OrderActionRequestDTO("retailer_123");
+        OrderActionRequestDTO requestDTO = new OrderActionRequestDTO("retailer_123", "Test");
         OrderActionResponseDTO responseDTO = orderActionService.placeOrder(requestDTO);
         assertNotNull(responseDTO);
     }

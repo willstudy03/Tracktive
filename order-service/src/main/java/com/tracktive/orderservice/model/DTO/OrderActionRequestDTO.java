@@ -12,11 +12,15 @@ public class OrderActionRequestDTO {
     @NotBlank(message = "Retailer ID cannot be blank")
     String retailerId;
 
+    @NotBlank(message = "Delivery Address ID cannot be blank")
+    String deliveryAddress;
+
     public OrderActionRequestDTO() {
     }
 
-    public OrderActionRequestDTO(String retailerId) {
+    public OrderActionRequestDTO(String retailerId, String deliveryAddress) {
         this.retailerId = retailerId;
+        this.deliveryAddress = deliveryAddress;
     }
 
     public String getRetailerId() {
@@ -25,5 +29,13 @@ public class OrderActionRequestDTO {
 
     public void setRetailerId(String retailerId) {
         this.retailerId = retailerId;
+    }
+
+    public String getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public void setDeliveryAddress(String deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
     }
 }

@@ -1,10 +1,15 @@
 package com.tracktive.orderservice.util.converter;
 
+import com.tracktive.orderservice.model.DTO.CartItemDTO;
+import com.tracktive.orderservice.model.DTO.OrderActionRequestDTO;
 import com.tracktive.orderservice.model.DTO.OrderDTO;
 import com.tracktive.orderservice.model.DTO.OrderRequestDTO;
+import com.tracktive.orderservice.model.Enum.OrderStatus;
 import com.tracktive.orderservice.model.entity.Order;
+import com.tracktive.orderservice.util.PriceCalculatorUtil;
 import org.springframework.beans.BeanUtils;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -63,5 +68,22 @@ public class OrderConverter {
         order.setUpdatedAt(orderDTO.getUpdatedAt());
         order.setCreatedAt(orderDTO.getCreatedAt());
         return order;
+    }
+
+    public static OrderRequestDTO toOrderRequestDTO(OrderActionRequestDTO orderActionRequestDTO, List<CartItemDTO> cartItems) {
+        if (orderActionRequestDTO == null || cartItems == null || cartItems.isEmpty()) {
+            return null;
+        }
+
+        CartItemDTO firstItem = cartItems.get(0);
+
+        OrderRequestDTO orderRequestDTO = new OrderRequestDTO();
+        orderRequestDTO.setRetailerId(orderActionRequestDTO.getRetailerId());
+        orderRequestDTO.setSupplierId(firstItem.getSupplierId());
+        orderRequestDTO.setTotalAmount(PriceCalculatorUtil.calculateTotalCartPrice(cartItems));
+        orderRequestDTO.setDeliveryAddress(orderActionRequestDTO.getDeliveryAddress());
+        orderRequestDTO.setOrderStatus(OrderStatus.PENDING);
+
+        return orderRequestDTO;
     }
 }

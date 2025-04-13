@@ -9,6 +9,7 @@ import com.tracktive.orderservice.service.OrderActionService;
 import com.tracktive.orderservice.service.OrderItemService;
 import com.tracktive.orderservice.service.OrderService;
 import com.tracktive.orderservice.util.PriceCalculatorUtil;
+import com.tracktive.orderservice.util.converter.OrderConverter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,12 +54,7 @@ public class OrderActionServiceImpl implements OrderActionService {
         }
 
         // Building the resquest
-        OrderRequestDTO orderRequestDTO = new OrderRequestDTO();
-        orderRequestDTO.setRetailerId(orderActionRequestDTO.getRetailerId());
-        orderRequestDTO.setSupplierId(cartItems.getFirst().getSupplierId());
-        orderRequestDTO.setTotalAmount(PriceCalculatorUtil.calculateTotalCartPrice(cartItems));
-        orderRequestDTO.setDeliveryAddress("Test");
-        orderRequestDTO.setOrderStatus(OrderStatus.PENDING);
+        OrderRequestDTO orderRequestDTO = OrderConverter.toOrderRequestDTO(orderActionRequestDTO, cartItems);
 
         OrderDTO newOrder = orderService.addOrder(orderRequestDTO);
 
