@@ -4,31 +4,31 @@
 
     <!-- Select all payment transactions -->
     <select id="selectAllPaymentTransactions" resultType="PaymentTransaction">
-        SELECT id, payment_id, stripe_payment_intent_id, stripe_charge_id, stripe_payment_status,
-        receipt_url, amount, currency, stripe_created_at, updated_at, created_at
+        SELECT id, payment_id, stripe_session_id, status,
+        amount, currency, updated_at, created_at
         FROM payment_transactions;
     </select>
 
     <!-- Select all payment transactions by payment ID -->
     <select id="selectAllPaymentTransactionsByPaymentId" resultType="PaymentTransaction">
-        SELECT id, payment_id, stripe_payment_intent_id, stripe_charge_id, stripe_payment_status,
-        receipt_url, amount, currency, stripe_created_at, updated_at, created_at
+        SELECT id, payment_id, stripe_session_id, status,
+        amount, currency, updated_at, created_at
         FROM payment_transactions
         WHERE payment_id = #{id};
     </select>
 
     <!-- Select a payment transaction by ID -->
     <select id="selectPaymentTransactionById" resultType="PaymentTransaction">
-        SELECT id, payment_id, stripe_payment_intent_id, stripe_charge_id, stripe_payment_status,
-        receipt_url, amount, currency, stripe_created_at, updated_at, created_at
+        SELECT id, payment_id, stripe_session_id, status,
+        amount, currency, updated_at, created_at
         FROM payment_transactions
         WHERE id = #{id};
     </select>
 
     <!-- Lock a payment transaction by ID (FOR UPDATE) -->
     <select id="lockPaymentTransactionById" resultType="PaymentTransaction">
-        SELECT id, payment_id, stripe_payment_intent_id, stripe_charge_id, stripe_payment_status,
-        receipt_url, amount, currency, stripe_created_at, updated_at, created_at
+        SELECT id, payment_id, stripe_session_id, status,
+        amount, currency, updated_at, created_at
         FROM payment_transactions
         WHERE id = #{id}
         FOR UPDATE;
@@ -36,23 +36,20 @@
 
     <!-- Insert a new payment transaction -->
     <insert id="addPaymentTransaction">
-        INSERT INTO payment_transactions (id, payment_id, stripe_payment_intent_id, stripe_charge_id,
-        stripe_payment_status, receipt_url, amount, currency, stripe_created_at)
-        VALUES (#{id}, #{paymentId}, #{stripePaymentIntentId}, #{stripeChargeId}, #{stripePaymentStatus},
-        #{receiptUrl}, #{amount}, #{currency}, #{stripeCreatedAt});
+        INSERT INTO payment_transactions (id, payment_id, stripe_session_id, status,
+        amount, currency)
+        VALUES (#{id}, #{paymentId}, #{stripeSessionId}, #{status},
+        #{amount}, #{currency});
     </insert>
 
     <!-- Update an existing payment transaction -->
     <update id="updatePaymentTransaction">
         UPDATE payment_transactions
         SET payment_id = #{paymentId},
-        stripe_payment_intent_id = #{stripePaymentIntentId},
-        stripe_charge_id = #{stripeChargeId},
-        stripe_payment_status = #{stripePaymentStatus},
-        receipt_url = #{receiptUrl},
+        stripe_session_id = #{stripeSessionId},
+        status = #{status},
         amount = #{amount},
-        currency = #{currency},
-        stripe_created_at = #{stripeCreatedAt}
+        currency = #{currency}
         WHERE id = #{id};
     </update>
 

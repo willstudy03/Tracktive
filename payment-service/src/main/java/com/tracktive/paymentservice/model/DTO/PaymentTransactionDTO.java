@@ -10,23 +10,17 @@ import java.time.LocalDateTime;
 */
 public class PaymentTransactionDTO {
 
-    private String id;  // Internal transaction ID
+    private String id;
 
-    private String paymentId;  // References the Payment entity
+    private String paymentId;
 
-    private String stripePaymentIntentId; // Stores Stripe PaymentIntent ID
+    private String stripeSessionId;
 
-    private String stripeChargeId; // Stores Stripe Charge ID
+    private String currency;
 
-    private String stripePaymentStatus; // Stripe payment status (e.g., succeeded, failed)
+    private BigDecimal amount;
 
-    private String receiptUrl; // Stripe receipt URL
-
-    private BigDecimal amount; // Amount paid
-
-    private String currency; // Currency of transaction
-
-    private LocalDateTime stripeCreatedAt; // Time of transaction from Stripe
+    private String status;
 
     private LocalDateTime updatedAt;
 
@@ -35,16 +29,13 @@ public class PaymentTransactionDTO {
     public PaymentTransactionDTO() {
     }
 
-    public PaymentTransactionDTO(String id, String paymentId, String stripePaymentIntentId, String stripeChargeId, String stripePaymentStatus, String receiptUrl, BigDecimal amount, String currency, LocalDateTime stripeCreatedAt) {
+    public PaymentTransactionDTO(String id, String paymentId, String stripeSessionId, String currency, BigDecimal amount, String status) {
         this.id = id;
         this.paymentId = paymentId;
-        this.stripePaymentIntentId = stripePaymentIntentId;
-        this.stripeChargeId = stripeChargeId;
-        this.stripePaymentStatus = stripePaymentStatus;
-        this.receiptUrl = receiptUrl;
-        this.amount = amount;
+        this.stripeSessionId = stripeSessionId;
         this.currency = currency;
-        this.stripeCreatedAt = stripeCreatedAt;
+        this.amount = amount;
+        this.status = status;
     }
 
     public String getId() {
@@ -63,44 +54,12 @@ public class PaymentTransactionDTO {
         this.paymentId = paymentId;
     }
 
-    public String getStripePaymentIntentId() {
-        return stripePaymentIntentId;
+    public String getStripeSessionId() {
+        return stripeSessionId;
     }
 
-    public void setStripePaymentIntentId(String stripePaymentIntentId) {
-        this.stripePaymentIntentId = stripePaymentIntentId;
-    }
-
-    public String getStripeChargeId() {
-        return stripeChargeId;
-    }
-
-    public void setStripeChargeId(String stripeChargeId) {
-        this.stripeChargeId = stripeChargeId;
-    }
-
-    public String getStripePaymentStatus() {
-        return stripePaymentStatus;
-    }
-
-    public void setStripePaymentStatus(String stripePaymentStatus) {
-        this.stripePaymentStatus = stripePaymentStatus;
-    }
-
-    public String getReceiptUrl() {
-        return receiptUrl;
-    }
-
-    public void setReceiptUrl(String receiptUrl) {
-        this.receiptUrl = receiptUrl;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+    public void setStripeSessionId(String stripeSessionId) {
+        this.stripeSessionId = stripeSessionId;
     }
 
     public String getCurrency() {
@@ -111,12 +70,20 @@ public class PaymentTransactionDTO {
         this.currency = currency;
     }
 
-    public LocalDateTime getStripeCreatedAt() {
-        return stripeCreatedAt;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setStripeCreatedAt(LocalDateTime stripeCreatedAt) {
-        this.stripeCreatedAt = stripeCreatedAt;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public LocalDateTime getUpdatedAt() {

@@ -1,0 +1,67 @@
+package com.tracktive.paymentservice.service.Impl;
+
+import com.stripe.model.checkout.Session;
+import com.tracktive.paymentservice.exception.InvalidPaymentStatusException;
+import com.tracktive.paymentservice.model.DTO.PaymentDTO;
+import com.tracktive.paymentservice.model.DTO.PaymentProcessorRequestDTO;
+import com.tracktive.paymentservice.model.DTO.PaymentProcessorResponseDTO;
+import com.tracktive.paymentservice.model.DTO.PaymentTransactionDTO;
+import com.tracktive.paymentservice.model.Enum.PaymentStatus;
+import com.tracktive.paymentservice.service.PaymentProcessorService;
+import com.tracktive.paymentservice.service.PaymentService;
+import com.tracktive.paymentservice.service.PaymentTransactionService;
+import com.tracktive.paymentservice.stripe.StripeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+* Description: Payment Processor Service Implementation
+* @author William Theo
+* @date 14/4/2025
+*/
+@Service
+public class PaymentProcessorServiceImpl implements PaymentProcessorService {
+
+    private final StripeService stripeService;
+
+    private final PaymentService paymentService;
+
+    private final PaymentTransactionService paymentTransactionService;
+
+    private static final Logger log = LoggerFactory.getLogger(PaymentProcessorServiceImpl.class);
+
+    @Autowired
+    public PaymentProcessorServiceImpl(StripeService stripeService, PaymentService paymentService, PaymentTransactionService paymentTransactionService) {
+        this.stripeService = stripeService;
+        this.paymentService = paymentService;
+        this.paymentTransactionService = paymentTransactionService;
+    }
+
+    @Override
+    @Transactional
+    public PaymentProcessorResponseDTO initiatePayment(PaymentProcessorRequestDTO paymentProcessorRequestDTO) {
+
+        // Retrieve payment
+        PaymentDTO paymentDTO = paymentService.lockPaymentById(paymentProcessorRequestDTO.getPaymentID());
+
+        // Status validation, only payment with payment status PENDING can initiate a payment
+        if (!paymentDTO.getPaymentStatus().equals(PaymentStatus.PENDING)){
+            throw new InvalidPaymentStatusException("Payment ID " + paymentDTO.getId() +
+                    " is not in a payable state. Current status: " + paymentDTO.getPaymentStatus());
+        }
+
+        // Initiate a payment session with Stripe
+        Session session = stripeService.createCheckoutSession(paymentDTO);
+
+        // Create a paymentTransaction to track the Stripe session
+        paymentTransactionService.addPaymentTransaction(new PaymentTransactionDTO());
+
+
+
+
+        return new PaymentProcessorResponseDTO();
+    }
+}

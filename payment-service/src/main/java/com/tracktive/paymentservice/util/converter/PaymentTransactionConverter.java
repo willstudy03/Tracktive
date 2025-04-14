@@ -2,6 +2,7 @@ package com.tracktive.paymentservice.util.converter;
 
 import com.tracktive.paymentservice.model.DTO.PaymentTransactionDTO;
 import com.tracktive.paymentservice.model.entity.PaymentTransaction;
+import org.springframework.beans.BeanUtils;
 
 import java.util.Objects;
 
@@ -20,17 +21,7 @@ public class PaymentTransactionConverter {
             return null;
         }
         PaymentTransactionDTO dto = new PaymentTransactionDTO();
-        dto.setId(paymentTransaction.getId());
-        dto.setPaymentId(paymentTransaction.getPaymentId());
-        dto.setStripePaymentIntentId(paymentTransaction.getStripePaymentIntentId());
-        dto.setStripeChargeId(paymentTransaction.getStripeChargeId());
-        dto.setStripePaymentStatus(paymentTransaction.getStripePaymentStatus());
-        dto.setReceiptUrl(paymentTransaction.getReceiptUrl());
-        dto.setAmount(paymentTransaction.getAmount());
-        dto.setCurrency(paymentTransaction.getCurrency());
-        dto.setStripeCreatedAt(paymentTransaction.getStripeCreatedAt());
-        dto.setUpdatedAt(paymentTransaction.getUpdatedAt());
-        dto.setCreatedAt(paymentTransaction.getCreatedAt());
+        BeanUtils.copyProperties(paymentTransaction, dto);
         return dto;
     }
 
@@ -39,17 +30,7 @@ public class PaymentTransactionConverter {
             return null;
         }
         PaymentTransaction paymentTransaction = new PaymentTransaction();
-        paymentTransaction.setId(dto.getId());
-        paymentTransaction.setPaymentId(dto.getPaymentId());
-        paymentTransaction.setStripePaymentIntentId(dto.getStripePaymentIntentId());
-        paymentTransaction.setStripeChargeId(dto.getStripeChargeId());
-        paymentTransaction.setStripePaymentStatus(dto.getStripePaymentStatus());
-        paymentTransaction.setReceiptUrl(dto.getReceiptUrl());
-        paymentTransaction.setAmount(dto.getAmount());
-        paymentTransaction.setCurrency(dto.getCurrency());
-        paymentTransaction.setStripeCreatedAt(dto.getStripeCreatedAt());
-        paymentTransaction.setUpdatedAt(dto.getUpdatedAt());
-        paymentTransaction.setCreatedAt(dto.getCreatedAt());
+        BeanUtils.copyProperties(dto, paymentTransaction);
         return paymentTransaction;
     }
 }
