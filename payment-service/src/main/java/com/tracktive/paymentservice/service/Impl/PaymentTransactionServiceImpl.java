@@ -55,6 +55,16 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
     }
 
     @Override
+    public PaymentTransactionDTO selectPaymentTransactionByStripeSessionId(String stripeSessionId) {
+        validateId(stripeSessionId);
+        return paymentTransactionRepository.selectPaymentTransactionByStripeSessionId(stripeSessionId)
+                .orElseThrow(() -> {
+                    logger.warn("Payment Transaction not found with stripe session id: {}", stripeSessionId);
+                    return new PaymentTransactionNotFoundException("Payment Transaction not found with stripe session id: " + stripeSessionId);
+                });
+    }
+
+    @Override
     @Transactional
     public PaymentTransactionDTO lockPaymentTransactionById(String id) {
         validateId(id);
@@ -118,6 +128,12 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
     private void validateId(String id) {
         if (Objects.isNull(id) || id.trim().isEmpty()) {
             throw new IllegalArgumentException("Payment Transaction ID cannot be null or empty");
+        }
+    }
+
+    private void validateStripeSessionId(String stripeSessionId) {
+        if (Objects.isNull(stripeSessionId) || stripeSessionId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Stipe Session ID cannot be null or empty");
         }
     }
 

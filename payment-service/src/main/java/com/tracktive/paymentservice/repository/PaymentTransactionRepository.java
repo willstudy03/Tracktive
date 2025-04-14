@@ -19,6 +19,8 @@ public interface PaymentTransactionRepository {
 
     Optional<PaymentTransactionDTO> selectPaymentTransactionById(String id);
 
+    Optional<PaymentTransactionDTO> selectPaymentTransactionByStripeSessionId(String stripeSessionId);
+
     // Lock operation
     Optional<PaymentTransactionDTO> lockPaymentTransactionById(String id);
 

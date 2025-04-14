@@ -25,6 +25,14 @@
         WHERE id = #{id};
     </select>
 
+    <!-- Select a payment transaction by Stripe Session ID -->
+    <select id="selectPaymentTransactionByStripeSessionId" resultType="PaymentTransaction">
+        SELECT id, payment_id, stripe_session_id, status,
+        amount, currency, updated_at, created_at
+        FROM payment_transactions
+        WHERE stripe_session_id = #{stripeSessionId};
+    </select>
+
     <!-- Lock a payment transaction by ID (FOR UPDATE) -->
     <select id="lockPaymentTransactionById" resultType="PaymentTransaction">
         SELECT id, payment_id, stripe_session_id, status,

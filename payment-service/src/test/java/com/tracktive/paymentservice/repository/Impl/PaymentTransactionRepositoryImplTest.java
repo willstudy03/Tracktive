@@ -83,4 +83,12 @@ class PaymentTransactionRepositoryImplTest {
         boolean delResult = paymentTransactionRepository.deletePaymentTransactionById(id);
         assertTrue(delResult);
     }
+
+    @Test
+    void selectPaymentTransactionByStripeSessionId() {
+        String ID = "cs_test_a1B2c3D4e5F6g7H8";
+        Optional<PaymentTransactionDTO> paymentTransactionDTOS = paymentTransactionRepository.selectPaymentTransactionByStripeSessionId(ID);
+        logger.info("Payment Transaction:{}", paymentTransactionDTOS);
+        assertEquals(paymentTransactionDTOS.get().getStripeSessionId(), ID);
+    }
 }

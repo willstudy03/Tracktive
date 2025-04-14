@@ -17,6 +17,8 @@ public interface PaymentTransactionService {
 
     PaymentTransactionDTO selectPaymentTransactionById(String id);
 
+    PaymentTransactionDTO selectPaymentTransactionByStripeSessionId(String stripeSessionId);
+
     // Lock operation
     PaymentTransactionDTO lockPaymentTransactionById(String id);
 

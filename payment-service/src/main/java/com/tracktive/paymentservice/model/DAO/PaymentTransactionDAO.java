@@ -20,6 +20,8 @@ public interface PaymentTransactionDAO {
 
     Optional<PaymentTransaction> selectPaymentTransactionById(String id);
 
+    Optional<PaymentTransaction> selectPaymentTransactionByStripeSessionId(String stripeSessionId);
+
     // Lock operation
     Optional<PaymentTransaction> lockPaymentTransactionById(String id);
 

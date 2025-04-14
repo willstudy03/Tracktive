@@ -52,6 +52,11 @@ public class PaymentTransactionRepositoryImpl implements PaymentTransactionRepos
     }
 
     @Override
+    public Optional<PaymentTransactionDTO> selectPaymentTransactionByStripeSessionId(String stripeSessionId) {
+        return paymentTransactionDAO.selectPaymentTransactionByStripeSessionId(stripeSessionId).map(PaymentTransactionConverter::toDTO);
+    }
+
+    @Override
     public Optional<PaymentTransactionDTO> lockPaymentTransactionById(String id) {
         return paymentTransactionDAO.lockPaymentTransactionById(id).map(PaymentTransactionConverter::toDTO);
     }
