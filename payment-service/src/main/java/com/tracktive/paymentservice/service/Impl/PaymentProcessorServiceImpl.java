@@ -56,7 +56,7 @@ public class PaymentProcessorServiceImpl implements PaymentProcessorService {
 
         // Create a paymentTransaction to track the Stripe session
         PaymentTransactionDTO paymentTransactionDTO = paymentTransactionService
-                .addPaymentTransaction(PaymentTransactionConverter.toRequest(paymentDTO, session.getId()));
+                .addPaymentTransaction(PaymentTransactionConverter.toRequest(paymentDTO, session));
 
         PaymentProcessorResponseDTO paymentProcessorResponseDTO = new PaymentProcessorResponseDTO(session.getId(), session.getUrl());
 

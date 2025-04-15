@@ -10,7 +10,7 @@
     </select>
 
     <!-- Select all payment transactions by payment ID -->
-    <select id="selectAllPaymentTransactionsByPaymentId" resultType="PaymentTransaction">
+    <select id="selectPaymentTransactionByPaymentId" resultType="PaymentTransaction">
         SELECT id, payment_id, stripe_session_id, stripe_payment_status,
         amount, session_url, currency, updated_at, created_at
         FROM payment_transactions

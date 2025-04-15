@@ -39,11 +39,8 @@ public class PaymentTransactionRepositoryImpl implements PaymentTransactionRepos
     }
 
     @Override
-    public List<PaymentTransactionDTO> selectAllPaymentTransactionsByPaymentId(String id) {
-        return paymentTransactionDAO.selectAllPaymentTransactionsByPaymentId(id)
-                .stream()
-                .map(PaymentTransactionConverter::toDTO)
-                .toList();
+    public Optional<PaymentTransactionDTO> selectPaymentTransactionByPaymentId(String id) {
+        return paymentTransactionDAO.selectPaymentTransactionByPaymentId(id).map(PaymentTransactionConverter::toDTO);
     }
 
     @Override

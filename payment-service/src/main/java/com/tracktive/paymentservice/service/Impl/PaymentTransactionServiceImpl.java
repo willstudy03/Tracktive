@@ -49,9 +49,13 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
     }
 
     @Override
-    public List<PaymentTransactionDTO> selectAllPaymentTransactionsByPaymentId(String id) {
+    public PaymentTransactionDTO selectPaymentTransactionByPaymentId(String id) {
         validatePaymentId(id);
-        return paymentTransactionRepository.selectAllPaymentTransactionsByPaymentId(id);
+        return paymentTransactionRepository.selectPaymentTransactionByPaymentId(id)
+                .orElseThrow(() -> {
+                    logger.warn("Payment Transaction not found with payment id: {}", id);
+                    return new PaymentTransactionNotFoundException("Payment Transaction not found with payment id: " + id);
+                });
     }
 
     @Override

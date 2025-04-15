@@ -14,7 +14,7 @@ public interface PaymentTransactionService {
     // Select operations
     List<PaymentTransactionDTO> selectAllPaymentTransactions();
 
-    List<PaymentTransactionDTO> selectAllPaymentTransactionsByPaymentId(String id);
+    PaymentTransactionDTO selectPaymentTransactionByPaymentId(String id);
 
     PaymentTransactionDTO selectPaymentTransactionById(String id);
 

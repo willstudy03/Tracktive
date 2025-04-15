@@ -16,7 +16,7 @@ public interface PaymentTransactionDAO {
     // Select operations
     List<PaymentTransaction> selectAllPaymentTransactions();
 
-    List<PaymentTransaction> selectAllPaymentTransactionsByPaymentId(String id);
+    Optional<PaymentTransaction> selectPaymentTransactionByPaymentId(String id);
 
     Optional<PaymentTransaction> selectPaymentTransactionById(String id);
 

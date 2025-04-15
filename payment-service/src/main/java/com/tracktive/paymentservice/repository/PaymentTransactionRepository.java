@@ -15,7 +15,7 @@ public interface PaymentTransactionRepository {
     // Select operations
     List<PaymentTransactionDTO> selectAllPaymentTransactions();
 
-    List<PaymentTransactionDTO> selectAllPaymentTransactionsByPaymentId(String id);
+    Optional<PaymentTransactionDTO> selectPaymentTransactionByPaymentId(String id);
 
     Optional<PaymentTransactionDTO> selectPaymentTransactionById(String id);
 

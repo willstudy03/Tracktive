@@ -1,5 +1,6 @@
 package com.tracktive.paymentservice.util.converter;
 
+import com.stripe.model.checkout.Session;
 import com.tracktive.paymentservice.model.DTO.PaymentDTO;
 import com.tracktive.paymentservice.model.DTO.PaymentTransactionDTO;
 import com.tracktive.paymentservice.model.DTO.PaymentTransactionRequestDTO;
@@ -50,13 +51,14 @@ public class PaymentTransactionConverter {
         return paymentTransaction;
     }
 
-    public static PaymentTransactionRequestDTO toRequest(PaymentDTO paymentDTO, String stripeSessionID){
+    public static PaymentTransactionRequestDTO toRequest(PaymentDTO paymentDTO, Session session){
         if (Objects.isNull(paymentDTO)) {
             return null;
         }
         PaymentTransactionRequestDTO requestDTO = new PaymentTransactionRequestDTO();
         requestDTO.setPaymentId(paymentDTO.getId());
-        requestDTO.setStripeSessionId(stripeSessionID);
+        requestDTO.setStripeSessionId(session.getId());
+        requestDTO.setSessionUrl(session.getUrl());
         requestDTO.setAmount(paymentDTO.getAmount());
         requestDTO.setCurrency(paymentDTO.getCurrency());
         return requestDTO;

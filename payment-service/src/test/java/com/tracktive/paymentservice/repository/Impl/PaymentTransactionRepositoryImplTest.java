@@ -34,9 +34,9 @@ class PaymentTransactionRepositoryImplTest {
     @Test
     void selectAllPaymentTransactionsByPaymentId() {
         String paymentID = "17bddb5c-e0ec-4a21-81e2-415242cb86cf";
-        List<PaymentTransactionDTO> paymentTransactionDTOS = paymentTransactionRepository.selectAllPaymentTransactionsByPaymentId(paymentID);
-        logger.info("Payment Transaction:{}", paymentTransactionDTOS);
-        assertEquals(paymentTransactionDTOS.getFirst().getPaymentId(), paymentID);
+        Optional<PaymentTransactionDTO> paymentTransactionDTO = paymentTransactionRepository.selectPaymentTransactionByPaymentId(paymentID);
+        logger.info("Payment Transaction:{}", paymentTransactionDTO);
+        assertEquals(paymentTransactionDTO.get().getPaymentId(), paymentID);
     }
 
     @Test
