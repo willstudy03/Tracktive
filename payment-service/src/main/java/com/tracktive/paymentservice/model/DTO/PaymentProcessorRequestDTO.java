@@ -7,20 +7,20 @@ package com.tracktive.paymentservice.model.DTO;
 */
 public class PaymentProcessorRequestDTO {
 
-    String paymentID;
+    String paymentId;
 
     public PaymentProcessorRequestDTO() {
     }
 
-    public PaymentProcessorRequestDTO(String paymentID) {
-        this.paymentID = paymentID;
+    public PaymentProcessorRequestDTO(String paymentId) {
+        this.paymentId = paymentId;
     }
 
-    public String getPaymentID() {
-        return paymentID;
+    public String getPaymentId() {
+        return paymentId;
     }
 
-    public void setPaymentID(String paymentID) {
-        this.paymentID = paymentID;
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
     }
 }

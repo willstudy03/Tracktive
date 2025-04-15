@@ -1,6 +1,7 @@
 package com.tracktive.paymentservice.service;
 
 import com.tracktive.paymentservice.model.DTO.PaymentTransactionDTO;
+import com.tracktive.paymentservice.model.DTO.PaymentTransactionRequestDTO;
 
 import java.util.List;
 
@@ -23,10 +24,10 @@ public interface PaymentTransactionService {
     PaymentTransactionDTO lockPaymentTransactionById(String id);
 
     // Insert operation
-    void addPaymentTransaction(PaymentTransactionDTO paymentTransactionDTO);
+    PaymentTransactionDTO addPaymentTransaction(PaymentTransactionRequestDTO paymentTransactionRequestDTO);
 
     // Update operation
-    void updatePaymentTransaction(PaymentTransactionDTO paymentTransactionDTO);
+    PaymentTransactionDTO updatePaymentTransaction(PaymentTransactionDTO paymentTransactionDTO);
 
     // Delete operation
     void deletePaymentTransactionById(String id);

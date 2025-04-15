@@ -1,6 +1,12 @@
 package com.tracktive.paymentservice.model.DTO;
 
+import com.tracktive.paymentservice.model.Enum.PaymentStatus;
 import com.tracktive.paymentservice.model.Enum.StripePaymentStatus;
+import com.tracktive.paymentservice.util.annotation.ValidEnum;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,16 +18,25 @@ import java.time.LocalDateTime;
 */
 public class PaymentTransactionDTO {
 
+    @NotBlank(message = "Payment Transaction ID is required")
     private String id;
 
+    @NotBlank(message = "Payment ID is required")
     private String paymentId;
 
+    @NotBlank(message = "Stripe Session ID is required")
     private String stripeSessionId;
 
+    @NotBlank(message = "Currency is required")
+    @Pattern(regexp = "^[A-Z]{3}$", message = "Invalid currency format (Use ISO 4217, e.g., USD, MYR, EUR)")
     private String currency;
 
+    @NotNull(message = "Amount is required")
+    @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
     private BigDecimal amount;
 
+    @NotNull(message = "Stripe Payment Status is required")
+    @ValidEnum(enumClass = StripePaymentStatus.class, message = "Invalid Stripe Payment Status")
     private StripePaymentStatus stripePaymentStatus;
 
     private LocalDateTime updatedAt;

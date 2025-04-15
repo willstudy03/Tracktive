@@ -3,9 +3,15 @@ package com.tracktive.paymentservice.service.Impl;
 import com.tracktive.paymentservice.exception.LockAcquisitionException;
 import com.tracktive.paymentservice.exception.PaymentNotFoundException;
 import com.tracktive.paymentservice.exception.PaymentTransactionNotFoundException;
+import com.tracktive.paymentservice.model.DTO.PaymentRequestDTO;
 import com.tracktive.paymentservice.model.DTO.PaymentTransactionDTO;
+import com.tracktive.paymentservice.model.DTO.PaymentTransactionRequestDTO;
 import com.tracktive.paymentservice.repository.PaymentTransactionRepository;
 import com.tracktive.paymentservice.service.PaymentTransactionService;
+import com.tracktive.paymentservice.util.converter.PaymentTransactionConverter;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
 * Description: Payment Transaction Service Implementation
@@ -26,11 +33,14 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
     
     private final PaymentTransactionRepository paymentTransactionRepository;
 
+    private final Validator validator;
+
     private static final Logger logger = LoggerFactory.getLogger(PaymentTransactionServiceImpl.class);
 
     @Autowired
-    public PaymentTransactionServiceImpl(PaymentTransactionRepository paymentTransactionRepository) {
+    public PaymentTransactionServiceImpl(PaymentTransactionRepository paymentTransactionRepository, Validator validator) {
         this.paymentTransactionRepository = paymentTransactionRepository;
+        this.validator = validator;
     }
 
     @Override
@@ -56,7 +66,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
 
     @Override
     public PaymentTransactionDTO selectPaymentTransactionByStripeSessionId(String stripeSessionId) {
-        validateId(stripeSessionId);
+        validateStripeSessionId(stripeSessionId);
         return paymentTransactionRepository.selectPaymentTransactionByStripeSessionId(stripeSessionId)
                 .orElseThrow(() -> {
                     logger.warn("Payment Transaction not found with stripe session id: {}", stripeSessionId);
@@ -85,19 +95,26 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
 
     @Override
     @Transactional
-    public void addPaymentTransaction(PaymentTransactionDTO paymentTransactionDTO) {
+    public PaymentTransactionDTO addPaymentTransaction(PaymentTransactionRequestDTO paymentTransactionRequestDTO) {
+
+        PaymentTransactionDTO paymentTransactionDTO = PaymentTransactionConverter.toDTO(paymentTransactionRequestDTO);
+
         validatePaymentTransactionDTO(paymentTransactionDTO);
+
         boolean result = paymentTransactionRepository.addPaymentTransaction(paymentTransactionDTO);
         if (!result) {
             logger.error("Failed to add payment transaction with id: {}", paymentTransactionDTO.getId());
             throw new RuntimeException("Failed to add payment transaction with id: " + paymentTransactionDTO.getId());
         }
         logger.info("Payment Transaction [{}] added successfully", paymentTransactionDTO.getId());
+
+        return paymentTransactionRepository.selectPaymentTransactionById(paymentTransactionDTO.getId())
+                .orElseThrow(() -> new PaymentTransactionNotFoundException("Failed to fetch payment transaction after insertion"));
     }
 
     @Override
     @Transactional
-    public void updatePaymentTransaction(PaymentTransactionDTO paymentTransactionDTO) {
+    public PaymentTransactionDTO updatePaymentTransaction(PaymentTransactionDTO paymentTransactionDTO) {
         validatePaymentTransactionDTO(paymentTransactionDTO);
         boolean result = paymentTransactionRepository.updatePaymentTransaction(paymentTransactionDTO);
         if (!result) {
@@ -105,6 +122,9 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
             throw new PaymentTransactionNotFoundException("Failed to update payment transaction with id: " + paymentTransactionDTO.getId());
         }
         logger.info("Payment Transaction [{}] updated successfully", paymentTransactionDTO.getId());
+
+        return paymentTransactionRepository.selectPaymentTransactionById(paymentTransactionDTO.getId())
+                .orElseThrow(() -> new PaymentTransactionNotFoundException("Failed to fetch payment transaction after update"));
     }
 
     @Override
@@ -138,9 +158,9 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
     }
 
     private void validatePaymentTransactionDTO(PaymentTransactionDTO paymentTransactionDTO) {
-        if (Objects.isNull(paymentTransactionDTO)) {
-            throw new IllegalArgumentException("paymentTransactionDTO cannot be null");
+        Set<ConstraintViolation<PaymentTransactionDTO>> violations = validator.validate(paymentTransactionDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for paymentTransactionDTO", violations);
         }
-        //@TODO: PARAMETERS VALIDATION
     }
 }

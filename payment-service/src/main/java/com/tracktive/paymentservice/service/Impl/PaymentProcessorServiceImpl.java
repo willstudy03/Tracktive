@@ -43,7 +43,7 @@ public class PaymentProcessorServiceImpl implements PaymentProcessorService {
     public PaymentProcessorResponseDTO initiatePayment(PaymentProcessorRequestDTO paymentProcessorRequestDTO) {
 
         // Retrieve payment
-        PaymentDTO paymentDTO = paymentService.lockPaymentById(paymentProcessorRequestDTO.getPaymentID());
+        PaymentDTO paymentDTO = paymentService.lockPaymentById(paymentProcessorRequestDTO.getPaymentId());
 
         // Status validation, only payment with payment status PENDING can initiate a payment
         if (!paymentDTO.getPaymentStatus().equals(PaymentStatus.PENDING)){
@@ -54,15 +54,12 @@ public class PaymentProcessorServiceImpl implements PaymentProcessorService {
         // Initiate a payment session with Stripe
         Session session = stripeService.createCheckoutSession(paymentDTO);
 
-
-        PaymentTransactionRequestDTO paymentTransactionRequestDTO = PaymentTransactionConverter.toRequest(paymentDTO, session.getId());
-
         // Create a paymentTransaction to track the Stripe session
-        paymentTransactionService.addPaymentTransaction(PaymentTransactionConverter.toDTO(paymentTransactionRequestDTO));
+        PaymentTransactionDTO paymentTransactionDTO = paymentTransactionService
+                .addPaymentTransaction(PaymentTransactionConverter.toRequest(paymentDTO, session.getId()));
 
+        PaymentProcessorResponseDTO paymentProcessorResponseDTO = new PaymentProcessorResponseDTO(session.getId(), session.getUrl());
 
-
-
-        return new PaymentProcessorResponseDTO();
+        return paymentProcessorResponseDTO;
     }
 }
