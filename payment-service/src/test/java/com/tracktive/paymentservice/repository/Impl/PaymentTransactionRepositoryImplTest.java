@@ -63,6 +63,7 @@ class PaymentTransactionRepositoryImplTest {
         paymentTransactionDTO.setStripeSessionId("cs_test_a1B2c3D4e5F6g7H8"); // Updated to stripeSessionId
         paymentTransactionDTO.setStripePaymentStatus(StripePaymentStatus.PENDING); // Updated to status
         paymentTransactionDTO.setAmount(new BigDecimal("199.99"));
+        paymentTransactionDTO.setSessionUrl("https://checkout.stripe.com/c/pay/cs_test_a13tSCn2YoIpQnDuvoiXVAtMEWI9sa8SvFCCKJ3WEhdzXOoeu9OVBXc9AU#fidkdWxOYHwnPyd1blpxYHZxWjA0V0ZzdkBBNkh3fHN9MldWR2I1aXBXU3BOMmt1Z0FdamtmQlJQcndBZ2RkVml3clZcZE1dcGlOSzdJc31WY18zSGpDZlQ2ZGRJb0oxQ2xwSndyN2cySFZDNTVfNl9GbjAxfycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl");
         paymentTransactionDTO.setCurrency("USD");
 
         boolean result = paymentTransactionRepository.addPaymentTransaction(paymentTransactionDTO);

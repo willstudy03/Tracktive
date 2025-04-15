@@ -22,6 +22,8 @@ public class PaymentTransaction {
 
     private BigDecimal amount;
 
+    private String sessionUrl;
+
     private StripePaymentStatus stripePaymentStatus;
 
     private LocalDateTime updatedAt;
@@ -31,12 +33,13 @@ public class PaymentTransaction {
     public PaymentTransaction() {
     }
 
-    public PaymentTransaction(String id, String paymentId, String stripeSessionId, String currency, BigDecimal amount, StripePaymentStatus stripePaymentStatus) {
+    public PaymentTransaction(String id, String paymentId, String stripeSessionId, String currency, BigDecimal amount, String sessionUrl, StripePaymentStatus stripePaymentStatus) {
         this.id = id;
         this.paymentId = paymentId;
         this.stripeSessionId = stripeSessionId;
         this.currency = currency;
         this.amount = amount;
+        this.sessionUrl = sessionUrl;
         this.stripePaymentStatus = stripePaymentStatus;
     }
 
@@ -78,6 +81,14 @@ public class PaymentTransaction {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public String getSessionUrl() {
+        return sessionUrl;
+    }
+
+    public void setSessionUrl(String sessionUrl) {
+        this.sessionUrl = sessionUrl;
     }
 
     public StripePaymentStatus getStripePaymentStatus() {

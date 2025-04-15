@@ -35,6 +35,9 @@ public class PaymentTransactionDTO {
     @DecimalMin(value = "0.01", message = "Amount must be greater than 0")
     private BigDecimal amount;
 
+    @NotBlank(message = "Stripe Session URL is required")
+    private String sessionUrl;
+
     @NotNull(message = "Stripe Payment Status is required")
     @ValidEnum(enumClass = StripePaymentStatus.class, message = "Invalid Stripe Payment Status")
     private StripePaymentStatus stripePaymentStatus;
@@ -46,12 +49,13 @@ public class PaymentTransactionDTO {
     public PaymentTransactionDTO() {
     }
 
-    public PaymentTransactionDTO(String id, String paymentId, String stripeSessionId, String currency, BigDecimal amount, StripePaymentStatus stripePaymentStatus) {
+    public PaymentTransactionDTO(String id, String paymentId, String stripeSessionId, String currency, BigDecimal amount, String sessionUrl, StripePaymentStatus stripePaymentStatus) {
         this.id = id;
         this.paymentId = paymentId;
         this.stripeSessionId = stripeSessionId;
         this.currency = currency;
         this.amount = amount;
+        this.sessionUrl = sessionUrl;
         this.stripePaymentStatus = stripePaymentStatus;
     }
 
@@ -93,6 +97,14 @@ public class PaymentTransactionDTO {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public String getSessionUrl() {
+        return sessionUrl;
+    }
+
+    public void setSessionUrl(String sessionUrl) {
+        this.sessionUrl = sessionUrl;
     }
 
     public StripePaymentStatus getStripePaymentStatus() {
