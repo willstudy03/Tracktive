@@ -100,8 +100,9 @@ public class StripeService {
     }
 
     private void handlePaymentSuccess(Event event) {
+
         Session session = (Session) event.getDataObjectDeserializer().getObject().get();
-        String clientReferenceId = session.getClientReferenceId(); // This is the ID you set in createCheckoutSession
+        String clientReferenceId = session.getClientReferenceId(); // This is Payment ID
 
         logger.info("Payment succeeded for payment ID: {}", clientReferenceId);
 

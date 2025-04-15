@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/webhook")
+@RequestMapping("/api/stripe")
 public class StripeWebHookController {
 
     private final StripeService stripeService;
@@ -18,9 +18,8 @@ public class StripeWebHookController {
         this.stripeService = stripeService;
     }
 
-    @PostMapping("/stripe")
-    public ResponseEntity<String> handleStripeWebhook(@RequestBody String payload,
-                                                      @RequestHeader("Stripe-Signature") String sigHeader) {
+    @PostMapping("/webhook")
+    public ResponseEntity<String> handleStripeWebhook(@RequestBody String payload, @RequestHeader("Stripe-Signature") String sigHeader) {
         try {
             Event event = stripeService.handleWebhookEvent(payload, sigHeader);
             return ResponseEntity.ok("Webhook processed successfully: " + event.getType());
