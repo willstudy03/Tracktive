@@ -2,15 +2,13 @@ package com.tracktive.paymentservice.service.Impl;
 
 import com.stripe.model.checkout.Session;
 import com.tracktive.paymentservice.exception.InvalidPaymentStatusException;
-import com.tracktive.paymentservice.model.DTO.PaymentDTO;
-import com.tracktive.paymentservice.model.DTO.PaymentProcessorRequestDTO;
-import com.tracktive.paymentservice.model.DTO.PaymentProcessorResponseDTO;
-import com.tracktive.paymentservice.model.DTO.PaymentTransactionDTO;
+import com.tracktive.paymentservice.model.DTO.*;
 import com.tracktive.paymentservice.model.Enum.PaymentStatus;
 import com.tracktive.paymentservice.service.PaymentProcessorService;
 import com.tracktive.paymentservice.service.PaymentService;
 import com.tracktive.paymentservice.service.PaymentTransactionService;
 import com.tracktive.paymentservice.stripe.StripeService;
+import com.tracktive.paymentservice.util.converter.PaymentTransactionConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +54,11 @@ public class PaymentProcessorServiceImpl implements PaymentProcessorService {
         // Initiate a payment session with Stripe
         Session session = stripeService.createCheckoutSession(paymentDTO);
 
+
+        PaymentTransactionRequestDTO paymentTransactionRequestDTO = PaymentTransactionConverter.toRequest(paymentDTO, session.getId());
+
         // Create a paymentTransaction to track the Stripe session
-        paymentTransactionService.addPaymentTransaction(new PaymentTransactionDTO());
+        paymentTransactionService.addPaymentTransaction(PaymentTransactionConverter.toDTO(paymentTransactionRequestDTO));
 
 
 

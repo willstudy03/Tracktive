@@ -1,5 +1,7 @@
 package com.tracktive.paymentservice.model.DTO;
 
+import com.tracktive.paymentservice.model.Enum.StripePaymentStatus;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -20,7 +22,7 @@ public class PaymentTransactionDTO {
 
     private BigDecimal amount;
 
-    private String status;
+    private StripePaymentStatus stripePaymentStatus;
 
     private LocalDateTime updatedAt;
 
@@ -29,13 +31,13 @@ public class PaymentTransactionDTO {
     public PaymentTransactionDTO() {
     }
 
-    public PaymentTransactionDTO(String id, String paymentId, String stripeSessionId, String currency, BigDecimal amount, String status) {
+    public PaymentTransactionDTO(String id, String paymentId, String stripeSessionId, String currency, BigDecimal amount, StripePaymentStatus stripePaymentStatus) {
         this.id = id;
         this.paymentId = paymentId;
         this.stripeSessionId = stripeSessionId;
         this.currency = currency;
         this.amount = amount;
-        this.status = status;
+        this.stripePaymentStatus = stripePaymentStatus;
     }
 
     public String getId() {
@@ -78,12 +80,12 @@ public class PaymentTransactionDTO {
         this.amount = amount;
     }
 
-    public String getStatus() {
-        return status;
+    public StripePaymentStatus getStripePaymentStatus() {
+        return stripePaymentStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStripePaymentStatus(StripePaymentStatus stripePaymentStatus) {
+        this.stripePaymentStatus = stripePaymentStatus;
     }
 
     public LocalDateTime getUpdatedAt() {

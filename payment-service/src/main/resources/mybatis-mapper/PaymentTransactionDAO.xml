@@ -4,14 +4,14 @@
 
     <!-- Select all payment transactions -->
     <select id="selectAllPaymentTransactions" resultType="PaymentTransaction">
-        SELECT id, payment_id, stripe_session_id, status,
+        SELECT id, payment_id, stripe_session_id, stripe_payment_status,
         amount, currency, updated_at, created_at
         FROM payment_transactions;
     </select>
 
     <!-- Select all payment transactions by payment ID -->
     <select id="selectAllPaymentTransactionsByPaymentId" resultType="PaymentTransaction">
-        SELECT id, payment_id, stripe_session_id, status,
+        SELECT id, payment_id, stripe_session_id, stripe_payment_status,
         amount, currency, updated_at, created_at
         FROM payment_transactions
         WHERE payment_id = #{id};
@@ -19,7 +19,7 @@
 
     <!-- Select a payment transaction by ID -->
     <select id="selectPaymentTransactionById" resultType="PaymentTransaction">
-        SELECT id, payment_id, stripe_session_id, status,
+        SELECT id, payment_id, stripe_session_id, stripe_payment_status,
         amount, currency, updated_at, created_at
         FROM payment_transactions
         WHERE id = #{id};
@@ -27,7 +27,7 @@
 
     <!-- Select a payment transaction by Stripe Session ID -->
     <select id="selectPaymentTransactionByStripeSessionId" resultType="PaymentTransaction">
-        SELECT id, payment_id, stripe_session_id, status,
+        SELECT id, payment_id, stripe_session_id, stripe_payment_status,
         amount, currency, updated_at, created_at
         FROM payment_transactions
         WHERE stripe_session_id = #{stripeSessionId};
@@ -35,7 +35,7 @@
 
     <!-- Lock a payment transaction by ID (FOR UPDATE) -->
     <select id="lockPaymentTransactionById" resultType="PaymentTransaction">
-        SELECT id, payment_id, stripe_session_id, status,
+        SELECT id, payment_id, stripe_session_id, stripe_payment_status,
         amount, currency, updated_at, created_at
         FROM payment_transactions
         WHERE id = #{id}
@@ -44,9 +44,9 @@
 
     <!-- Insert a new payment transaction -->
     <insert id="addPaymentTransaction">
-        INSERT INTO payment_transactions (id, payment_id, stripe_session_id, status,
+        INSERT INTO payment_transactions (id, payment_id, stripe_session_id, stripe_payment_status,
         amount, currency)
-        VALUES (#{id}, #{paymentId}, #{stripeSessionId}, #{status},
+        VALUES (#{id}, #{paymentId}, #{stripeSessionId}, #{stripePaymentStatus},
         #{amount}, #{currency});
     </insert>
 
@@ -55,7 +55,7 @@
         UPDATE payment_transactions
         SET payment_id = #{paymentId},
         stripe_session_id = #{stripeSessionId},
-        status = #{status},
+        stripe_payment_status = #{stripePaymentStatus},
         amount = #{amount},
         currency = #{currency}
         WHERE id = #{id};

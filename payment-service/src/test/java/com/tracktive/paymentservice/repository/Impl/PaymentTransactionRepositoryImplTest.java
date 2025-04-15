@@ -1,6 +1,7 @@
 package com.tracktive.paymentservice.repository.Impl;
 
 import com.tracktive.paymentservice.model.DTO.PaymentTransactionDTO;
+import com.tracktive.paymentservice.model.Enum.StripePaymentStatus;
 import com.tracktive.paymentservice.repository.PaymentTransactionRepository;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -60,7 +61,7 @@ class PaymentTransactionRepositoryImplTest {
         paymentTransactionDTO.setId("d6da16c1-9924-4633-92bf-41c7529a81d9");  // Generate a unique ID
         paymentTransactionDTO.setPaymentId("17bddb5c-e0ec-4a21-81e2-415242cb86cf");  // Reference to Payment entity
         paymentTransactionDTO.setStripeSessionId("cs_test_a1B2c3D4e5F6g7H8"); // Updated to stripeSessionId
-        paymentTransactionDTO.setStatus("succeeded"); // Updated to status
+        paymentTransactionDTO.setStripePaymentStatus(StripePaymentStatus.PENDING); // Updated to status
         paymentTransactionDTO.setAmount(new BigDecimal("199.99"));
         paymentTransactionDTO.setCurrency("USD");
 
@@ -74,6 +75,7 @@ class PaymentTransactionRepositoryImplTest {
         PaymentTransactionDTO updatePaymentTransaction = paymentTransactionDTO.get();
         logger.info("Payment Transaction Currency:{}", updatePaymentTransaction.getCurrency());
         updatePaymentTransaction.setCurrency("MYR");
+        updatePaymentTransaction.setStripePaymentStatus(StripePaymentStatus.SUCCEEDED);
         assertTrue(paymentTransactionRepository.updatePaymentTransaction(updatePaymentTransaction));
     }
 
