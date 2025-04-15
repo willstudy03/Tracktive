@@ -2,6 +2,7 @@ package com.tracktive.paymentservice.service.Impl;
 
 import com.stripe.model.checkout.Session;
 import com.tracktive.paymentservice.exception.InvalidPaymentStatusException;
+import com.tracktive.paymentservice.exception.PaymentTransactionNotFoundException;
 import com.tracktive.paymentservice.model.DTO.*;
 import com.tracktive.paymentservice.model.Enum.PaymentStatus;
 import com.tracktive.paymentservice.service.PaymentProcessorService;
@@ -46,20 +47,34 @@ public class PaymentProcessorServiceImpl implements PaymentProcessorService {
         PaymentDTO paymentDTO = paymentService.lockPaymentById(paymentProcessorRequestDTO.getPaymentId());
 
         // Status validation, only payment with payment status PENDING can initiate a payment
-        if (!paymentDTO.getPaymentStatus().equals(PaymentStatus.PENDING)){
+        if (!paymentDTO.getPaymentStatus().equals(PaymentStatus.PENDING)) {
             throw new InvalidPaymentStatusException("Payment ID " + paymentDTO.getId() +
                     " is not in a payable state. Current status: " + paymentDTO.getPaymentStatus());
         }
 
-        // Initiate a payment session with Stripe
-        Session session = stripeService.createCheckoutSession(paymentDTO);
+        try {
+            // Try to retrieve existing transaction
+            PaymentTransactionDTO existingTransaction = paymentTransactionService.selectPaymentTransactionByPaymentId(paymentProcessorRequestDTO.getPaymentId());
 
-        // Create a paymentTransaction to track the Stripe session
-        PaymentTransactionDTO paymentTransactionDTO = paymentTransactionService
-                .addPaymentTransaction(PaymentTransactionConverter.toRequest(paymentDTO, session));
+            // If found, return the existing session URL
+            log.info("Existing payment transaction found for payment ID: {}", paymentDTO.getId());
+            return new PaymentProcessorResponseDTO(existingTransaction.getStripeSessionId(), existingTransaction.getSessionUrl());
 
-        PaymentProcessorResponseDTO paymentProcessorResponseDTO = new PaymentProcessorResponseDTO(session.getId(), session.getUrl());
+        } catch (PaymentTransactionNotFoundException e) {
+            // No existing transaction found, create a new one
+            log.info("No existing payment transaction found for payment ID: {}. Creating new session.", paymentDTO.getId());
 
-        return paymentProcessorResponseDTO;
+            // Initiate a payment session with Stripe
+            Session session = stripeService.createCheckoutSession(paymentDTO);
+
+            // Create a paymentTransaction to track the Stripe session
+            PaymentTransactionDTO paymentTransactionDTO = paymentTransactionService
+                    .addPaymentTransaction(PaymentTransactionConverter.toRequest(paymentDTO, session));
+
+
+            log.info("Payment status updated to PROCESSING for payment ID: {}", paymentDTO.getId());
+
+            return new PaymentProcessorResponseDTO(session.getId(), session.getUrl());
+        }
     }
 }
