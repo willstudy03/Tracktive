@@ -5,7 +5,7 @@ import com.tracktive.paymentservice.exception.InvalidPaymentStatusException;
 import com.tracktive.paymentservice.exception.PaymentTransactionNotFoundException;
 import com.tracktive.paymentservice.model.DTO.*;
 import com.tracktive.paymentservice.model.Enum.PaymentStatus;
-import com.tracktive.paymentservice.service.PaymentProcessorService;
+import com.tracktive.paymentservice.service.CheckOutService;
 import com.tracktive.paymentservice.service.PaymentService;
 import com.tracktive.paymentservice.service.PaymentTransactionService;
 import com.tracktive.paymentservice.stripe.StripeService;
@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 * @date 14/4/2025
 */
 @Service
-public class PaymentProcessorServiceImpl implements PaymentProcessorService {
+public class CheckOutServiceImpl implements CheckOutService {
 
     private final StripeService stripeService;
 
@@ -30,10 +30,10 @@ public class PaymentProcessorServiceImpl implements PaymentProcessorService {
 
     private final PaymentTransactionService paymentTransactionService;
 
-    private static final Logger log = LoggerFactory.getLogger(PaymentProcessorServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(CheckOutServiceImpl.class);
 
     @Autowired
-    public PaymentProcessorServiceImpl(StripeService stripeService, PaymentService paymentService, PaymentTransactionService paymentTransactionService) {
+    public CheckOutServiceImpl(StripeService stripeService, PaymentService paymentService, PaymentTransactionService paymentTransactionService) {
         this.stripeService = stripeService;
         this.paymentService = paymentService;
         this.paymentTransactionService = paymentTransactionService;
@@ -41,10 +41,10 @@ public class PaymentProcessorServiceImpl implements PaymentProcessorService {
 
     @Override
     @Transactional
-    public PaymentProcessorResponseDTO initiatePayment(PaymentProcessorRequestDTO paymentProcessorRequestDTO) {
+    public CheckOutResponseDTO initiatePayment(CheckOutRequestDTO checkOutRequestDTO) {
 
         // Retrieve payment
-        PaymentDTO paymentDTO = paymentService.lockPaymentById(paymentProcessorRequestDTO.getPaymentId());
+        PaymentDTO paymentDTO = paymentService.lockPaymentById(checkOutRequestDTO.getPaymentId());
 
         // Status validation, only payment with payment status PENDING can initiate a payment
         if (!paymentDTO.getPaymentStatus().equals(PaymentStatus.PENDING)) {
@@ -54,11 +54,11 @@ public class PaymentProcessorServiceImpl implements PaymentProcessorService {
 
         try {
             // Try to retrieve existing transaction
-            PaymentTransactionDTO existingTransaction = paymentTransactionService.selectPaymentTransactionByPaymentId(paymentProcessorRequestDTO.getPaymentId());
+            PaymentTransactionDTO existingTransaction = paymentTransactionService.selectPaymentTransactionByPaymentId(checkOutRequestDTO.getPaymentId());
 
             // If found, return the existing session URL
             log.info("Existing payment transaction found for payment ID: {}", paymentDTO.getId());
-            return new PaymentProcessorResponseDTO(existingTransaction.getStripeSessionId(), existingTransaction.getSessionUrl());
+            return new CheckOutResponseDTO(existingTransaction.getStripeSessionId(), existingTransaction.getSessionUrl());
 
         } catch (PaymentTransactionNotFoundException e) {
             // No existing transaction found, create a new one
@@ -74,7 +74,7 @@ public class PaymentProcessorServiceImpl implements PaymentProcessorService {
 
             log.info("Payment status updated to PROCESSING for payment ID: {}", paymentDTO.getId());
 
-            return new PaymentProcessorResponseDTO(session.getId(), session.getUrl());
+            return new CheckOutResponseDTO(session.getId(), session.getUrl());
         }
     }
 }

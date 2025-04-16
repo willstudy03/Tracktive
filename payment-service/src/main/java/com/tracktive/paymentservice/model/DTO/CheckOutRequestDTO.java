@@ -5,14 +5,14 @@ package com.tracktive.paymentservice.model.DTO;
 * @author William Theo
 * @date 14/4/2025
 */
-public class PaymentProcessorRequestDTO {
+public class CheckOutRequestDTO {
 
     String paymentId;
 
-    public PaymentProcessorRequestDTO() {
+    public CheckOutRequestDTO() {
     }
 
-    public PaymentProcessorRequestDTO(String paymentId) {
+    public CheckOutRequestDTO(String paymentId) {
         this.paymentId = paymentId;
     }
 

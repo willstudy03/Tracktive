@@ -5,16 +5,16 @@ package com.tracktive.paymentservice.model.DTO;
 * @author William Theo
 * @date 14/4/2025
 */
-public class PaymentProcessorResponseDTO {
+public class CheckOutResponseDTO {
 
     private String sessionId;
 
     private String checkoutUrl;
 
-    public PaymentProcessorResponseDTO() {
+    public CheckOutResponseDTO() {
     }
 
-    public PaymentProcessorResponseDTO(String sessionId, String checkoutUrl) {
+    public CheckOutResponseDTO(String sessionId, String checkoutUrl) {
         this.sessionId = sessionId;
         this.checkoutUrl = checkoutUrl;
     }
