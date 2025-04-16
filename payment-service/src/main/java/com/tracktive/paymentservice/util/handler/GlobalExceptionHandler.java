@@ -1,5 +1,6 @@
 package com.tracktive.paymentservice.util.handler;
 
+import com.tracktive.paymentservice.exception.InvalidPaymentStatusException;
 import com.tracktive.paymentservice.exception.PaymentAlreadyExistException;
 import com.tracktive.paymentservice.exception.PaymentNotFoundException;
 import jakarta.validation.ConstraintViolation;
@@ -60,4 +61,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    @ExceptionHandler(InvalidPaymentStatusException.class)
+    public ResponseEntity<String> handleInvalidPaymentStatusException(InvalidPaymentStatusException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }

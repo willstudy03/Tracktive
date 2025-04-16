@@ -3,13 +3,15 @@ package com.tracktive.paymentservice.stripe;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
-import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.tracktive.paymentservice.model.DTO.PaymentDTO;
+import com.tracktive.paymentservice.model.DTO.PaymentProcessRequestDTO;
+import com.tracktive.paymentservice.service.PaymentProcessService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +34,14 @@ public class StripeService {
     @Value("${stripe.webhook.secret}")
     private String webhookSecret;
 
+    private final PaymentProcessService paymentProcessService;
+
     private static final Logger logger = LoggerFactory.getLogger(StripeService.class);
 
+    @Autowired
+    public StripeService(PaymentProcessService paymentProcessService) {
+        this.paymentProcessService = paymentProcessService;
+    }
 
     public Session createCheckoutSession(PaymentDTO paymentDTO) {
         try {
@@ -79,13 +87,8 @@ public class StripeService {
 
             switch(event.getType()) {
                 case "checkout.session.completed":
-                    handlePaymentSuccess(event);
-                    break;
-                case "checkout.session.expired":
-                    handlePaymentAbandoned(event);
-                    break;
-                case "payment_intent.payment_failed":
-                    handlePaymentFailed(event);
+                    Session session = (Session) event.getDataObjectDeserializer().getObject().get();
+                    paymentProcessService.processPaymentSuccess(new PaymentProcessRequestDTO(session));
                     break;
             }
 
@@ -97,46 +100,6 @@ public class StripeService {
             logger.error("Error processing Stripe webhook", e);
             throw new RuntimeException("Error processing Stripe webhook", e);
         }
-    }
-
-    private void handlePaymentSuccess(Event event) {
-
-        Session session = (Session) event.getDataObjectDeserializer().getObject().get();
-        String clientReferenceId = session.getClientReferenceId(); // This is Payment ID
-
-        logger.info("Payment succeeded for payment ID: {}", clientReferenceId);
-
-        // Update your payment record in the database to COMPLETED/PAID status
-        // paymentRepository.updatePaymentStatus(clientReferenceId, PaymentStatus.COMPLETED);
-
-        // You can also store additional payment details from session if needed
-        // String paymentIntentId = session.getPaymentIntent();
-    }
-
-    private void handlePaymentAbandoned(Event event) {
-        Session session = (Session) event.getDataObjectDeserializer().getObject().get();
-        String clientReferenceId = session.getClientReferenceId();
-
-        logger.info("Payment abandoned for payment ID: {}", clientReferenceId);
-
-        // Update payment status to ABANDONED or EXPIRED
-        // paymentRepository.updatePaymentStatus(clientReferenceId, PaymentStatus.ABANDONED);
-    }
-
-    private void handlePaymentFailed(Event event) {
-        PaymentIntent paymentIntent = (PaymentIntent) event.getDataObjectDeserializer().getObject().get();
-
-        // Here you'd need to find your payment record associated with this PaymentIntent
-        // This might require storing the payment intent ID when you receive the checkout.session.completed event
-        // Or querying your database using metadata or other identifiers
-
-        logger.info("Payment failed for payment intent: {}", paymentIntent.getId());
-        String failureMessage = paymentIntent.getLastPaymentError() != null ?
-                paymentIntent.getLastPaymentError().getMessage() :
-                "Unknown error";
-
-        // Update payment status to FAILED
-        // paymentRepository.updatePaymentStatus(paymentId, PaymentStatus.FAILED, failureMessage);
     }
 
 }

@@ -38,8 +38,6 @@ public class PaymentDTO {
     @DecimalMin(value = "0.00", message = "Total Paid Amount must be at least 0")
     private BigDecimal totalPaidAmount;
 
-    @NotNull(message = "Payment Method is required")
-    @ValidEnum(enumClass = PaymentMethod.class, message = "Invalid Payment Method")
     private PaymentMethod paymentMethod;
 
     @NotNull(message = "Payment Status is required")
