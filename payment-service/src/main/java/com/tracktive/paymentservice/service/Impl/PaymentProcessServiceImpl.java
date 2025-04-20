@@ -46,7 +46,6 @@ public class PaymentProcessServiceImpl implements PaymentProcessService {
     public PaymentProcessResponseDTO processPaymentSuccess(PaymentProcessRequestDTO paymentProcessRequestDTO) {
 
         // First Step: Ensure that the payment transaction is existing
-
         PaymentTransactionDTO paymentTransactionDTO = paymentTransactionService
                 .selectPaymentTransactionByStripeSessionId(paymentProcessRequestDTO.getSession().getId());
 
@@ -69,6 +68,7 @@ public class PaymentProcessServiceImpl implements PaymentProcessService {
         PaymentDTO updatedPayment = paymentService.updatePayment(paymentDTO);
 
         // Since the payment is success, should send a message using kafka back to orderService to tell that the order is success
+        orderEventProducer.sendPaymentSuccess(updatedPayment);
         return null;
     }
 }
