@@ -22,6 +22,8 @@ import org.springframework.transaction.support.TransactionTemplate;
 @Service
 public class OrderEventConsumer {
 
+    private final OrderEventProducer orderEventProducer;
+
     private final PaymentService paymentService;
 
     private final TransactionTemplate transactionTemplate;
@@ -29,7 +31,8 @@ public class OrderEventConsumer {
     private final static Logger log = LoggerFactory.getLogger(OrderEventConsumer.class);
 
     @Autowired
-    public OrderEventConsumer(PaymentService paymentService, TransactionTemplate transactionTemplate) {
+    public OrderEventConsumer(OrderEventProducer orderEventProducer, PaymentService paymentService, TransactionTemplate transactionTemplate) {
+        this.orderEventProducer = orderEventProducer;
         this.paymentService = paymentService;
         this.transactionTemplate = transactionTemplate;
     }
@@ -105,6 +108,13 @@ public class OrderEventConsumer {
 
                     // Verify payment was created successfully
                     if (paymentDTO != null && paymentDTO.getId() != null) {
+                        try {
+                            orderEventProducer.sendPaymentGenerated(paymentDTO);
+                        } catch (Exception e) {
+                            log.error("Error sending payment generated for Order ID: {}", orderId, e);
+                            status.setRollbackOnly();
+                            return Boolean.FALSE;
+                        }
                         log.info("Successfully created payment with ID {} for Order ID: {}",
                                 paymentDTO.getId(), orderId);
                         return Boolean.TRUE;

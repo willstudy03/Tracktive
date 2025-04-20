@@ -1,6 +1,7 @@
 package com.tracktive.paymentservice.service.Impl;
 
 import com.stripe.model.Event;
+import com.tracktive.paymentservice.kafka.OrderEventProducer;
 import com.tracktive.paymentservice.model.DTO.PaymentDTO;
 import com.tracktive.paymentservice.model.DTO.PaymentProcessRequestDTO;
 import com.tracktive.paymentservice.model.DTO.PaymentProcessResponseDTO;
@@ -24,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PaymentProcessServiceImpl implements PaymentProcessService {
 
+    private final OrderEventProducer orderEventProducer;
+
     private final PaymentService paymentService;
 
     private final PaymentTransactionService paymentTransactionService;
@@ -31,10 +34,12 @@ public class PaymentProcessServiceImpl implements PaymentProcessService {
     private static final Logger log = LoggerFactory.getLogger(PaymentProcessServiceImpl.class);
 
     @Autowired
-    public PaymentProcessServiceImpl(PaymentService paymentService, PaymentTransactionService paymentTransactionService) {
+    public PaymentProcessServiceImpl(OrderEventProducer orderEventProducer, PaymentService paymentService, PaymentTransactionService paymentTransactionService) {
+        this.orderEventProducer = orderEventProducer;
         this.paymentService = paymentService;
         this.paymentTransactionService = paymentTransactionService;
     }
+
 
     @Override
     @Transactional
