@@ -147,7 +147,7 @@ public class OrderEventConsumer {
                         try {
                             // Send restock event
                             orderEventProducer.sendStockRestockEvent(orderId, orderItems);
-                            log.info("Stock revert request sent successfully for Order ID: {}", orderId);
+                            log.info("Stock restore request sent successfully for Order ID: {}", orderId);
                             return Boolean.TRUE;
                         } catch (Exception e) {
                             log.error("Failed to send stock revert request for Order ID: {}", orderId, e);
