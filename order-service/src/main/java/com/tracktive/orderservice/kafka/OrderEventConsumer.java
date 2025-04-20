@@ -1,6 +1,7 @@
 package com.tracktive.orderservice.kafka;
 
 import OrderAction.events.PaymentGeneratedEvent;
+import OrderAction.events.PaymentResultEvent;
 import OrderAction.events.StockDeductionResultEvent;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.tracktive.orderservice.model.DTO.OrderDTO;
@@ -72,6 +73,82 @@ public class OrderEventConsumer {
             } else {
                 log.warn("Payment generated event message not acknowledged, will be redelivered by Kafka");
             }
+        }
+    }
+
+    @KafkaListener(topics = "payment-results", groupId = "order-service")
+    @Transactional
+    public void consumePaymentResultEvent(byte[] event, Acknowledgment ack){
+
+        boolean processSucceeded = false;
+
+        try{
+            PaymentResultEvent paymentResultEvent = PaymentResultEvent.parseFrom(event);
+            String orderId = paymentResultEvent.getOrderId();
+            String eventType = paymentResultEvent.getEventType();
+
+            log.info("OrderEventConsumer(PAYMENT_RESULTS_EVENT): Received {} event with Order ID {}",
+                    eventType, orderId);
+
+            processSucceeded = processPaymentResult(orderId, eventType);
+
+        } catch (InvalidProtocolBufferException e) {
+            throw new RuntimeException(e);
+
+        } catch (Exception e) {
+            log.error("Unexpected error while processing paymentResultEvent", e);
+            processSucceeded = false;
+        } finally {
+            if (processSucceeded) {
+                ack.acknowledge();
+                log.info("Payment result message acknowledged");
+            } else {
+                log.warn("Payment result message not acknowledged, will be redelivered by Kafka");
+            }
+        }
+    }
+
+    private boolean processPaymentResult(String orderId, String eventType){
+        try{
+            Boolean result = transactionTemplate.execute(status -> {
+                // Lock the order for update
+                OrderDTO orderDTO = orderService.lockOrderById(orderId);
+                if (orderDTO == null) {
+                    log.error("Order not found with ID: {}", orderId);
+                    return Boolean.FALSE;
+                }
+
+                switch (eventType) {
+                    case "PAYMENT_SUCCESS":
+                        orderDTO.setOrderStatus(OrderStatus.PLACED);
+                        orderService.updateOrder(orderDTO);
+                        log.info("Order status updated to COMPLETED for Order ID: {}", orderId);
+                        return Boolean.TRUE;
+
+                    case "PAYMENT_FAILED":
+                        orderDTO.setOrderStatus(OrderStatus.CANCELLED);
+                        OrderDTO updatedOrder = orderService.updateOrder(orderDTO);
+
+                        try {
+                            // TODO: Send revert stock - if this fails, the transaction will roll back
+                            log.info("Stock revert request sent successfully for Order ID: {}", orderId);
+                            return Boolean.TRUE;
+                        } catch (Exception e) {
+                            log.error("Failed to send stock revert request for Order ID: {}", orderId, e);
+                            // Explicitly mark transaction for rollback
+                            status.setRollbackOnly();
+                            return Boolean.FALSE;
+                        }
+
+                    default:
+                        log.warn("Unknown event type for processing payment result: {} for Order ID: {}", eventType, orderId);
+                        return Boolean.FALSE;
+                }
+            });
+            return result != null && result;
+        } catch (Exception e) {
+            log.error("Transaction execution failed to processed payment result of Order ID: {}", orderId, e);
+            return false;
         }
     }
 
@@ -159,4 +236,5 @@ public class OrderEventConsumer {
             return false;
         }
     }
+
 }
