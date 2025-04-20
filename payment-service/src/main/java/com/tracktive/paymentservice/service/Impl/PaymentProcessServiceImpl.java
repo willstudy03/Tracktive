@@ -43,7 +43,7 @@ public class PaymentProcessServiceImpl implements PaymentProcessService {
 
     @Override
     @Transactional
-    public PaymentProcessResponseDTO processPaymentSuccess(PaymentProcessRequestDTO paymentProcessRequestDTO) {
+    public void processPaymentSuccess(PaymentProcessRequestDTO paymentProcessRequestDTO) {
 
         // First Step: Ensure that the payment transaction is existing
         PaymentTransactionDTO paymentTransactionDTO = paymentTransactionService
@@ -69,6 +69,33 @@ public class PaymentProcessServiceImpl implements PaymentProcessService {
 
         // Since the payment is success, should send a message using kafka back to orderService to tell that the order is success
         orderEventProducer.sendPaymentSuccess(updatedPayment);
-        return null;
+    }
+
+    @Override
+    @Transactional
+    public void processPaymentFailed(PaymentProcessRequestDTO paymentProcessRequestDTO) {
+
+        // First Step: Ensure that the payment transaction is existing
+        PaymentTransactionDTO paymentTransactionDTO = paymentTransactionService
+                .selectPaymentTransactionByStripeSessionId(paymentProcessRequestDTO.getSession().getId());
+
+        // Lock the payment transaction
+        PaymentTransactionDTO lockedPaymentTransaction = paymentTransactionService
+                .lockPaymentTransactionById(paymentTransactionDTO.getId());
+
+        // Change the status into failed
+        lockedPaymentTransaction.setStripePaymentStatus(StripePaymentStatus.FAILED);
+
+        PaymentTransactionDTO updatedPaymentTransaction = paymentTransactionService.updatePaymentTransaction(lockedPaymentTransaction);
+
+        // Since transaction failed, we should also update the payment
+        PaymentDTO paymentDTO = paymentService.lockPaymentById(updatedPaymentTransaction.getPaymentId());
+
+        paymentDTO.setPaymentStatus(PaymentStatus.FAILED);
+
+        PaymentDTO updatedPayment = paymentService.updatePayment(paymentDTO);
+
+        // Since the payment is failed, should send a message using kafka back to orderService to tell that the order is failed
+        orderEventProducer.sendPaymentFailed(updatedPayment);
     }
 }

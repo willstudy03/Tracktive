@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.Instant;
 
 /**
 * Description: Stripe Service
@@ -70,6 +72,7 @@ public class StripeService {
                                     .setQuantity(1L)
                                     .build()
                     )
+                    .setExpiresAt(Instant.now().plus(Duration.ofMinutes(30)).getEpochSecond())
                     .build();
 
             Session session = Session.create(params);
@@ -90,8 +93,11 @@ public class StripeService {
                     Session session = (Session) event.getDataObjectDeserializer().getObject().get();
                     paymentProcessService.processPaymentSuccess(new PaymentProcessRequestDTO(session));
                     break;
+                case "checkout.session.expired":
+                    Session expiredSession = (Session) event.getDataObjectDeserializer().getObject().get();
+                    paymentProcessService.processPaymentFailed(new PaymentProcessRequestDTO(expiredSession));
+                    break;
             }
-
             return event;
         } catch (SignatureVerificationException e) {
             logger.error("Invalid signature in Stripe webhook", e);
