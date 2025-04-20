@@ -1,6 +1,7 @@
 package com.tracktive.productservice.kafka;
 
 import OrderAction.events.StockDeductionEvent;
+import OrderAction.events.StockRestoreEvent;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.tracktive.productservice.exception.StockDeductionException;
 import com.tracktive.productservice.exception.StockValidationException;
@@ -118,4 +119,61 @@ public class OrderEventConsumer {
         }
     }
 
+    @KafkaListener(topics = "stock-restore-requests", groupId = "product-service")
+    public void consumeStockRestoreEvent(byte[] event, Acknowledgment ack){
+
+        boolean processSucceeded = false;
+
+        try {
+            StockRestoreEvent stockRestoreEvent = StockRestoreEvent.parseFrom(event);
+            String orderId = stockRestoreEvent.getOrderId();
+            log.info("OrderEventConsumer(STOCK_RESTORE_EVENT): Received stock restore Event with Order ID {}", orderId);
+
+            List<StockItemDTO> stockItemDTOs = stockRestoreEvent.getStockItemsList().stream()
+                    .map(item -> new StockItemDTO(item.getSupplierProductId(), item.getQuantity()))
+                    .toList();
+
+            processSucceeded = processStockRestore(orderId, stockItemDTOs);
+
+        } catch (InvalidProtocolBufferException e) {
+            log.error("Deserialization error", e);
+            // Deserialization errors are non-recoverable, so we should acknowledge
+            processSucceeded = true;
+        } catch (Exception e) {
+            log.error("Unexpected error while processing StockRestoreEvent", e);
+            // Let Kafka retry for unexpected errors
+            processSucceeded = false;
+        } finally {
+            if (processSucceeded) {
+                ack.acknowledge(); // Only acknowledge if everything succeeded
+                log.info("Message acknowledged, stock restore process completed successfully");
+            } else {
+                log.warn("Message not acknowledged, stock restore event will be redelivered by Kafka");
+            }
+        }
+    }
+
+    private boolean processStockRestore(String orderId, List<StockItemDTO> stockItems){
+        try{
+            Boolean result = transactionTemplate.execute(status -> {
+                try {
+                    // 1. Deduct stock
+                    stockManagementService.addStock(new StockManagementRequestDTO(stockItems));
+                    // If we get here, stock restore is success
+                    log.info("Stock restore success for Order ID: {}", orderId);
+                    return Boolean.TRUE;
+                } catch (Exception e) {
+                    status.setRollbackOnly();
+                    log.error("Failed during transaction for Order ID: {}", orderId, e);
+                    return Boolean.FALSE; // Let Kafka retry the whole process
+                }
+            });
+            // Handle potential null result from transaction execution
+            return result != null && result;
+
+        } catch (Exception e) {
+            log.error("Transaction execution for stock restore failed for Order ID: {}", orderId, e);
+            return false; // Let Kafka retry the whole process
+        }
+    }
 }
