@@ -1,5 +1,6 @@
 package com.tracktive.orderservice.kafka;
 
+import OrderAction.events.PaymentGeneratedEvent;
 import OrderAction.events.StockDeductionResultEvent;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.tracktive.orderservice.model.DTO.OrderDTO;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 /**
@@ -34,6 +36,43 @@ public class OrderEventConsumer {
         this.orderService = orderService;
         this.orderEventProducer = orderEventProducer;
         this.transactionTemplate = transactionTemplate;
+    }
+
+    @KafkaListener(topics = "payment-generated", groupId = "order-service")
+    @Transactional
+    public void consumePaymentGeneratedEvent(byte[] event, Acknowledgment ack) {
+        boolean processSucceeded = false;
+
+        try {
+            PaymentGeneratedEvent paymentGeneratedEvent = PaymentGeneratedEvent.parseFrom(event);
+            String orderId = paymentGeneratedEvent.getOrderId();
+            String paymentId = paymentGeneratedEvent.getPaymentId();
+
+            log.info("OrderEventConsumer(PAYMENT_GENERATED_EVENT): Received payment event for Order ID {} with Payment ID {}",
+                    orderId, paymentId);
+
+            OrderDTO orderDTO = orderService.lockOrderById(orderId);
+            orderDTO.setPaymentId(paymentId);
+            orderService.updateOrder(orderDTO);
+
+            processSucceeded = true;
+            log.info("Successfully updated order {} with payment ID {}", orderId, paymentId);
+
+        } catch (InvalidProtocolBufferException e) {
+            log.error("Deserialization error for payment generated event", e);
+            // Deserialization errors are non-recoverable, so we should acknowledge
+            processSucceeded = true;
+        } catch (Exception e) {
+            log.error("Unexpected error while processing PaymentGeneratedEvent", e);
+            processSucceeded = false;
+        } finally {
+            if (processSucceeded) {
+                ack.acknowledge();
+                log.info("Payment generated event message acknowledged");
+            } else {
+                log.warn("Payment generated event message not acknowledged, will be redelivered by Kafka");
+            }
+        }
     }
 
     @KafkaListener(topics = "stock-deduction-results", groupId = "order-service")

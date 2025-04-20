@@ -1,6 +1,6 @@
 package com.tracktive.paymentservice.kafka;
 
-import OrderAction.events.PaymentResultEvent;
+import OrderAction.events.PaymentGeneratedEvent;
 import com.tracktive.paymentservice.exception.FailedToSendEventException;
 import com.tracktive.paymentservice.model.DTO.PaymentDTO;
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ public class OrderEventProducer {
 
         log.info("OrderEventProducer(PAYMENT_GENERATED_EVENT): Prepare payment generated with Order ID {}", paymentDTO.getOrderId());
 
-        PaymentResultEvent event = PaymentResultEvent.newBuilder()
+        PaymentGeneratedEvent event = PaymentGeneratedEvent.newBuilder()
                 .setOrderId(paymentDTO.getOrderId())
                 .setPaymentId(paymentDTO.getId())
                 .build();
