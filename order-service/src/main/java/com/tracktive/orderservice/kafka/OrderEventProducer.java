@@ -1,8 +1,6 @@
 package com.tracktive.orderservice.kafka;
 
-import OrderAction.events.PaymentRequestEvent;
-import OrderAction.events.StockDeductionEvent;
-import OrderAction.events.StockItem;
+import OrderAction.events.*;
 import com.tracktive.orderservice.exception.FailedToPlaceOrderException;
 import com.tracktive.orderservice.exception.FailedToSendEventException;
 import com.tracktive.orderservice.model.DTO.OrderDTO;
@@ -45,7 +43,7 @@ public class OrderEventProducer {
                 .toList();
 
         StockDeductionEvent event = StockDeductionEvent.newBuilder()
-                .setOrderId(orderItemDTOS.getFirst().getOrderId())
+                .setOrderId(orderId)
                 .addAllStockItems(stockItems)
                 .build();
 
@@ -54,6 +52,32 @@ public class OrderEventProducer {
             log.info("OrderEventProducer(STOCK_DEDUCTION_EVENT): Sent stock deduction Event with Order ID {}", orderId);
         } catch (Exception e) {
             log.error("OrderEventProducer(STOCK_DEDUCTION_EVENT): Failed to send event for Order ID {}. Error: {}", orderId, e.getMessage());
+            throw new FailedToPlaceOrderException(e.getMessage());
+        }
+    }
+
+    public void sendStockRestockEvent(String orderId, List<OrderItemDTO> orderItemDTOS){
+
+        log.info("OrderEventProducer(STOCK_RESTORE_EVENT): Prepare stock restore with Order ID {}", orderId);
+
+        // Map each OrderItemDTO into ItemStock (from protobuf)
+        List<RestoreStockItem> stockItems = orderItemDTOS.stream()
+                .map(item -> RestoreStockItem.newBuilder()
+                        .setSupplierProductId(item.getSupplierProductId())
+                        .setQuantity(item.getQuantity())
+                        .build())
+                .toList();
+
+        StockRestoreEvent event = StockRestoreEvent.newBuilder()
+                .setOrderId(orderId)
+                .addAllStockItems(stockItems)
+                .build();
+
+        try {
+            kafkaTemplate.send("stock-restore-requests", event.toByteArray());
+            log.info("OrderEventProducer(STOCK_RESTORE_EVENT): Sent stock restore Event with Order ID {}", orderId);
+        } catch (Exception e) {
+            log.error("OrderEventProducer(STOCK_RESTORE_EVENT): Failed to send event for Order ID {}. Error: {}", orderId, e.getMessage());
             throw new FailedToPlaceOrderException(e.getMessage());
         }
     }

@@ -5,7 +5,9 @@ import OrderAction.events.PaymentResultEvent;
 import OrderAction.events.StockDeductionResultEvent;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.tracktive.orderservice.model.DTO.OrderDTO;
+import com.tracktive.orderservice.model.DTO.OrderItemDTO;
 import com.tracktive.orderservice.model.Enum.OrderStatus;
+import com.tracktive.orderservice.service.OrderItemService;
 import com.tracktive.orderservice.service.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,9 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * Description: Order Event Consumer
@@ -26,6 +31,8 @@ public class OrderEventConsumer {
 
     private final OrderService orderService;
 
+    private final OrderItemService orderItemService;
+
     private final OrderEventProducer orderEventProducer;
 
     private final TransactionTemplate transactionTemplate;
@@ -33,8 +40,9 @@ public class OrderEventConsumer {
     private static final Logger log = LoggerFactory.getLogger(OrderEventConsumer.class);
 
     @Autowired
-    public OrderEventConsumer(OrderService orderService, OrderEventProducer orderEventProducer, TransactionTemplate transactionTemplate) {
+    public OrderEventConsumer(OrderService orderService, OrderItemService orderItemService, OrderEventProducer orderEventProducer, TransactionTemplate transactionTemplate) {
         this.orderService = orderService;
+        this.orderItemService = orderItemService;
         this.orderEventProducer = orderEventProducer;
         this.transactionTemplate = transactionTemplate;
     }
@@ -108,8 +116,8 @@ public class OrderEventConsumer {
         }
     }
 
-    private boolean processPaymentResult(String orderId, String eventType){
-        try{
+    private boolean processPaymentResult(String orderId, String eventType) {
+        try {
             Boolean result = transactionTemplate.execute(status -> {
                 // Lock the order for update
                 OrderDTO orderDTO = orderService.lockOrderById(orderId);
@@ -122,15 +130,23 @@ public class OrderEventConsumer {
                     case "PAYMENT_SUCCESS":
                         orderDTO.setOrderStatus(OrderStatus.PLACED);
                         orderService.updateOrder(orderDTO);
-                        log.info("Order status updated to COMPLETED for Order ID: {}", orderId);
+                        log.info("Order status updated to PLACED for Order ID: {}", orderId);
                         return Boolean.TRUE;
 
                     case "PAYMENT_FAILED":
+                        // Get order items before updating status - still in the same transaction
+                        List<OrderItemDTO> orderItems = orderItemService.selectAllOrderItems()
+                                .stream()
+                                .filter(orderItemDTO -> orderItemDTO.getOrderId().equals(orderId))
+                                .collect(Collectors.toList());
+
+                        // Update order status
                         orderDTO.setOrderStatus(OrderStatus.CANCELLED);
-                        OrderDTO updatedOrder = orderService.updateOrder(orderDTO);
+                        orderService.updateOrder(orderDTO);
 
                         try {
-                            // TODO: Send revert stock - if this fails, the transaction will roll back
+                            // Send restock event
+                            orderEventProducer.sendStockRestockEvent(orderId, orderItems);
                             log.info("Stock revert request sent successfully for Order ID: {}", orderId);
                             return Boolean.TRUE;
                         } catch (Exception e) {
@@ -147,7 +163,7 @@ public class OrderEventConsumer {
             });
             return result != null && result;
         } catch (Exception e) {
-            log.error("Transaction execution failed to processed payment result of Order ID: {}", orderId, e);
+            log.error("Transaction execution failed to process payment result of Order ID: {}", orderId, e);
             return false;
         }
     }
