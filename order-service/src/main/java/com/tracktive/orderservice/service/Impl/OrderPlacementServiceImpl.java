@@ -3,12 +3,10 @@ package com.tracktive.orderservice.service.Impl;
 import com.tracktive.orderservice.exception.EmptyCartException;
 import com.tracktive.orderservice.kafka.OrderEventProducer;
 import com.tracktive.orderservice.model.DTO.*;
-import com.tracktive.orderservice.model.Enum.OrderStatus;
 import com.tracktive.orderservice.service.CartItemService;
-import com.tracktive.orderservice.service.OrderActionService;
+import com.tracktive.orderservice.service.OrderPlacementService;
 import com.tracktive.orderservice.service.OrderItemService;
 import com.tracktive.orderservice.service.OrderService;
-import com.tracktive.orderservice.util.PriceCalculatorUtil;
 import com.tracktive.orderservice.util.converter.OrderConverter;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,7 @@ import java.util.List;
 * @date 6/4/2025
 */
 @Service
-public class OrderActionServiceImpl implements OrderActionService {
+public class OrderPlacementServiceImpl implements OrderPlacementService {
 
     private final CartItemService cartItemService;
 
@@ -34,7 +32,7 @@ public class OrderActionServiceImpl implements OrderActionService {
     private final OrderEventProducer orderEventProducer;
 
     @Autowired
-    public OrderActionServiceImpl(CartItemService cartItemService, OrderService orderService, OrderItemService orderItemService, OrderEventProducer orderEventProducer) {
+    public OrderPlacementServiceImpl(CartItemService cartItemService, OrderService orderService, OrderItemService orderItemService, OrderEventProducer orderEventProducer) {
         this.cartItemService = cartItemService;
         this.orderService = orderService;
         this.orderItemService = orderItemService;
@@ -43,10 +41,10 @@ public class OrderActionServiceImpl implements OrderActionService {
 
     @Override
     @Transactional
-    public OrderActionResponseDTO placeOrder(OrderActionRequestDTO orderActionRequestDTO) {
+    public OrderPlacementResponseDTO placeOrder(OrderPlacementRequestDTO orderPlacementRequestDTO) {
 
         // Select All Retailer Cart Item
-        List<CartItemDTO> cartItems = cartItemService.selectAllByRetailerId(orderActionRequestDTO.getRetailerId());
+        List<CartItemDTO> cartItems = cartItemService.selectAllByRetailerId(orderPlacementRequestDTO.getRetailerId());
 
         // If there is no cart items, failed to place order
         if (cartItems.isEmpty()){
@@ -54,7 +52,7 @@ public class OrderActionServiceImpl implements OrderActionService {
         }
 
         // Building the resquest
-        OrderRequestDTO orderRequestDTO = OrderConverter.toOrderRequestDTO(orderActionRequestDTO, cartItems);
+        OrderRequestDTO orderRequestDTO = OrderConverter.toOrderRequestDTO(orderPlacementRequestDTO, cartItems);
 
         OrderDTO newOrder = orderService.addOrder(orderRequestDTO);
 
@@ -70,6 +68,6 @@ public class OrderActionServiceImpl implements OrderActionService {
         // Send stock deduction event to notify inventory service to deduct stock
         orderEventProducer.sendStockDeductionEvent(newOrder.getId(), orderItems);
 
-        return new OrderActionResponseDTO(newOrder.getId());
+        return new OrderPlacementResponseDTO(newOrder.getId());
     }
 }

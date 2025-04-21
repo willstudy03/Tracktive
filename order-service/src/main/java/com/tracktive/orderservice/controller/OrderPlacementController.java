@@ -1,8 +1,8 @@
 package com.tracktive.orderservice.controller;
 
-import com.tracktive.orderservice.model.DTO.OrderActionRequestDTO;
-import com.tracktive.orderservice.model.DTO.OrderActionResponseDTO;
-import com.tracktive.orderservice.service.OrderActionService;
+import com.tracktive.orderservice.model.DTO.OrderPlacementRequestDTO;
+import com.tracktive.orderservice.model.DTO.OrderPlacementResponseDTO;
+import com.tracktive.orderservice.service.OrderPlacementService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,16 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/placeOrder")
 public class OrderPlacementController {
 
-    private final OrderActionService orderActionService;
+    private final OrderPlacementService orderPlacementService;
 
     @Autowired
-    public OrderPlacementController(OrderActionService orderActionService) {
-        this.orderActionService = orderActionService;
+    public OrderPlacementController(OrderPlacementService orderPlacementService) {
+        this.orderPlacementService = orderPlacementService;
     }
 
     @PostMapping
-    public ResponseEntity<OrderActionResponseDTO> addItemToCart(@RequestBody @Valid OrderActionRequestDTO orderActionRequestDTO){
-        OrderActionResponseDTO orderPlacement = orderActionService.placeOrder(orderActionRequestDTO);
+    public ResponseEntity<OrderPlacementResponseDTO> addItemToCart(@RequestBody @Valid OrderPlacementRequestDTO orderPlacementRequestDTO){
+        OrderPlacementResponseDTO orderPlacement = orderPlacementService.placeOrder(orderPlacementRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderPlacement);
     }
 }

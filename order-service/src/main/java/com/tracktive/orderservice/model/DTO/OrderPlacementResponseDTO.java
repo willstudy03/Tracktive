@@ -4,11 +4,11 @@ package com.tracktive.orderservice.model.DTO;
 * @author William Theo
 * @date 4/4/2025
 */
-public class OrderActionResponseDTO {
+public class OrderPlacementResponseDTO {
 
     String orderId;
 
-    public OrderActionResponseDTO(String orderId) {
+    public OrderPlacementResponseDTO(String orderId) {
         this.orderId = orderId;
     }
 

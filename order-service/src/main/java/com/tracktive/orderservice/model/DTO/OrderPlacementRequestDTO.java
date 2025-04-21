@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 * @author William Theo
 * @date 4/4/2025
 */
-public class OrderActionRequestDTO {
+public class OrderPlacementRequestDTO {
 
     @NotBlank(message = "Retailer ID cannot be blank")
     String retailerId;
@@ -15,10 +15,10 @@ public class OrderActionRequestDTO {
     @NotBlank(message = "Delivery Address ID cannot be blank")
     String deliveryAddress;
 
-    public OrderActionRequestDTO() {
+    public OrderPlacementRequestDTO() {
     }
 
-    public OrderActionRequestDTO(String retailerId, String deliveryAddress) {
+    public OrderPlacementRequestDTO(String retailerId, String deliveryAddress) {
         this.retailerId = retailerId;
         this.deliveryAddress = deliveryAddress;
     }
