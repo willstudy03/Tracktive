@@ -51,7 +51,7 @@ public class OrderPlacementServiceImpl implements OrderPlacementService {
             throw new EmptyCartException("Order cannot be placed because the cart is empty. Add items to proceed.");
         }
 
-        // Building the resquest
+        // Building the request
         OrderRequestDTO orderRequestDTO = OrderConverter.toOrderRequestDTO(orderPlacementRequestDTO, cartItems);
 
         OrderDTO newOrder = orderService.addOrder(orderRequestDTO);

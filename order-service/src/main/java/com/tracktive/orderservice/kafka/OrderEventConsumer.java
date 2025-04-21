@@ -101,8 +101,9 @@ public class OrderEventConsumer {
             processSucceeded = processPaymentResult(orderId, eventType);
 
         } catch (InvalidProtocolBufferException e) {
-            throw new RuntimeException(e);
-
+            log.error("Deserialization error for stock deduction result event", e);
+            // Deserialization errors are non-recoverable, so we should acknowledge
+            processSucceeded = true;
         } catch (Exception e) {
             log.error("Unexpected error while processing paymentResultEvent", e);
             processSucceeded = false;

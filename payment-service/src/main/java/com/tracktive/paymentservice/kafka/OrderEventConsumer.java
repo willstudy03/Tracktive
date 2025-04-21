@@ -1,9 +1,11 @@
 package com.tracktive.paymentservice.kafka;
 
+import OrderAction.events.PaymentCancellationEvent;
 import OrderAction.events.PaymentRequestEvent;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.tracktive.paymentservice.model.DTO.PaymentDTO;
 import com.tracktive.paymentservice.model.DTO.PaymentRequestDTO;
+import com.tracktive.paymentservice.model.Enum.PaymentStatus;
 import com.tracktive.paymentservice.service.PaymentService;
 import com.tracktive.paymentservice.util.converter.PaymentConverter;
 import org.slf4j.Logger;
@@ -134,6 +136,68 @@ public class OrderEventConsumer {
             // Explicit null check before returning
             return result != null && result;
 
+        } catch (Exception e) {
+            log.error("Transaction execution failed", e);
+            return false;
+        }
+    }
+
+    @KafkaListener(topics ="payment-cancellation-requests", groupId = "payment-service")
+    public void consumePaymentCancellationRequests(byte[] event, Acknowledgment ack){
+        boolean processSucceeded = false;
+
+        try{
+            PaymentCancellationEvent paymentCancellationEvent = PaymentCancellationEvent.parseFrom(event);
+            String paymentId = paymentCancellationEvent.getPaymentId();
+
+            log.info("Received payment cancellation request for Payment ID: {}", paymentId);
+
+            processSucceeded = processPaymentCancellationRequest(paymentId);
+
+        } catch (InvalidProtocolBufferException e) {
+            log.error("Deserialization error for payment cancellation request event", e);
+            // Deserialization errors are non-recoverable, so we should acknowledge
+            processSucceeded = true;
+        }  catch (Exception e) {
+            log.error("Unexpected error while processing PaymentCancellationEvent", e);
+            processSucceeded = false;
+        } finally {
+            if (processSucceeded) {
+                ack.acknowledge();
+                log.info("Payment Cancellation message acknowledged");
+            } else {
+                log.warn("Payment Cancellation message not acknowledged, will be redelivered by Kafka");
+            }
+        }
+    }
+
+    private boolean processPaymentCancellationRequest(String paymentId) {
+        // Guard clause for null event
+        if (paymentId == null) {
+            log.error("Process Payment Cancellation: Payment ID is null");
+            return false;
+        }
+
+        try {
+            // Use Boolean object to handle potential null return from transaction template
+            Boolean result = transactionTemplate.execute(status -> {
+                try {
+                    PaymentDTO paymentDTO = paymentService.lockPaymentById(paymentId);
+                    paymentDTO.setPaymentStatus(PaymentStatus.CANCELED);
+
+                    // You need to save the updated payment
+                    paymentService.updatePayment(paymentDTO);
+
+                    // Return TRUE on success
+                    return Boolean.TRUE;
+                } catch (Exception e) {
+                    log.error("Error processing payment cancellation request", e);
+                    status.setRollbackOnly();
+                    return Boolean.FALSE;
+                }
+            });
+            // Explicit null check before returning
+            return result != null && result;
         } catch (Exception e) {
             log.error("Transaction execution failed", e);
             return false;

@@ -99,4 +99,21 @@ public class OrderEventProducer {
             throw new FailedToSendEventException(e.getMessage());
         }
     }
+
+    public void sendPaymentCancellationRequest(OrderDTO orderDTO){
+
+        log.info("OrderEventProducer(PAYMENT_CANCELLATION_EVENT): Prepare payment cancellation request with Order ID {}", orderDTO.getId());
+
+        PaymentCancellationEvent event = PaymentCancellationEvent.newBuilder()
+                .setPaymentId(orderDTO.getPaymentId())
+                .build();
+
+        try {
+            kafkaTemplate.send("payment-cancellation-requests", event.toByteArray());
+            log.info("OrderEventProducer(PAYMENT_CANCELLATION_EVENT): Sent payment cancellation request Event from Order ID {} with Payment ID {}", orderDTO.getId(), orderDTO.getPaymentId());
+        } catch (Exception e) {
+            log.error("OrderEventProducer(PAYMENT_CANCELLATION_EVENT): Failed to send payment request event from Order ID {} with Payment ID {}. Error: {}", orderDTO.getId(), orderDTO.getPaymentId(), e.getMessage());
+            throw new FailedToSendEventException(e.getMessage());
+        }
+    }
 }
