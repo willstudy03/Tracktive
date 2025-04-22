@@ -1,5 +1,9 @@
 package com.tracktive.userservice.model.DTO;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 /**
 * Description: Supplier DTO
 * @author William Theo
@@ -7,16 +11,25 @@ package com.tracktive.userservice.model.DTO;
 */
 public class SupplierDTO {
 
+    @NotBlank(message = "Supplier ID is required")
     private String supplierId;
 
+    @NotBlank(message = "SSM Registration Number is required")
+    @Pattern(regexp = "^[0-9]{12}$", message = "SSM Registration Number must be 12 digits")
     private String ssmRegistrationNumber;
 
+    @NotBlank(message = "Business name is required")
+    @Size(max = 100, message = "Business name must not exceed 100 characters")
     private String businessName;
 
+    @NotBlank(message = "Business address is required")
     private String businessAddress;
 
+    @NotBlank(message = "Bank account is required")
+    @Pattern(regexp = "^[0-9]{10,16}$", message = "Bank account must be between 10 and 16 digits")
     private String bankAccount;
 
+    @NotBlank(message = "Bank name is required")
     private String bankName;
 
     public SupplierDTO() {

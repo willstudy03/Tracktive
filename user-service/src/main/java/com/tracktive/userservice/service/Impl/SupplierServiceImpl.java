@@ -4,8 +4,12 @@ import com.tracktive.userservice.exception.LockAcquisitionException;
 import com.tracktive.userservice.exception.UserNotFoundException;
 import com.tracktive.userservice.model.DTO.SupplierDTO;
 import com.tracktive.userservice.model.DTO.UserDTO;
+import com.tracktive.userservice.model.DTO.UserRequestDTO;
 import com.tracktive.userservice.repository.SupplierRepository;
 import com.tracktive.userservice.service.SupplierService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Description: Supplier CRUD Service Implementation
@@ -25,14 +30,17 @@ import java.util.Objects;
 @Service
 public class SupplierServiceImpl implements SupplierService {
 
+    private final Validator validator;
+
     private final SupplierRepository supplierRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(SupplierServiceImpl.class);
+
     @Autowired
-    public SupplierServiceImpl(SupplierRepository supplierRepository) {
+    public SupplierServiceImpl(Validator validator, SupplierRepository supplierRepository) {
+        this.validator = validator;
         this.supplierRepository = supplierRepository;
     }
-
-    private static final Logger logger = LoggerFactory.getLogger(SupplierServiceImpl.class);
 
     @Override
     public List<SupplierDTO> selectAllSuppliers() {
@@ -70,7 +78,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     @Transactional
-    public void addSupplier(SupplierDTO supplierDTO) {
+    public SupplierDTO addSupplier(SupplierDTO supplierDTO) {
         validateSupplierDTO(supplierDTO);
         boolean result = supplierRepository.addSupplier(supplierDTO);
         if (!result) {
@@ -78,11 +86,14 @@ public class SupplierServiceImpl implements SupplierService {
             throw new RuntimeException("Failed to add supplier with id: " + supplierDTO.getSupplierId());
         }
         logger.info("Supplier [{}] added successfully", supplierDTO.getSupplierId());
+
+        return supplierRepository.selectSupplierById(supplierDTO.getSupplierId())
+                .orElseThrow(()-> new UserNotFoundException("Failed to fetch supplier after insertion"));
     }
 
     @Override
     @Transactional
-    public void updateSupplier(SupplierDTO supplierDTO) {
+    public SupplierDTO updateSupplier(SupplierDTO supplierDTO) {
         validateSupplierDTO(supplierDTO);
         boolean result = supplierRepository.updateSupplier(supplierDTO);
         if (!result) {
@@ -90,6 +101,9 @@ public class SupplierServiceImpl implements SupplierService {
             throw new UserNotFoundException("Failed to update supplier with id: " + supplierDTO.getSupplierId());
         }
         logger.info("Supplier [{}] updated successfully", supplierDTO.getSupplierId());
+
+        return supplierRepository.selectSupplierById(supplierDTO.getSupplierId())
+                .orElseThrow(()-> new UserNotFoundException("Failed to fetch supplier after update"));
     }
 
     @Override
@@ -111,9 +125,9 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     private void validateSupplierDTO(SupplierDTO supplierDTO) {
-        if (Objects.isNull(supplierDTO)) {
-            throw new IllegalArgumentException("SupplierDTO cannot be null");
+        Set<ConstraintViolation<SupplierDTO>> violations = validator.validate(supplierDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for supplierDTO", violations);
         }
-        //@TODO: Validation
     }
 }
