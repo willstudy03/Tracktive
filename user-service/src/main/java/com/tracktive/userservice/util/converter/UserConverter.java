@@ -1,8 +1,10 @@
-package com.tracktive.userservice.util;
+package com.tracktive.userservice.util.converter;
 
 import com.tracktive.userservice.model.DTO.UserDTO;
+import com.tracktive.userservice.model.DTO.UserRequestDTO;
 import com.tracktive.userservice.model.entity.User;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
 * Description: Util for convert user model
@@ -44,5 +46,18 @@ public class UserConverter {
         user.setUpdatedAt(userDTO.getUpdatedAt());
         user.setCreatedAt(userDTO.getCreatedAt());
         return user;
+    }
+
+    public static UserDTO toDTO(UserRequestDTO userRequestDTO){
+        if (Objects.isNull(userRequestDTO)){
+            return null;
+        }
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(UUID.randomUUID().toString());
+        userDTO.setName(userRequestDTO.getName());
+        userDTO.setEmail(userRequestDTO.getEmail());
+        userDTO.setPhoneNumber(userRequestDTO.getPhoneNumber());
+        userDTO.setUserRole(userRequestDTO.getUserRole());
+        return userDTO;
     }
 }

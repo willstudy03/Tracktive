@@ -7,17 +7,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
-import java.time.LocalDateTime;
-
 /**
-* Description: User DTO
+* Description: User Request DTO
 * @author William Theo
-* @date 3/3/2025
+* @date 22/4/2025
 */
-public class UserDTO {
-
-    @NotBlank(message = "User ID is required")
-    private String id;
+public class UserRequestDTO {
 
     @NotBlank(message = "Name is required")
     private String name;
@@ -34,27 +29,14 @@ public class UserDTO {
     @ValidEnum(enumClass = UserRole.class, message = "Invalid User Role")
     private UserRole userRole;
 
-    private LocalDateTime updatedAt;
-
-    private LocalDateTime createdAt;
-
-    public UserDTO() {
+    public UserRequestDTO() {
     }
 
-    public UserDTO(String id, String name, String email, String phoneNumber, UserRole userRole) {
-        this.id = id;
+    public UserRequestDTO(String name, String email, String phoneNumber, UserRole userRole) {
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.userRole = userRole;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -87,21 +69,5 @@ public class UserDTO {
 
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }

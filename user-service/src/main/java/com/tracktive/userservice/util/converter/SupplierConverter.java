@@ -1,4 +1,4 @@
-package com.tracktive.userservice.util;
+package com.tracktive.userservice.util.converter;
 
 import com.tracktive.userservice.model.DTO.SupplierDTO;
 import com.tracktive.userservice.model.entity.Supplier;

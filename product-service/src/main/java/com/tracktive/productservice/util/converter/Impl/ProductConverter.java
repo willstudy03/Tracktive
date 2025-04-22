@@ -39,6 +39,9 @@ public class ProductConverter {
 
     // Product Creation
     public static ProductDTO toDTO(ProductRequestDTO requestDTO) {
+        if (Objects.isNull(requestDTO)){
+            return null;
+        }
         ProductDTO productDTO = new ProductDTO();
         productDTO.setProductId(UUID.randomUUID().toString());
         productDTO.setProductCategory(requestDTO.getProductCategory());

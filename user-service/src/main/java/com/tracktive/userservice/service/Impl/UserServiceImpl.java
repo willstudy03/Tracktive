@@ -3,18 +3,23 @@ package com.tracktive.userservice.service.Impl;
 import com.tracktive.userservice.exception.LockAcquisitionException;
 import com.tracktive.userservice.exception.UserNotFoundException;
 import com.tracktive.userservice.model.DTO.UserDTO;
+import com.tracktive.userservice.model.DTO.UserRequestDTO;
 import com.tracktive.userservice.repository.UserRepository;
 import com.tracktive.userservice.service.UserService;
+import com.tracktive.userservice.util.converter.UserConverter;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
 * Description: User CRUD Service Implementation
@@ -24,11 +29,15 @@ import java.util.Objects;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final Validator validator;
+
     private final UserRepository userRepository;
+
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(Validator validator, UserRepository userRepository) {
+        this.validator = validator;
         this.userRepository = userRepository;
     }
 
@@ -68,26 +77,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void addUser(UserDTO userDTO) {
-        validateUserDTO(userDTO);
+    public UserDTO addUser(UserRequestDTO userRequestDTO) {
+
+        validateUserRequestDTO(userRequestDTO);
+
+        UserDTO userDTO = UserConverter.toDTO(userRequestDTO);
+
         boolean result = userRepository.addUser(userDTO);
         if (!result) {
             logger.error("Failed to add user with id: {}", userDTO.getId());
             throw new RuntimeException("Failed to add user with id: " + userDTO.getId());
         }
         logger.info("User [{}] added successfully", userDTO.getId());
+
+        return userRepository.selectUserById(userDTO.getId())
+                .orElseThrow(()-> new UserNotFoundException("Failed to fetch user after insertion"));
     }
 
     @Override
     @Transactional
-    public void updateUser(UserDTO userDTO) {
+    public UserDTO updateUser(UserDTO userDTO) {
+
         validateUserDTO(userDTO);
+
         boolean result = userRepository.updateUser(userDTO);
         if (!result) {
             logger.error("Failed to update user with id: {}", userDTO.getId());
             throw new UserNotFoundException("Failed to update user with id: " + userDTO.getId());
         }
         logger.info("User [{}] updated successfully", userDTO.getId());
+
+        return userRepository.selectUserById(userDTO.getId())
+                .orElseThrow(()-> new UserNotFoundException("Failed to fetch user after update"));
     }
 
     @Override
@@ -109,9 +130,17 @@ public class UserServiceImpl implements UserService {
     }
 
     private void validateUserDTO(UserDTO userDTO) {
-        if (Objects.isNull(userDTO)) {
-            throw new IllegalArgumentException("UserDTO cannot be null");
+        Set<ConstraintViolation<UserDTO>> violations = validator.validate(userDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for userRequestDTO", violations);
         }
-        //@TODO: Validation
     }
+
+    private void validateUserRequestDTO(UserRequestDTO userRequestDTO) {
+        Set<ConstraintViolation<UserRequestDTO>> violations = validator.validate(userRequestDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for userRequestDTO", violations);
+        }
+    }
+
 }

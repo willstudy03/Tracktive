@@ -1,6 +1,8 @@
 package com.tracktive.userservice.service;
 
 import com.tracktive.userservice.model.DTO.UserDTO;
+import com.tracktive.userservice.model.DTO.UserRequestDTO;
+
 import java.util.List;
 
 /**
@@ -12,7 +14,7 @@ public interface UserService {
     List<UserDTO> selectAllUsers();
     UserDTO selectUserById(String id);
     UserDTO lockUserById(String id);
-    void addUser(UserDTO userDTO);
-    void updateUser(UserDTO userDTO);
+    UserDTO addUser(UserRequestDTO userRequestDTO);
+    UserDTO updateUser(UserDTO userDTO);
     void deleteUserById(String id);
 }
