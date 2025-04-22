@@ -99,4 +99,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleEmptyCartException(EmptyCartException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
+
+    @ExceptionHandler(InvalidOrderStatusException.class)
+    public ResponseEntity<String> handleInvalidOrderStatusException(InvalidOrderStatusException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
 }

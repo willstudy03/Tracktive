@@ -68,6 +68,9 @@ public class OrderPlacementServiceImpl implements OrderPlacementService {
         // Send stock deduction event to notify inventory service to deduct stock
         orderEventProducer.sendStockDeductionEvent(newOrder.getId(), orderItems);
 
+        // After Placing the order, remove all the cart item
+        cartItems.forEach(cartItemDTO -> cartItemService.deleteCartItemById(cartItemDTO.getId()));
+
         return new OrderPlacementResponseDTO(newOrder.getId());
     }
 }
