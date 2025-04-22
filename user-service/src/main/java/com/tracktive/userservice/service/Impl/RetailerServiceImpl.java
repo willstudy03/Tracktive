@@ -5,16 +5,19 @@ import com.tracktive.userservice.exception.UserNotFoundException;
 import com.tracktive.userservice.model.DTO.RetailerDTO;
 import com.tracktive.userservice.repository.RetailerRepository;
 import com.tracktive.userservice.service.RetailerService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Description: Retailer CRUD Service Implementation
@@ -24,12 +27,15 @@ import java.util.Objects;
 @Service
 public class RetailerServiceImpl implements RetailerService {
 
+    private final Validator validator;
+
     private final RetailerRepository retailerRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(RetailerServiceImpl.class);
 
     @Autowired
-    public RetailerServiceImpl(RetailerRepository retailerRepository) {
+    public RetailerServiceImpl(Validator validator, RetailerRepository retailerRepository) {
+        this.validator = validator;
         this.retailerRepository = retailerRepository;
     }
 
@@ -69,7 +75,7 @@ public class RetailerServiceImpl implements RetailerService {
 
     @Override
     @Transactional
-    public void addRetailer(RetailerDTO retailerDTO) {
+    public RetailerDTO addRetailer(RetailerDTO retailerDTO) {
         validateRetailerDTO(retailerDTO);
         boolean result = retailerRepository.addRetailer(retailerDTO);
         if (!result) {
@@ -77,11 +83,14 @@ public class RetailerServiceImpl implements RetailerService {
             throw new RuntimeException("Failed to add retailer with id: " + retailerDTO.getRetailerId());
         }
         logger.info("Retailer [{}] added successfully", retailerDTO.getRetailerId());
+
+        return retailerRepository.selectRetailerById(retailerDTO.getRetailerId())
+                .orElseThrow(()-> new UserNotFoundException("Failed to fetch retailer after insertion"));
     }
 
     @Override
     @Transactional
-    public void updateRetailer(RetailerDTO retailerDTO) {
+    public RetailerDTO updateRetailer(RetailerDTO retailerDTO) {
         validateRetailerDTO(retailerDTO);
         boolean result = retailerRepository.updateRetailer(retailerDTO);
         if (!result) {
@@ -89,6 +98,9 @@ public class RetailerServiceImpl implements RetailerService {
             throw new UserNotFoundException("Failed to update retailer with id: " + retailerDTO.getRetailerId());
         }
         logger.info("Retailer [{}] updated successfully", retailerDTO.getRetailerId());
+
+        return retailerRepository.selectRetailerById(retailerDTO.getRetailerId())
+                .orElseThrow(()-> new UserNotFoundException("Failed to fetch retailer after update"));
     }
 
     @Override
@@ -110,9 +122,9 @@ public class RetailerServiceImpl implements RetailerService {
     }
 
     private void validateRetailerDTO(RetailerDTO retailerDTO) {
-        if (Objects.isNull(retailerDTO)) {
-            throw new IllegalArgumentException("RetailerDTO cannot be null");
+        Set<ConstraintViolation<RetailerDTO>> violations = validator.validate(retailerDTO);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException("Validation failed for retailerDTO", violations);
         }
-        //@TODO: Validation
     }
 }

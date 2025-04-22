@@ -12,7 +12,7 @@ public interface RetailerService {
     List<RetailerDTO> selectAllRetailers();
     RetailerDTO selectRetailerById(String id);
     RetailerDTO lockRetailerById(String id);
-    void addRetailer(RetailerDTO retailerDTO);
-    void updateRetailer(RetailerDTO retailerDTO);
+    RetailerDTO addRetailer(RetailerDTO retailerDTO);
+    RetailerDTO updateRetailer(RetailerDTO retailerDTO);
     void deleteRetailerById(String id);
 }
