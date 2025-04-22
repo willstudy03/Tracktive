@@ -1,5 +1,6 @@
 package com.tracktive.userservice.service.Impl;
 
+import com.tracktive.userservice.exception.DuplicateEmailException;
 import com.tracktive.userservice.exception.LockAcquisitionException;
 import com.tracktive.userservice.exception.UserNotFoundException;
 import com.tracktive.userservice.model.DTO.UserDTO;
@@ -80,6 +81,16 @@ public class UserServiceImpl implements UserService {
     public UserDTO addUser(UserRequestDTO userRequestDTO) {
 
         validateUserRequestDTO(userRequestDTO);
+
+        // Ensure no same email
+        boolean emailExists = userRepository.selectAllUsers()
+                .stream()
+                .anyMatch(user -> user.getEmail().equals(userRequestDTO.getEmail()));
+
+        if (emailExists) {
+            logger.error("User with email {} already exists", userRequestDTO.getEmail());
+            throw new DuplicateEmailException("User with email " + userRequestDTO.getEmail() + " already exists");
+        }
 
         UserDTO userDTO = UserConverter.toDTO(userRequestDTO);
 

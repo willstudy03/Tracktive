@@ -1,5 +1,6 @@
 package com.tracktive.userservice.util.handler;
 
+import com.tracktive.userservice.exception.DuplicateEmailException;
 import com.tracktive.userservice.exception.LockAcquisitionException;
 import com.tracktive.userservice.exception.UserAlreadyExistsException;
 import com.tracktive.userservice.exception.UserNotFoundException;
@@ -63,6 +64,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<String> handleUserAlreadyExistException(UserAlreadyExistsException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<String> handleDuplicateEmailException(DuplicateEmailException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 }
