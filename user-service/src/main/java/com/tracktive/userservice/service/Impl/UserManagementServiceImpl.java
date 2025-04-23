@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
 * Description: User Management Service Implementation
 * @author William Theo
@@ -46,6 +48,11 @@ public class UserManagementServiceImpl implements UserManagementService {
         this.retailerService = retailerService;
         this.userEventProducer = userEventProducer;
         this.validator = validator;
+    }
+
+    @Override
+    public List<UserDTO> selectAllUsers() {
+        return userService.selectAllUsers();
     }
 
     @Override
@@ -81,4 +88,6 @@ public class UserManagementServiceImpl implements UserManagementService {
 
         return userDTO;
     }
+
+
 }

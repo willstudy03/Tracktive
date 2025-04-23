@@ -11,5 +11,6 @@ import java.util.List;
 * @date 22/4/2025
 */
 public interface UserManagementService {
+    List<UserDTO> selectAllUsers();
     UserDTO createUser(UserCreationRequestDTO userCreationRequestDTO);
 }
