@@ -13,7 +13,6 @@ import java.util.Optional;
 */
 @Mapper
 public interface UserDAO {
-
     // Select operations
     List<User> selectAllUsers();
     Optional<User> selectUserById(String id);
