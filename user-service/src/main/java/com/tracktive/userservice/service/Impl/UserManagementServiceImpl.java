@@ -1,5 +1,6 @@
 package com.tracktive.userservice.service.Impl;
 
+import com.tracktive.userservice.kafka.UserEventProducer;
 import com.tracktive.userservice.model.DTO.RetailerDTO;
 import com.tracktive.userservice.model.DTO.SupplierDTO;
 import com.tracktive.userservice.model.DTO.UserCreationRequestDTO;
@@ -35,18 +36,20 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     private final RetailerService retailerService;
 
+    private final UserEventProducer userEventProducer;
+
     private final Validator validator;
 
     private static final Logger log = LoggerFactory.getLogger(UserManagementServiceImpl.class);
 
     @Autowired
-    public UserManagementServiceImpl(UserService userService, SupplierService supplierService, RetailerService retailerService, Validator validator) {
+    public UserManagementServiceImpl(UserService userService, SupplierService supplierService, RetailerService retailerService, UserEventProducer userEventProducer, Validator validator) {
         this.userService = userService;
         this.supplierService = supplierService;
         this.retailerService = retailerService;
+        this.userEventProducer = userEventProducer;
         this.validator = validator;
     }
-
 
     @Override
     @Transactional
@@ -57,7 +60,10 @@ public class UserManagementServiceImpl implements UserManagementService {
 
         log.info("Created basic user with ID: {} and role: {}", userDTO.getId(), userDTO.getUserRole());
 
-        // Step 2: Save the role specific details into the db
+        // Send 2: Publish Event to authentication service to create a default user credential using email
+        userEventProducer.sendUserCreatedEvent(userDTO.getId(), userDTO.getEmail());
+
+        // Step 3: Save the role specific details into the db
         switch (userDTO.getUserRole()){
             case RETAILER:
                 RetailerDTO retailerDTO = retailerService.addRetailer(RetailerConverter.toDTO(userDTO, userCreationRequestDTO.getRetailerDetailsDTO()));
