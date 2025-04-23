@@ -1,7 +1,6 @@
 package com.tracktive.authservice.repository.Impl;
 
 import com.tracktive.authservice.model.DTO.UserCredentialDTO;
-import com.tracktive.authservice.model.entity.UserCredential;
 import com.tracktive.authservice.repository.UserCredentialsRepository;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -13,7 +12,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 class UserCredentialsRepositoryImplTest {
 

@@ -1,5 +1,9 @@
 package com.tracktive.authservice.model.DTO;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDateTime;
 /**
 * Description: User Credential DTO
@@ -8,12 +12,17 @@ import java.time.LocalDateTime;
 */
 public class UserCredentialDTO {
 
+    @NotBlank(message = "User ID is required")
     private String userId;
 
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
+    @NotBlank(message = "Password is required")
     private String passwordHash;
 
+    @NotNull(message = "MustResetPassword flag is required")
     private boolean mustResetPassword;
 
     private LocalDateTime createdAt;
