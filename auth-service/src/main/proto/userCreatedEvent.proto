@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package userEvents;
+
+option java_multiple_files = true;
+
+message UserCreatedEvent {
+    string userId = 1;
+    string email = 2;
+}
+

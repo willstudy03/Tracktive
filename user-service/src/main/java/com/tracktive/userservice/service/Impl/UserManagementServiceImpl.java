@@ -5,7 +5,6 @@ import com.tracktive.userservice.model.DTO.RetailerDTO;
 import com.tracktive.userservice.model.DTO.SupplierDTO;
 import com.tracktive.userservice.model.DTO.UserCreationRequestDTO;
 import com.tracktive.userservice.model.DTO.UserDTO;
-import com.tracktive.userservice.model.Enum.UserRole;
 import com.tracktive.userservice.service.RetailerService;
 import com.tracktive.userservice.service.SupplierService;
 import com.tracktive.userservice.service.UserManagementService;
@@ -19,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
 * Description: User Management Service Implementation
