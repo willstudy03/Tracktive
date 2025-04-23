@@ -2,6 +2,7 @@ package com.tracktive.userservice.controller;
 
 import com.tracktive.userservice.model.DTO.UserCreationRequestDTO;
 import com.tracktive.userservice.model.DTO.UserDTO;
+import com.tracktive.userservice.model.DTO.UserManagementRequestDTO;
 import com.tracktive.userservice.model.DTO.UserManagementResponseDTO;
 import com.tracktive.userservice.service.UserManagementService;
 import jakarta.validation.Valid;
@@ -43,5 +44,11 @@ public class UserManagementController {
     public ResponseEntity<UserDTO> newUser(@Valid @RequestBody UserCreationRequestDTO userCreationRequestDTO){
         UserDTO userDTO = userManagementService.createUser(userCreationRequestDTO);
         return ResponseEntity.ok(userDTO);
+    }
+
+    @PutMapping
+    public ResponseEntity<UserManagementResponseDTO> updateProduct(@Valid @RequestBody UserManagementRequestDTO userManagementRequestDTO) {
+        UserManagementResponseDTO user = userManagementService.updateUser(userManagementRequestDTO);
+        return ResponseEntity.ok(user);
     }
 }

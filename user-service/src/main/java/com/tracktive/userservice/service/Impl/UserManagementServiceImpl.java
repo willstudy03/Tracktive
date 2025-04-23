@@ -137,5 +137,49 @@ public class UserManagementServiceImpl implements UserManagementService {
         return userDTO;
     }
 
+    @Override
+    @Transactional
+    public UserManagementResponseDTO updateUser(UserManagementRequestDTO userManagementRequestDTO) {
+        String userId = userManagementRequestDTO.getId();
+        log.info("Starting update for user ID: {}", userId);
 
+        // Step 1: Lock basic user
+        UserDTO userDTO = userService.selectUserById(userId);
+
+        // Step 2: Update the basic user info
+        BeanUtils.copyProperties(userManagementRequestDTO, userDTO);
+        UserDTO updatedUserDTO = userService.updateUser(userDTO);
+
+        // Step 3: Based on the user role to update role-related details
+        switch (userDTO.getUserRole()) {
+            case RETAILER:
+                if (userManagementRequestDTO.getRetailerDetailsDTO() != null) {
+                    RetailerDTO retailerDTO = retailerService.lockRetailerById(userId);
+                    BeanUtils.copyProperties(userManagementRequestDTO.getRetailerDetailsDTO(), retailerDTO);
+                    retailerService.updateRetailer(retailerDTO);
+                    log.info("Retailer details updated successfully with retailer ID: {}", retailerDTO.getRetailerId());
+                }
+                break;
+
+            case SUPPLIER:
+                if (userManagementRequestDTO.getSupplierDetailsDTO() != null) {
+                    SupplierDTO supplierDTO = supplierService.lockSupplierById(userId);
+                    BeanUtils.copyProperties(userManagementRequestDTO.getSupplierDetailsDTO(), supplierDTO);
+                    supplierService.updateSupplier(supplierDTO);
+                    log.info("Supplier details updated successfully with supplier ID: {}", supplierDTO.getSupplierId());
+                }
+                break;
+
+            case ADMIN:
+                log.info("User {} is an ADMIN - no additional details needed to be updated", userId);
+                break;
+
+            default:
+                log.warn("Unhandled user role: {} for update info with user ID: {}", userDTO.getUserRole(), userId);
+        }
+
+        // Step 4: Return the updated user data
+        log.info("User update completed for ID: {}", userId);
+        return selectUserById(userId);
+    }
 }
