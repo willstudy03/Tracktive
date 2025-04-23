@@ -1,6 +1,7 @@
 package com.tracktive.authservice.service;
 
 import com.tracktive.authservice.model.DTO.UserCredentialDTO;
+import com.tracktive.authservice.model.DTO.UserCredentialRequestDTO;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface UserCredentialService {
     // Lock Operation
     UserCredentialDTO lockById(String id);
     // Insert operation
-    UserCredentialDTO addUserCredential(UserCredentialDTO userCredentialDTO);
+    UserCredentialDTO addUserCredential(UserCredentialRequestDTO userCredentialRequestDTO);
     // Update operation
     UserCredentialDTO updateUserCredential(UserCredentialDTO userCredentialDTO);
     // Delete operation

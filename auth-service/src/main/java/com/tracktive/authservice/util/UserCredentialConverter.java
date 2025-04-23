@@ -1,6 +1,7 @@
 package com.tracktive.authservice.util;
 
 import com.tracktive.authservice.model.DTO.UserCredentialDTO;
+import com.tracktive.authservice.model.DTO.UserCredentialRequestDTO;
 import com.tracktive.authservice.model.entity.UserCredential;
 import org.springframework.beans.BeanUtils;
 
@@ -32,5 +33,17 @@ public class UserCredentialConverter {
         UserCredential userCredential = new UserCredential();
         BeanUtils.copyProperties(userCredentialDTO, userCredential);
         return userCredential;
+    }
+
+    public static UserCredentialDTO toDTO(UserCredentialRequestDTO userCredentialRequestDTO){
+        if (Objects.isNull(userCredentialRequestDTO)){
+            return null;
+        }
+        UserCredentialDTO dto = new UserCredentialDTO();
+        dto.setUserId(userCredentialRequestDTO.getUserId());
+        dto.setEmail(userCredentialRequestDTO.getEmail());
+        dto.setPasswordHash("tracktive");
+        dto.setMustResetPassword(true);
+        return dto;
     }
 }

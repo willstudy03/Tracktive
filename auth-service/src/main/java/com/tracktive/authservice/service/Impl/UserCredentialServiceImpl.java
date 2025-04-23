@@ -3,8 +3,10 @@ package com.tracktive.authservice.service.Impl;
 import com.tracktive.authservice.exception.LockAcquisitionException;
 import com.tracktive.authservice.exception.UserCredentialNotFoundException;
 import com.tracktive.authservice.model.DTO.UserCredentialDTO;
+import com.tracktive.authservice.model.DTO.UserCredentialRequestDTO;
 import com.tracktive.authservice.repository.UserCredentialsRepository;
 import com.tracktive.authservice.service.UserCredentialService;
+import com.tracktive.authservice.util.UserCredentialConverter;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -73,7 +75,8 @@ public class UserCredentialServiceImpl implements UserCredentialService {
     }
 
     @Override
-    public UserCredentialDTO addUserCredential(UserCredentialDTO userCredentialDTO) {
+    public UserCredentialDTO addUserCredential(UserCredentialRequestDTO userCredentialRequestDTO) {
+        UserCredentialDTO userCredentialDTO = UserCredentialConverter.toDTO(userCredentialRequestDTO);
         validateUserCredentialDTO(userCredentialDTO);
         boolean result = userCredentialsRepository.addUserCredential(userCredentialDTO);
         if (!result) {
