@@ -1,6 +1,8 @@
 package com.tracktive.userservice.util.converter;
 
 import com.tracktive.userservice.model.DTO.RetailerDTO;
+import com.tracktive.userservice.model.DTO.RetailerDetailsDTO;
+import com.tracktive.userservice.model.DTO.UserDTO;
 import com.tracktive.userservice.model.entity.Retailer;
 import java.util.Objects;
 
@@ -43,5 +45,22 @@ public class RetailerConverter {
         retailer.setBankName(retailerDTO.getBankName());
         retailer.setPayByTermCredit(retailerDTO.getPayByTermCredit());
         return retailer;
+    }
+
+    public static RetailerDTO toDTO(UserDTO userDTO, RetailerDetailsDTO retailerDetailsDTO){
+        if (Objects.isNull(userDTO) || Objects.isNull(retailerDetailsDTO)) {
+            return null;
+        }
+        RetailerDTO retailerDTO = new RetailerDTO();
+        retailerDTO.setRetailerId(userDTO.getId());
+
+        // Set retailer-specific fields from retailerDetailsDTO
+        retailerDTO.setSsmRegistrationNumber(retailerDetailsDTO.getSsmRegistrationNumber());
+        retailerDTO.setBusinessName(retailerDetailsDTO.getBusinessName());
+        retailerDTO.setBusinessAddress(retailerDetailsDTO.getBusinessAddress());
+        retailerDTO.setBankAccount(retailerDetailsDTO.getBankAccount());
+        retailerDTO.setBankName(retailerDetailsDTO.getBankName());
+        retailerDTO.setPayByTermCredit(3);
+        return retailerDTO;
     }
 }

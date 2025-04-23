@@ -1,11 +1,17 @@
 package com.tracktive.userservice.service.Impl;
 
+import com.tracktive.userservice.model.DTO.RetailerDTO;
+import com.tracktive.userservice.model.DTO.SupplierDTO;
 import com.tracktive.userservice.model.DTO.UserCreationRequestDTO;
 import com.tracktive.userservice.model.DTO.UserDTO;
+import com.tracktive.userservice.model.Enum.UserRole;
 import com.tracktive.userservice.service.RetailerService;
 import com.tracktive.userservice.service.SupplierService;
 import com.tracktive.userservice.service.UserManagementService;
 import com.tracktive.userservice.service.UserService;
+import com.tracktive.userservice.util.converter.RetailerConverter;
+import com.tracktive.userservice.util.converter.SupplierConverter;
+import com.tracktive.userservice.util.converter.UserConverter;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +49,30 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Transactional
     public UserDTO crateUser(UserCreationRequestDTO userCreationRequestDTO) {
 
+        // Step 1: Create basic user
+        UserDTO userDTO = userService.addUser(UserConverter.toUserRequestDTO(userCreationRequestDTO));
 
+        log.info("Created basic user with ID: {} and role: {}", userDTO.getId(), userDTO.getUserRole());
 
+        // Step 2: Save the role specific details into the db
+        switch (userDTO.getUserRole()){
+            case RETAILER:
+                RetailerDTO retailerDTO = retailerService.addRetailer(RetailerConverter.toDTO(userDTO, userCreationRequestDTO.getRetailerDetailsDTO()));
+                log.info("Retailer details created successfully with retailer ID: {}", retailerDTO.getRetailerId());
+                break;
+            case SUPPLIER:
+                SupplierDTO supplierDTO = supplierService.addSupplier(SupplierConverter.toDTO(userDTO, userCreationRequestDTO.getSupplierDetailsDTO()));
+                log.info("Supplier details created successfully with supplier ID: {}", supplierDTO.getSupplierId());
+                break;
+            case ADMIN:
+                log.info("User {} is an ADMIN - no additional details needed", userDTO.getId());
+                break;
+            default:
+                log.warn("Unhandled user role: {} for user ID: {}", userDTO.getUserRole(), userDTO.getId());
+        }
 
-        return null;
+        log.info("User creation completed for user ID: {}", userDTO.getId());
+
+        return userDTO;
     }
 }

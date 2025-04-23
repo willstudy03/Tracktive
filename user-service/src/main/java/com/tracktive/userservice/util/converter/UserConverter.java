@@ -1,5 +1,6 @@
 package com.tracktive.userservice.util.converter;
 
+import com.tracktive.userservice.model.DTO.UserCreationRequestDTO;
 import com.tracktive.userservice.model.DTO.UserDTO;
 import com.tracktive.userservice.model.DTO.UserRequestDTO;
 import com.tracktive.userservice.model.entity.User;
@@ -59,5 +60,17 @@ public class UserConverter {
         userDTO.setPhoneNumber(userRequestDTO.getPhoneNumber());
         userDTO.setUserRole(userRequestDTO.getUserRole());
         return userDTO;
+    }
+
+    public static UserRequestDTO toUserRequestDTO(UserCreationRequestDTO userCreationRequestDTO){
+        if (Objects.isNull(userCreationRequestDTO)){
+            return null;
+        }
+        UserRequestDTO userRequestDTO = new UserRequestDTO();
+        userRequestDTO.setEmail(userCreationRequestDTO.getEmail());
+        userRequestDTO.setName(userCreationRequestDTO.getName());
+        userRequestDTO.setPhoneNumber(userCreationRequestDTO.getPhoneNumber());
+        userRequestDTO.setUserRole(userCreationRequestDTO.getUserRole());
+        return userRequestDTO;
     }
 }

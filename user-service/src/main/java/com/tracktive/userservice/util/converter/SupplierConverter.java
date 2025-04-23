@@ -1,6 +1,6 @@
 package com.tracktive.userservice.util.converter;
 
-import com.tracktive.userservice.model.DTO.SupplierDTO;
+import com.tracktive.userservice.model.DTO.*;
 import com.tracktive.userservice.model.entity.Supplier;
 import java.util.Objects;
 
@@ -41,6 +41,20 @@ public class SupplierConverter {
         supplier.setBankAccount(supplierDTO.getBankAccount());
         supplier.setBankName(supplierDTO.getBankName());
         return supplier;
+    }
+
+    public static SupplierDTO toDTO(UserDTO userDTO, SupplierDetailsDTO supplierDetailsDTO){
+        if (Objects.isNull(userDTO) || Objects.isNull(supplierDetailsDTO)) {
+            return null;
+        }
+        SupplierDTO supplierDTO = new SupplierDTO();
+        supplierDTO.setSupplierId(userDTO.getId());
+        supplierDTO.setSsmRegistrationNumber(supplierDTO.getSsmRegistrationNumber());
+        supplierDTO.setBusinessName(supplierDetailsDTO.getBusinessName());
+        supplierDTO.setBusinessAddress(supplierDetailsDTO.getBusinessAddress());
+        supplierDTO.setBankAccount(supplierDetailsDTO.getBankAccount());
+        supplierDTO.setBankName(supplierDetailsDTO.getBankName());
+        return supplierDTO;
     }
 
 }
