@@ -2,6 +2,7 @@ package com.tracktive.userservice.controller;
 
 import com.tracktive.userservice.model.DTO.UserCreationRequestDTO;
 import com.tracktive.userservice.model.DTO.UserDTO;
+import com.tracktive.userservice.model.DTO.UserManagementResponseDTO;
 import com.tracktive.userservice.service.UserManagementService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,12 @@ public class UserManagementController {
     public ResponseEntity<List<UserDTO>> getAllUsers(){
         List<UserDTO> users = userManagementService.selectAllUsers();
         return ResponseEntity.ok().body(users);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserManagementResponseDTO> selectUserById(@PathVariable String userId){
+        UserManagementResponseDTO user = userManagementService.selectUserById(userId);
+        return ResponseEntity.ok().body(user);
     }
 
     @PostMapping

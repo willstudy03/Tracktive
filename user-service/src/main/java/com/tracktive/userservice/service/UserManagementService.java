@@ -2,6 +2,7 @@ package com.tracktive.userservice.service;
 
 import com.tracktive.userservice.model.DTO.UserCreationRequestDTO;
 import com.tracktive.userservice.model.DTO.UserDTO;
+import com.tracktive.userservice.model.DTO.UserManagementResponseDTO;
 
 import java.util.List;
 
@@ -12,5 +13,6 @@ import java.util.List;
 */
 public interface UserManagementService {
     List<UserDTO> selectAllUsers();
+    UserManagementResponseDTO selectUserById(String id);
     UserDTO createUser(UserCreationRequestDTO userCreationRequestDTO);
 }

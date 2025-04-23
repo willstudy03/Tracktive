@@ -1,10 +1,7 @@
 package com.tracktive.userservice.service.Impl;
 
 import com.tracktive.userservice.kafka.UserEventProducer;
-import com.tracktive.userservice.model.DTO.RetailerDTO;
-import com.tracktive.userservice.model.DTO.SupplierDTO;
-import com.tracktive.userservice.model.DTO.UserCreationRequestDTO;
-import com.tracktive.userservice.model.DTO.UserDTO;
+import com.tracktive.userservice.model.DTO.*;
 import com.tracktive.userservice.service.RetailerService;
 import com.tracktive.userservice.service.SupplierService;
 import com.tracktive.userservice.service.UserManagementService;
@@ -15,6 +12,7 @@ import com.tracktive.userservice.util.converter.UserConverter;
 import jakarta.validation.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +51,56 @@ public class UserManagementServiceImpl implements UserManagementService {
     @Override
     public List<UserDTO> selectAllUsers() {
         return userService.selectAllUsers();
+    }
+
+    @Override
+    public UserManagementResponseDTO selectUserById(String id) {
+
+        // Step 1: Query basic user
+        UserDTO userDTO = userService.selectUserById(id);
+
+        UserManagementResponseDTO userManagementResponseDTO = new UserManagementResponseDTO();
+        BeanUtils.copyProperties(userDTO, userManagementResponseDTO);
+
+        // Based on the user role to query role-related details
+        switch (userDTO.getUserRole()) {
+            case RETAILER:
+
+                RetailerDTO retailerDTO = retailerService.selectRetailerById(userDTO.getId());
+
+                RetailerDetailsDTO retailerDetailsDTO = new RetailerDetailsDTO();
+
+                BeanUtils.copyProperties(retailerDTO, retailerDetailsDTO);
+
+                userManagementResponseDTO.setRetailerDetailsDTO(retailerDetailsDTO);
+
+                log.info("Retailer details retrieved successfully with supplier ID: {}", retailerDTO.getRetailerId());
+
+                break;
+
+            case SUPPLIER:
+
+                SupplierDTO supplierDTO = supplierService.selectSupplierById(userDTO.getId());
+
+                SupplierDetailsDTO supplierDetailsDTO = new SupplierDetailsDTO();
+
+                BeanUtils.copyProperties(supplierDTO, supplierDetailsDTO);
+
+                userManagementResponseDTO.setSupplierDetailsDTO(supplierDetailsDTO);
+
+                log.info("Supplier details retrieved successfully with supplier ID: {}", supplierDTO.getSupplierId());
+
+                break;
+
+            case ADMIN:
+                log.info("User {} is an ADMIN - no additional details needed to be retrieved", userDTO.getId());
+                break;
+
+            default:
+                log.warn("Unhandled user role: {} for retrieve role info with user ID: {}", userDTO.getUserRole(), userDTO.getId());
+        }
+        log.info("Completed retrieving user details for ID: {}", id);
+        return userManagementResponseDTO;
     }
 
     @Override
