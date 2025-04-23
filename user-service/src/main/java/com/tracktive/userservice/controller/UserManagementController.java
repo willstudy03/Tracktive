@@ -29,7 +29,7 @@ public class UserManagementController {
 
     @PostMapping
     public ResponseEntity<UserDTO> newUser(@Valid @RequestBody UserCreationRequestDTO userCreationRequestDTO){
-        UserDTO userDTO = userManagementService.crateUser(userCreationRequestDTO);
+        UserDTO userDTO = userManagementService.createUser(userCreationRequestDTO);
         return ResponseEntity.ok(userDTO);
     }
 }

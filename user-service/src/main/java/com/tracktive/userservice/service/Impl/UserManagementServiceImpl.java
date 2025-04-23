@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
 * Description: User Management Service Implementation
 * @author William Theo
@@ -45,9 +47,10 @@ public class UserManagementServiceImpl implements UserManagementService {
         this.validator = validator;
     }
 
+
     @Override
     @Transactional
-    public UserDTO crateUser(UserCreationRequestDTO userCreationRequestDTO) {
+    public UserDTO createUser(UserCreationRequestDTO userCreationRequestDTO) {
 
         // Step 1: Create basic user
         UserDTO userDTO = userService.addUser(UserConverter.toUserRequestDTO(userCreationRequestDTO));
