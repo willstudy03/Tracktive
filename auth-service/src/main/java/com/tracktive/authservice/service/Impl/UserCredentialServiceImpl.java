@@ -14,6 +14,7 @@ import org.apache.ibatis.exceptions.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,13 +31,16 @@ public class UserCredentialServiceImpl implements UserCredentialService {
 
     private final Validator validator;
 
+    private PasswordEncoder passwordEncoder;
+
     private final UserCredentialsRepository userCredentialsRepository;
 
     private static final Logger log = LoggerFactory.getLogger(UserCredentialServiceImpl.class);
 
     @Autowired
-    public UserCredentialServiceImpl(Validator validator, UserCredentialsRepository userCredentialsRepository) {
+    public UserCredentialServiceImpl(Validator validator, PasswordEncoder passwordEncoder, UserCredentialsRepository userCredentialsRepository) {
         this.validator = validator;
+        this.passwordEncoder = passwordEncoder;
         this.userCredentialsRepository = userCredentialsRepository;
     }
 
@@ -86,8 +90,13 @@ public class UserCredentialServiceImpl implements UserCredentialService {
 
     @Override
     public UserCredentialDTO addUserCredential(UserCredentialRequestDTO userCredentialRequestDTO) {
+
         UserCredentialDTO userCredentialDTO = UserCredentialConverter.toDTO(userCredentialRequestDTO);
+
+        userCredentialDTO.setPasswordHash(passwordEncoder.encode(userCredentialDTO.getPasswordHash()));
+
         validateUserCredentialDTO(userCredentialDTO);
+
         boolean result = userCredentialsRepository.addUserCredential(userCredentialDTO);
         if (!result) {
             log.error("Failed to add user credential with id: {}", userCredentialDTO.getUserId());
