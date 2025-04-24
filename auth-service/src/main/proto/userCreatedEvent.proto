@@ -7,5 +7,14 @@ option java_multiple_files = true;
 message UserCreatedEvent {
     string userId = 1;
     string email = 2;
+    UserRole role = 3;
+}
+
+enum UserRole {
+    UNKNOWN = 0;
+    ADMIN = 1;
+    RETAILER = 2;
+    SUPPLIER = 3;
+    COURIER = 4;
 }
 

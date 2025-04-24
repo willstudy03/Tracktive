@@ -43,6 +43,7 @@ public class UserCredentialConverter {
         dto.setUserId(userCredentialRequestDTO.getUserId());
         dto.setEmail(userCredentialRequestDTO.getEmail());
         dto.setPasswordHash("tracktive");
+        dto.setUserRole(userCredentialRequestDTO.getUserRole());
         dto.setMustResetPassword(true);
         return dto;
     }

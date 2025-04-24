@@ -1,5 +1,7 @@
 package com.tracktive.authservice.model.DTO;
 
+import com.tracktive.authservice.model.Enum.UserRole;
+import com.tracktive.authservice.util.annotation.ValidEnum;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +24,10 @@ public class UserCredentialDTO {
     @NotBlank(message = "Password is required")
     private String passwordHash;
 
+    @NotNull(message = "User role is required")
+    @ValidEnum(enumClass = UserRole.class, message = "Invalid User Role")
+    private UserRole userRole;
+
     @NotNull(message = "MustResetPassword flag is required")
     private boolean mustResetPassword;
 
@@ -32,10 +38,11 @@ public class UserCredentialDTO {
     public UserCredentialDTO() {
     }
 
-    public UserCredentialDTO(String userId, String email, String passwordHash, boolean mustResetPassword) {
+    public UserCredentialDTO(String userId, String email, String passwordHash, UserRole userRole, boolean mustResetPassword) {
         this.userId = userId;
         this.email = email;
         this.passwordHash = passwordHash;
+        this.userRole = userRole;
         this.mustResetPassword = mustResetPassword;
     }
 
@@ -61,6 +68,14 @@ public class UserCredentialDTO {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
     }
 
     public boolean isMustResetPassword() {

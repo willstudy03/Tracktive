@@ -1,5 +1,7 @@
 package com.tracktive.authservice.model.entity;
 
+import com.tracktive.authservice.model.Enum.UserRole;
+
 import java.time.LocalDateTime;
 /**
 * Description: User Credential POJO
@@ -14,6 +16,8 @@ public class UserCredential {
 
     private String passwordHash;
 
+    private UserRole userRole;
+
     private boolean mustResetPassword;
 
     private LocalDateTime createdAt;
@@ -23,10 +27,11 @@ public class UserCredential {
     public UserCredential() {
     }
 
-    public UserCredential(String userId, String email, String passwordHash, boolean mustResetPassword) {
+    public UserCredential(String userId, String email, String passwordHash, UserRole userRole, boolean mustResetPassword) {
         this.userId = userId;
         this.email = email;
         this.passwordHash = passwordHash;
+        this.userRole = userRole;
         this.mustResetPassword = mustResetPassword;
     }
 
@@ -52,6 +57,14 @@ public class UserCredential {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
     }
 
     public boolean isMustResetPassword() {

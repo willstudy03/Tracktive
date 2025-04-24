@@ -1,6 +1,7 @@
 package com.tracktive.userservice.kafka;
 
 import com.tracktive.userservice.exception.FailedToSendEventException;
+import com.tracktive.userservice.model.DTO.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import userEvents.UserCreatedEvent;
 import userEvents.UserDeletedEvent;
+import userEvents.UserRole;
 
 /**
 * Description: User Event Producer
@@ -26,25 +28,26 @@ public class UserEventProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public void sendUserCreatedEvent(String userId, String email){
+    public void sendUserCreatedEvent(UserDTO userDTO){
 
-        log.info("UserEventProducer(USER_CREATED): Prepare user created event with user ID {}", userId);
+        log.info("UserEventProducer(USER_CREATED): Prepare user created event with user ID {}", userDTO.getId());
 
         UserCreatedEvent event = UserCreatedEvent.newBuilder()
-                .setUserId(userId)
-                .setEmail(email)
+                .setUserId(userDTO.getId())
+                .setEmail(userDTO.getEmail())
+                .setRole(UserRole.valueOf(userDTO.getUserRole().name()))
                 .build();
 
         try {
             kafkaTemplate.send("user-created", event.toByteArray());
 
-            log.info("UserEventProducer(USER_CREATED): Sent user created event with user ID {}", userId);
+            log.info("UserEventProducer(USER_CREATED): Sent user created event with user ID {}", userDTO.getId());
 
         } catch (Exception e) {
 
-            log.info("UserEventProducer(USER_CREATED): Failed to send user created event with user ID {}", userId);
+            log.info("UserEventProducer(USER_CREATED): Failed to send user created event with user ID {}", userDTO.getId());
 
-            throw new FailedToSendEventException("Failed to send user created event with user ID " + userId, e);
+            throw new FailedToSendEventException("Failed to send user created event with user ID " + userDTO.getId(), e);
         }
     }
 

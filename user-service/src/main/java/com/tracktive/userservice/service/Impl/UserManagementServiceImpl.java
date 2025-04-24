@@ -114,7 +114,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         log.info("Created basic user with ID: {} and role: {}", userDTO.getId(), userDTO.getUserRole());
 
         // Send 2: Publish Event to authentication service to create a default user credential using email
-        userEventProducer.sendUserCreatedEvent(userDTO.getId(), userDTO.getEmail());
+        userEventProducer.sendUserCreatedEvent(userDTO);
 
         // Step 3: Save the role specific details into the db
         switch (userDTO.getUserRole()){

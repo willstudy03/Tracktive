@@ -2,6 +2,7 @@ package com.tracktive.authservice.kafka;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.tracktive.authservice.model.DTO.UserCredentialRequestDTO;
+import com.tracktive.authservice.model.Enum.UserRole;
 import com.tracktive.authservice.service.UserCredentialService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,14 +41,15 @@ public class UserEventConsumer {
             UserCreatedEvent userCreatedEvent = UserCreatedEvent.parseFrom(event);
             String userId = userCreatedEvent.getUserId();
             String email = userCreatedEvent.getEmail();
+            UserRole userRole = UserRole.valueOf(userCreatedEvent.getRole().name());
 
-            log.info("UserEventConsumer(User_Created): Received user created event for user ID {} with email ID {}",
-                    userId, email);
+            log.info("UserEventConsumer(User_Created): Received user created event for [{}] user ID {} with email ID {}",
+                    userRole, userId, email);
 
-            userCredentialService.addUserCredential(new UserCredentialRequestDTO(userId, email));
+            userCredentialService.addUserCredential(new UserCredentialRequestDTO(userId, email, userRole));
 
             processSucceeded = true;
-            log.info("Successfully created user credential {} with email {}", userId, email);
+            log.info("Successfully created [{}] user credential {} with email {}", userRole, userId, email);
 
         } catch (InvalidProtocolBufferException e) {
             log.error("Deserialization error for user created event", e);
