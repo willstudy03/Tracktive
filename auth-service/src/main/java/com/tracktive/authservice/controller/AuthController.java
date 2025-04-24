@@ -4,6 +4,7 @@ import com.tracktive.authservice.model.DTO.LoginRequestDTO;
 import com.tracktive.authservice.model.DTO.LoginResponseDTO;
 import com.tracktive.authservice.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class AuthController {
 
     @Operation(summary = "Generate token on user login")
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO){
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO loginRequestDTO){
         try {
             LoginResponseDTO responseDTO = authService.authenticate(loginRequestDTO);
             return ResponseEntity.ok(responseDTO);
