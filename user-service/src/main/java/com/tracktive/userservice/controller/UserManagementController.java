@@ -51,4 +51,10 @@ public class UserManagementController {
         UserManagementResponseDTO user = userManagementService.updateUser(userManagementRequestDTO);
         return ResponseEntity.ok(user);
     }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<String> deleteProduct(@PathVariable String userId) {
+        UserDTO deletedUser = userManagementService.deleteUserById(userId);
+        return ResponseEntity.ok("User with ID " + deletedUser.getId() + " deleted successfully.");
+    }
 }

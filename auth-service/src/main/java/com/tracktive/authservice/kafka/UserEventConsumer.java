@@ -11,6 +11,7 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 import userEvents.UserCreatedEvent;
+import userEvents.UserDeletedEvent;
 
 /**
 * Description: User Event Consumer
@@ -61,6 +62,39 @@ public class UserEventConsumer {
                 log.info("User created event message acknowledged");
             } else {
                 log.warn("User created event message not acknowledged, will be redelivered by Kafka");
+            }
+        }
+    }
+
+    @KafkaListener(topics = "user-deleted", groupId = "auth-service")
+    public void consumeUserDeletedEvent(byte[] event, Acknowledgment ack){
+        boolean processSucceeded = false;
+
+        try {
+            UserDeletedEvent userDeletedEvent = UserDeletedEvent.parseFrom(event);
+            String userId = userDeletedEvent.getUserId();
+
+            log.info("UserEventConsumer(User_Deleted): Received user deleted event for user ID {}",
+                    userId);
+
+            userCredentialService.deleteById(userId);
+
+            processSucceeded = true;
+            log.info("Successfully deleted user credential {}", userId);
+
+        } catch (InvalidProtocolBufferException e) {
+            log.error("Deserialization error for user created event", e);
+            // Deserialization errors are non-recoverable, so we should acknowledge
+            processSucceeded = true;
+        } catch (Exception e) {
+            log.error("Unexpected error while processing user deleted event", e);
+            processSucceeded = false;
+        } finally {
+            if (processSucceeded) {
+                ack.acknowledge();
+                log.info("User deleted event message acknowledged");
+            } else {
+                log.warn("User deleted event message not acknowledged, will be redelivered by Kafka");
             }
         }
     }

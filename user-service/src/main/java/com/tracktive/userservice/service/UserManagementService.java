@@ -17,4 +17,5 @@ public interface UserManagementService {
     UserManagementResponseDTO selectUserById(String id);
     UserDTO createUser(UserCreationRequestDTO userCreationRequestDTO);
     UserManagementResponseDTO updateUser(UserManagementRequestDTO userManagementRequestDTO);
+    UserDTO deleteUserById(String id);
 }

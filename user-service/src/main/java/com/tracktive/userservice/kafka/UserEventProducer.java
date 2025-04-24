@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import userEvents.UserCreatedEvent;
+import userEvents.UserDeletedEvent;
 
 /**
 * Description: User Event Producer
@@ -27,7 +28,7 @@ public class UserEventProducer {
 
     public void sendUserCreatedEvent(String userId, String email){
 
-        log.info("UserEventProducer(STOCK_DEDUCTION_SUCCESS_EVENT): Prepare user created event with user ID {}", userId);
+        log.info("UserEventProducer(USER_CREATED): Prepare user created event with user ID {}", userId);
 
         UserCreatedEvent event = UserCreatedEvent.newBuilder()
                 .setUserId(userId)
@@ -44,6 +45,27 @@ public class UserEventProducer {
             log.info("UserEventProducer(USER_CREATED): Failed to send user created event with user ID {}", userId);
 
             throw new FailedToSendEventException("Failed to send user created event with user ID " + userId, e);
+        }
+    }
+
+    public void sendUserDeletedEvent(String userId){
+
+        log.info("UserEventProducer(USER_DELETED): Prepare user deleted event with user ID {}", userId);
+
+        UserDeletedEvent event = UserDeletedEvent.newBuilder()
+                .setUserId(userId)
+                .build();
+
+        try {
+            kafkaTemplate.send("user-deleted", event.toByteArray());
+
+            log.info("UserEventProducer(USER_DELETED): Sent user deleted event with user ID {}", userId);
+
+        } catch (Exception e) {
+
+            log.info("UserEventProducer(USER_DELETED): Failed to send user deleted event with user ID {}", userId);
+
+            throw new FailedToSendEventException("Failed to send user deleted event with user ID " + userId, e);
         }
     }
 }

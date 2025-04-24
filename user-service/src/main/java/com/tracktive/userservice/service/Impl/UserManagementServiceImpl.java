@@ -2,6 +2,7 @@ package com.tracktive.userservice.service.Impl;
 
 import com.tracktive.userservice.kafka.UserEventProducer;
 import com.tracktive.userservice.model.DTO.*;
+import com.tracktive.userservice.model.Enum.UserRole;
 import com.tracktive.userservice.service.RetailerService;
 import com.tracktive.userservice.service.SupplierService;
 import com.tracktive.userservice.service.UserManagementService;
@@ -181,5 +182,27 @@ public class UserManagementServiceImpl implements UserManagementService {
         // Step 4: Return the updated user data
         log.info("User update completed for ID: {}", userId);
         return selectUserById(userId);
+    }
+
+    @Override
+    @Transactional
+    public UserDTO deleteUserById(String id) {
+
+        UserDTO userDTO = userService.lockUserById(id);
+
+        if (userDTO.getUserRole().equals(UserRole.ADMIN)){
+            // admin account is not able to deleted by admin
+            throw new IllegalArgumentException("Admin accounts cannot be deleted");
+        }
+
+        // delete user from the db
+        userService.deleteUserById(userDTO.getId());
+
+        // sent user deleted message
+        userEventProducer.sendUserDeletedEvent(id);
+
+        log.info("User deletion completed for user ID: {}", id);
+
+        return userDTO;
     }
 }
