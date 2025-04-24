@@ -1,6 +1,10 @@
 server:
   port: 4004
 
+auth:
+  service:
+    url: http://auth-service:8085
+
 spring:
   main:
     web-application-type: reactive
@@ -12,8 +16,8 @@ spring:
           uri: http://auth-service:8085
           predicates:
             - Path=/api/authentication/**
-            - filters:
-                - StripPrefix=1
+          filters:
+            - StripPrefix=1
 
         - id: product-service-route
           uri: http://product-service:8080
@@ -21,3 +25,4 @@ spring:
             - Path=/api/products/**
           filters:
             - StripPrefix=1
+            - JwtValidation
