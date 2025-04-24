@@ -16,6 +16,7 @@ public interface UserCredentialDAO {
     // Select operations
     List<UserCredential> selectAll();
     Optional<UserCredential> selectById(String id);
+    Optional<UserCredential> selectByEmail(String email);
     // Lock Operation
     Optional<UserCredential> lockById(String id);
     // Insert operation

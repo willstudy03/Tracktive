@@ -57,6 +57,16 @@ public class UserCredentialServiceImpl implements UserCredentialService {
     }
 
     @Override
+    public UserCredentialDTO selectByEmail(String email) {
+        validateEmail(email);
+        return userCredentialsRepository.selectByEmail(email)
+                .orElseThrow(()->{
+                    log.warn("UserCredentialService: User Credential not found with user email: {}", email);
+                    return new UserCredentialNotFoundException("User Credential not found with user email:" + email);
+                });
+    }
+
+    @Override
     public UserCredentialDTO lockById(String id) {
         validateId(id);
         try {
@@ -117,6 +127,12 @@ public class UserCredentialServiceImpl implements UserCredentialService {
     private void validateId(String id){
         if (Objects.isNull(id) || id.trim().isEmpty()) {
             throw new IllegalArgumentException("ID cannot be null or empty");
+        }
+    }
+
+    private void validateEmail(String email){
+        if (Objects.isNull(email) || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
         }
     }
 

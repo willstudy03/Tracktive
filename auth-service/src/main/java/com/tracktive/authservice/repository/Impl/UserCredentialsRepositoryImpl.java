@@ -46,6 +46,11 @@ public class UserCredentialsRepositoryImpl implements UserCredentialsRepository 
     }
 
     @Override
+    public Optional<UserCredentialDTO> selectByEmail(String email) {
+        return userCredentialDAO.selectByEmail(email).map(UserCredentialConverter::toDTO);
+    }
+
+    @Override
     public Optional<UserCredentialDTO> lockById(String id) {
         return userCredentialDAO.lockById(id).map(UserCredentialConverter::toDTO);
     }
