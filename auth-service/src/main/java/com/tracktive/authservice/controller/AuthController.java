@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
 * Description: Authentication Rest API End Point
@@ -38,5 +35,18 @@ public class AuthController {
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    @Operation(summary = "Validate Token")
+    @GetMapping("/validate")
+    public ResponseEntity<Void> validateToken(@RequestHeader("Authorization") String authHeader){
+
+        if (authHeader == null || ! authHeader.startsWith("Bearer ")){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return authService.validateToken(authHeader.substring(7))
+                ? ResponseEntity.ok().build()
+                :ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

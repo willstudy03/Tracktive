@@ -7,6 +7,7 @@ import com.tracktive.authservice.model.DTO.UserCredentialDTO;
 import com.tracktive.authservice.service.AuthService;
 import com.tracktive.authservice.service.UserCredentialService;
 import com.tracktive.authservice.util.JwtUtil;
+import io.jsonwebtoken.JwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,16 @@ public class AuthServiceImpl implements AuthService {
         } catch (UserCredentialNotFoundException e) {
             log.warn("User not found with email: {}", loginRequestDTO.getEmail());
             throw new BadCredentialsException("Invalid email or password");
+        }
+    }
+
+    @Override
+    public boolean validateToken(String token) {
+        try{
+            jwtUtil.validateToken(token);
+            return true;
+        } catch (JwtException e){
+            return false;
         }
     }
 }

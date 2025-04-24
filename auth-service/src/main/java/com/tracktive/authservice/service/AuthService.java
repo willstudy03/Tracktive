@@ -10,4 +10,5 @@ import com.tracktive.authservice.model.DTO.LoginResponseDTO;
 */
 public interface AuthService {
     LoginResponseDTO authenticate(LoginRequestDTO loginRequestDTO);
+    boolean validateToken(String token);
 }
