@@ -20,8 +20,8 @@ WORKDIR /app
 # Copy the built JAR file from the builder stage
 COPY --from=builder /app/product-service/target/product-service-0.0.1-SNAPSHOT.jar ./app.jar
 
-EXPOSE 8080
-EXPOSE 8081
+EXPOSE 8083
+EXPOSE 8183
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
 

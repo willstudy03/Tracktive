@@ -7,10 +7,10 @@ WORKDIR /app
 COPY ../ .
 
 # Ensure Maven downloads dependencies before building
-RUN mvn -pl auth-service dependency:go-offline -B
+RUN mvn -pl user-service dependency:go-offline -B
 
-# Build the product-service module
-RUN mvn -pl auth-service clean package -DskipTests
+# Build the user-service module
+RUN mvn -pl user-service clean package -DskipTests
 
 # Use OpenJDK to run the built application
 FROM openjdk:21-jdk AS runner
@@ -18,9 +18,9 @@ FROM openjdk:21-jdk AS runner
 WORKDIR /app
 
 # Copy the built JAR file from the builder stage
-COPY --from=builder /app/auth-service/target/auth-service-0.0.1-SNAPSHOT.jar ./app.jar
+COPY --from=builder /app/user-service/target/user-service-0.0.1-SNAPSHOT.jar ./app.jar
 
-EXPOSE 8081
+EXPOSE 8082
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
 

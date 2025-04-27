@@ -180,10 +180,154 @@
             "data": "AuthServiceDBC6B688BA"
           }
         ],
+        "/localstack/UserServiceDB/SubnetGroup/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceDBSubnetGroup458C2A83"
+          }
+        ],
+        "/localstack/UserServiceDB/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceDBSecurityGroupD7DB68D0"
+          }
+        ],
+        "/localstack/UserServiceDB/Secret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "localstackUserServiceDBSecret3C06D27D3fdaad7efa858a3daf9490cf0a702aeb"
+          }
+        ],
+        "/localstack/UserServiceDB/Secret/Attachment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceDBSecretAttachment614DFF5B"
+          }
+        ],
+        "/localstack/UserServiceDB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceDBD8F231D8"
+          }
+        ],
+        "/localstack/ProductServiceDB/SubnetGroup/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductServiceDBSubnetGroup1E4F76A1"
+          }
+        ],
+        "/localstack/ProductServiceDB/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductServiceDBSecurityGroup1A76474D"
+          }
+        ],
+        "/localstack/ProductServiceDB/Secret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "localstackProductServiceDBSecretA8688B3F3fdaad7efa858a3daf9490cf0a702aeb"
+          }
+        ],
+        "/localstack/ProductServiceDB/Secret/Attachment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductServiceDBSecretAttachmentC1B2E838"
+          }
+        ],
+        "/localstack/ProductServiceDB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductServiceDB57BB5D74"
+          }
+        ],
+        "/localstack/OrderServiceDB/SubnetGroup/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OrderServiceDBSubnetGroup6D8644F7"
+          }
+        ],
+        "/localstack/OrderServiceDB/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OrderServiceDBSecurityGroup545D40C8"
+          }
+        ],
+        "/localstack/OrderServiceDB/Secret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "localstackOrderServiceDBSecretF5F395463fdaad7efa858a3daf9490cf0a702aeb"
+          }
+        ],
+        "/localstack/OrderServiceDB/Secret/Attachment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OrderServiceDBSecretAttachmentABF8D4D6"
+          }
+        ],
+        "/localstack/OrderServiceDB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OrderServiceDBBAD4E04A"
+          }
+        ],
+        "/localstack/PaymentServiceDB/SubnetGroup/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PaymentServiceDBSubnetGroupF5419E6B"
+          }
+        ],
+        "/localstack/PaymentServiceDB/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PaymentServiceDBSecurityGroup253A7024"
+          }
+        ],
+        "/localstack/PaymentServiceDB/Secret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "localstackPaymentServiceDBSecret097170B33fdaad7efa858a3daf9490cf0a702aeb"
+          }
+        ],
+        "/localstack/PaymentServiceDB/Secret/Attachment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PaymentServiceDBSecretAttachmentB129EBCD"
+          }
+        ],
+        "/localstack/PaymentServiceDB/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PaymentServiceDBD2441D84"
+          }
+        ],
         "/localstack/AuthServiceDBHealthCheck": [
           {
             "type": "aws:cdk:logicalId",
             "data": "AuthServiceDBHealthCheck"
+          }
+        ],
+        "/localstack/UserServiceDBHealthCheck": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceDBHealthCheck"
+          }
+        ],
+        "/localstack/ProductServiceDBHealthCheck": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductServiceDBHealthCheck"
+          }
+        ],
+        "/localstack/OrderServiceDBHealthCheck": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OrderServiceDBHealthCheck"
+          }
+        ],
+        "/localstack/PaymentServiceDBHealthCheck": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PaymentServiceDBHealthCheck"
           }
         ],
         "/localstack/MskCluster": [
@@ -239,15 +383,15 @@
             "type": "aws:cdk:warning",
             "data": "minHealthyPercent has not been configured so the default value of 50% is used. The number of running tasks will decrease below the desired count during deployments etc. See https://github.com/aws/aws-cdk/issues/31705 [ack: @aws-cdk/aws-ecs:minHealthyPercent]",
             "trace": [
-              "Annotations.addMessage (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-XfzOMa\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:1608)",
-              "Annotations.addWarningV2 (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-XfzOMa\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:825)",
-              "new BaseService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-XfzOMa\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\base\\base-service.js:1:8100)",
-              "new FargateService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-XfzOMa\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\fargate\\fargate-service.js:1:3551)",
-              "Kernel._Kernel_create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime4936856261263077574\\lib\\program.js:548:25)",
-              "Kernel.create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime4936856261263077574\\lib\\program.js:218:93)",
-              "KernelHost.processRequest (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime4936856261263077574\\lib\\program.js:15471:36)",
-              "KernelHost.run (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime4936856261263077574\\lib\\program.js:15431:22)",
-              "Immediate._onImmediate (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime4936856261263077574\\lib\\program.js:15432:46)",
+              "Annotations.addMessage (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:1608)",
+              "Annotations.addWarningV2 (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:825)",
+              "new BaseService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\base\\base-service.js:1:8100)",
+              "new FargateService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\fargate\\fargate-service.js:1:3551)",
+              "Kernel._Kernel_create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:548:25)",
+              "Kernel.create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:218:93)",
+              "KernelHost.processRequest (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15471:36)",
+              "KernelHost.run (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15431:22)",
+              "Immediate._onImmediate (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15432:46)",
               "process.processImmediate (node:internal/timers:478:21)"
             ]
           }
@@ -262,6 +406,246 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "AuthServiceSecurityGroup67F2FA7D"
+          }
+        ],
+        "/localstack/UserServiceTask/TaskRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceTaskTaskRole3959F240"
+          }
+        ],
+        "/localstack/UserServiceTask/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceTaskCE24C7B8"
+          }
+        ],
+        "/localstack/UserServiceTask/ExecutionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceTaskExecutionRole35E26DAF"
+          }
+        ],
+        "/localstack/UserServiceTask/ExecutionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceTaskExecutionRoleDefaultPolicyFED51482"
+          }
+        ],
+        "/localstack/UserServiceLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceLogGroupF8D8E736"
+          }
+        ],
+        "/localstack/UserService": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "minHealthyPercent has not been configured so the default value of 50% is used. The number of running tasks will decrease below the desired count during deployments etc. See https://github.com/aws/aws-cdk/issues/31705 [ack: @aws-cdk/aws-ecs:minHealthyPercent]",
+            "trace": [
+              "Annotations.addMessage (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:1608)",
+              "Annotations.addWarningV2 (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:825)",
+              "new BaseService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\base\\base-service.js:1:8100)",
+              "new FargateService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\fargate\\fargate-service.js:1:3551)",
+              "Kernel._Kernel_create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:548:25)",
+              "Kernel.create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:218:93)",
+              "KernelHost.processRequest (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15471:36)",
+              "KernelHost.run (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15431:22)",
+              "Immediate._onImmediate (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15432:46)",
+              "process.processImmediate (node:internal/timers:478:21)"
+            ]
+          }
+        ],
+        "/localstack/UserService/Service": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceDFC9364A"
+          }
+        ],
+        "/localstack/UserService/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserServiceSecurityGroupF7F8526C"
+          }
+        ],
+        "/localstack/ProductServiceTask/TaskRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductServiceTaskTaskRoleCFF59E1A"
+          }
+        ],
+        "/localstack/ProductServiceTask/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductServiceTaskE09276EA"
+          }
+        ],
+        "/localstack/ProductServiceTask/ExecutionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductServiceTaskExecutionRole76ACDAA7"
+          }
+        ],
+        "/localstack/ProductServiceTask/ExecutionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductServiceTaskExecutionRoleDefaultPolicy79012C1F"
+          }
+        ],
+        "/localstack/ProductServiceLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductServiceLogGroupA1C6709F"
+          }
+        ],
+        "/localstack/ProductService": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "minHealthyPercent has not been configured so the default value of 50% is used. The number of running tasks will decrease below the desired count during deployments etc. See https://github.com/aws/aws-cdk/issues/31705 [ack: @aws-cdk/aws-ecs:minHealthyPercent]",
+            "trace": [
+              "Annotations.addMessage (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:1608)",
+              "Annotations.addWarningV2 (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:825)",
+              "new BaseService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\base\\base-service.js:1:8100)",
+              "new FargateService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\fargate\\fargate-service.js:1:3551)",
+              "Kernel._Kernel_create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:548:25)",
+              "Kernel.create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:218:93)",
+              "KernelHost.processRequest (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15471:36)",
+              "KernelHost.run (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15431:22)",
+              "Immediate._onImmediate (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15432:46)",
+              "process.processImmediate (node:internal/timers:478:21)"
+            ]
+          }
+        ],
+        "/localstack/ProductService/Service": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductService489390C8"
+          }
+        ],
+        "/localstack/ProductService/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductServiceSecurityGroupD8CC84D6"
+          }
+        ],
+        "/localstack/OrderServiceTask/TaskRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OrderServiceTaskTaskRole627AB1AA"
+          }
+        ],
+        "/localstack/OrderServiceTask/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OrderServiceTask6CB9E917"
+          }
+        ],
+        "/localstack/OrderServiceTask/ExecutionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OrderServiceTaskExecutionRoleC11F6D64"
+          }
+        ],
+        "/localstack/OrderServiceTask/ExecutionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OrderServiceTaskExecutionRoleDefaultPolicy2369E8B4"
+          }
+        ],
+        "/localstack/OrderServiceLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OrderServiceLogGroup9E6CC346"
+          }
+        ],
+        "/localstack/OrderService": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "minHealthyPercent has not been configured so the default value of 50% is used. The number of running tasks will decrease below the desired count during deployments etc. See https://github.com/aws/aws-cdk/issues/31705 [ack: @aws-cdk/aws-ecs:minHealthyPercent]",
+            "trace": [
+              "Annotations.addMessage (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:1608)",
+              "Annotations.addWarningV2 (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:825)",
+              "new BaseService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\base\\base-service.js:1:8100)",
+              "new FargateService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\fargate\\fargate-service.js:1:3551)",
+              "Kernel._Kernel_create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:548:25)",
+              "Kernel.create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:218:93)",
+              "KernelHost.processRequest (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15471:36)",
+              "KernelHost.run (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15431:22)",
+              "Immediate._onImmediate (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15432:46)",
+              "process.processImmediate (node:internal/timers:478:21)"
+            ]
+          }
+        ],
+        "/localstack/OrderService/Service": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OrderServiceC448479E"
+          }
+        ],
+        "/localstack/OrderService/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "OrderServiceSecurityGroupDBE18FEA"
+          }
+        ],
+        "/localstack/PaymentServiceTask/TaskRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PaymentServiceTaskTaskRoleB9CCCF7A"
+          }
+        ],
+        "/localstack/PaymentServiceTask/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PaymentServiceTaskD7A2772F"
+          }
+        ],
+        "/localstack/PaymentServiceTask/ExecutionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PaymentServiceTaskExecutionRole8E8E997D"
+          }
+        ],
+        "/localstack/PaymentServiceTask/ExecutionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PaymentServiceTaskExecutionRoleDefaultPolicy43693C85"
+          }
+        ],
+        "/localstack/PaymentServiceLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PaymentServiceLogGroupE9944FE7"
+          }
+        ],
+        "/localstack/PaymentService": [
+          {
+            "type": "aws:cdk:warning",
+            "data": "minHealthyPercent has not been configured so the default value of 50% is used. The number of running tasks will decrease below the desired count during deployments etc. See https://github.com/aws/aws-cdk/issues/31705 [ack: @aws-cdk/aws-ecs:minHealthyPercent]",
+            "trace": [
+              "Annotations.addMessage (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:1608)",
+              "Annotations.addWarningV2 (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:825)",
+              "new BaseService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\base\\base-service.js:1:8100)",
+              "new FargateService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\fargate\\fargate-service.js:1:3551)",
+              "Kernel._Kernel_create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:548:25)",
+              "Kernel.create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:218:93)",
+              "KernelHost.processRequest (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15471:36)",
+              "KernelHost.run (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15431:22)",
+              "Immediate._onImmediate (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15432:46)",
+              "process.processImmediate (node:internal/timers:478:21)"
+            ]
+          }
+        ],
+        "/localstack/PaymentService/Service": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PaymentService8D9B0532"
+          }
+        ],
+        "/localstack/PaymentService/SecurityGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PaymentServiceSecurityGroupA6B8193F"
           }
         ],
         "/localstack/APIGatewayTaskDefinition/TaskRole/Resource": [
@@ -341,16 +725,16 @@
             "type": "aws:cdk:warning",
             "data": "minHealthyPercent has not been configured so the default value of 50% is used. The number of running tasks will decrease below the desired count during deployments etc. See https://github.com/aws/aws-cdk/issues/31705 [ack: @aws-cdk/aws-ecs:minHealthyPercent]",
             "trace": [
-              "Annotations.addMessage (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-XfzOMa\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:1608)",
-              "Annotations.addWarningV2 (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-XfzOMa\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:825)",
-              "new BaseService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-XfzOMa\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\base\\base-service.js:1:8100)",
-              "new FargateService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-XfzOMa\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\fargate\\fargate-service.js:1:3551)",
-              "new ApplicationLoadBalancedFargateService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-XfzOMa\\node_modules\\aws-cdk-lib\\aws-ecs-patterns\\lib\\fargate\\application-load-balanced-fargate-service.js:1:3340)",
-              "Kernel._Kernel_create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime4936856261263077574\\lib\\program.js:548:25)",
-              "Kernel.create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime4936856261263077574\\lib\\program.js:218:93)",
-              "KernelHost.processRequest (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime4936856261263077574\\lib\\program.js:15471:36)",
-              "KernelHost.run (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime4936856261263077574\\lib\\program.js:15431:22)",
-              "Immediate._onImmediate (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime4936856261263077574\\lib\\program.js:15432:46)",
+              "Annotations.addMessage (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:1608)",
+              "Annotations.addWarningV2 (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\core\\lib\\annotations.js:1:825)",
+              "new BaseService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\base\\base-service.js:1:8100)",
+              "new FargateService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\aws-ecs\\lib\\fargate\\fargate-service.js:1:3551)",
+              "new ApplicationLoadBalancedFargateService (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-kernel-hryEId\\node_modules\\aws-cdk-lib\\aws-ecs-patterns\\lib\\fargate\\application-load-balanced-fargate-service.js:1:3340)",
+              "Kernel._Kernel_create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:548:25)",
+              "Kernel.create (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:218:93)",
+              "KernelHost.processRequest (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15471:36)",
+              "KernelHost.run (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15431:22)",
+              "Immediate._onImmediate (C:\\Users\\ENDUSE~1\\AppData\\Local\\Temp\\jsii-java-runtime7989585215954831739\\lib\\program.js:15432:46)",
               "process.processImmediate (node:internal/timers:478:21)"
             ]
           }
