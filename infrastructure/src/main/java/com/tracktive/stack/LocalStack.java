@@ -28,33 +28,46 @@ public class LocalStack extends Stack {
         super(scope, id, props);
 
         this.vpc = createVpc();
+
         DatabaseInstance authServiceDb = createDatabase("AuthServiceDB", "auth-service-db");
-//        DatabaseInstance productServiceDB = createDatabase("ProductServiceDB", "product-service-db");
+        DatabaseInstance userServiceDb = createDatabase("UserServiceDB", "user-service-db");
+        DatabaseInstance productServiceDb = createDatabase("ProductServiceDB", "product-service-db");
+        DatabaseInstance orderServiceDb = createDatabase("OrderServiceDB", "order-service-db");
+        DatabaseInstance paymentServiceDb = createDatabase("PaymentServiceDB", "payment-service-db");
 
         CfnHealthCheck authDbHealthCheck = createDbHealthCheck(authServiceDb, "AuthServiceDBHealthCheck");
-//        CfnHealthCheck productDbHealthCheck = createDbHealthCheck(productServiceDB, "ProductServiceDBHealthCheck");
+        CfnHealthCheck userDbHealthCheck = createDbHealthCheck(userServiceDb, "UserServiceDBHealthCheck");
+        CfnHealthCheck productDbHealthCheck = createDbHealthCheck(productServiceDb, "ProductServiceDBHealthCheck");
+        CfnHealthCheck orderDbHealthCheck = createDbHealthCheck(orderServiceDb, "OrderServiceDBHealthCheck");
+        CfnHealthCheck paymentDbHealthCheck = createDbHealthCheck(paymentServiceDb, "PaymentServiceDBHealthCheck");
 
         CfnCluster mskCluster = createMskCluster();
 
         this.ecsCluster = createEcsCluster();
 
-        FargateService authService = createFargateService("AuthService",
-                "auth-service",
-                List.of(8085),
-                authServiceDb,
+        // 1. Auth Service
+        FargateService authService = createFargateService("AuthService", "auth-service", List.of(8081), authServiceDb,
                 Map.of("JWT_SECRET", "c3RlYWR5dm9sdW1lc29vbm5vc2VwYXNzY2FsbWdvb3NlZ2FtZXBhc3NveHlnZW5lYXQ="));
-
         authService.getNode().addDependency(authDbHealthCheck);
         authService.getNode().addDependency(authServiceDb);
 
-//        FargateService productService = createFargateService("ProductService",
-//                "product-service",
-//                List.of(8080, 8081),
-//                productServiceDB,
-//                null);
-//
-//        productService.getNode().addDependency(productDbHealthCheck);
-//        productService.getNode().addDependency(productServiceDB);
+        // 2. User Service
+        FargateService userService = createFargateService("UserService", "user-service", List.of(8082), userServiceDb, null);
+        userService.getNode().addDependency(userDbHealthCheck);
+        userService.getNode().addDependency(userServiceDb);
+
+        // 3. Product Service
+        FargateService productService = createFargateService("ProductService", "product-service", List.of(8083, 8183), productServiceDb, null);
+        productService.getNode().addDependency(productDbHealthCheck);
+        productService.getNode().addDependency(productServiceDb);
+
+        // 4. Order Service
+        FargateService orderService = createFargateService("OrderService", "order-service", List.of(8084), orderServiceDb, null);
+        orderService.getNode().addDependency(orderDbHealthCheck);
+        orderService.getNode().addDependency(orderServiceDb);
+
+        // 5. Payment Service
+        FargateService paymentService = createFargateService("PaymentService", "payment-service", List.of(8085), paymentServiceDb, null);
 
         createApiGatewayService();
     }
@@ -183,7 +196,7 @@ public class LocalStack extends Stack {
                 .image(ContainerImage.fromRegistry("api-gateway"))
                 .environment(Map.of(
                         "SPRING_PROFILES_ACTIVE", "prod",
-                        "AUTH_SERVICE_URL", "http://host.docker.internal:8085"
+                        "AUTH_SERVICE_URL", "http://host.docker.internal:8081"
                 ))
                 .portMappings(List.of(4004).stream()
                         .map(port -> PortMapping.builder()
