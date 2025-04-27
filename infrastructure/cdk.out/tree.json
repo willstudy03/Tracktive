@@ -2015,7 +2015,7 @@
                       ]
                     },
                     "family": "localstackAuthServiceTask4114E6CA",
-                    "memory": "1024",
+                    "memory": "5120",
                     "networkMode": "awsvpc",
                     "requiresCompatibilities": [
                       "FARGATE"
@@ -2412,7 +2412,7 @@
                       ]
                     },
                     "family": "localstackUserServiceTaskF7902988",
-                    "memory": "1024",
+                    "memory": "5120",
                     "networkMode": "awsvpc",
                     "requiresCompatibilities": [
                       "FARGATE"
@@ -2814,7 +2814,7 @@
                       ]
                     },
                     "family": "localstackProductServiceTask5F52A6CA",
-                    "memory": "1024",
+                    "memory": "5120",
                     "networkMode": "awsvpc",
                     "requiresCompatibilities": [
                       "FARGATE"
@@ -3211,7 +3211,7 @@
                       ]
                     },
                     "family": "localstackOrderServiceTask347320AA",
-                    "memory": "1024",
+                    "memory": "5120",
                     "networkMode": "awsvpc",
                     "requiresCompatibilities": [
                       "FARGATE"
@@ -3608,7 +3608,7 @@
                       ]
                     },
                     "family": "localstackPaymentServiceTaskCFD57C06",
-                    "memory": "1024",
+                    "memory": "5120",
                     "networkMode": "awsvpc",
                     "requiresCompatibilities": [
                       "FARGATE"
@@ -3939,12 +3939,12 @@
                         },
                         "environment": [
                           {
-                            "name": "AUTH_SERVICE_URL",
-                            "value": "http://host.docker.internal:8081"
-                          },
-                          {
                             "name": "SPRING_PROFILES_ACTIVE",
                             "value": "prod"
+                          },
+                          {
+                            "name": "AUTH_SERVICE_URL",
+                            "value": "http://host.docker.internal:8081"
                           }
                         ]
                       }
