@@ -1,0 +1,28 @@
+server:
+  port: 4004
+
+auth:
+  service:
+    url: http://host.docker.internal:8085
+
+spring:
+  main:
+    web-application-type: reactive
+
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service-route
+          uri: http://host.docker.internal:8085
+          predicates:
+            - Path=/api/authentication/**
+          filters:
+            - StripPrefix=1
+
+        - id: product-service-route
+          uri: http://host.docker.internal:8080
+          predicates:
+            - Path=/api/products/**
+          filters:
+            - StripPrefix=1
+            - JwtValidation

@@ -29,10 +29,10 @@ public class LocalStack extends Stack {
 
         this.vpc = createVpc();
         DatabaseInstance authServiceDb = createDatabase("AuthServiceDB", "auth-service-db");
-        DatabaseInstance productServiceDB = createDatabase("ProductServiceDB", "product-service-db");
+//        DatabaseInstance productServiceDB = createDatabase("ProductServiceDB", "product-service-db");
 
         CfnHealthCheck authDbHealthCheck = createDbHealthCheck(authServiceDb, "AuthServiceDBHealthCheck");
-        CfnHealthCheck productDbHealthCheck = createDbHealthCheck(productServiceDB, "ProductServiceDBHealthCheck");
+//        CfnHealthCheck productDbHealthCheck = createDbHealthCheck(productServiceDB, "ProductServiceDBHealthCheck");
 
         CfnCluster mskCluster = createMskCluster();
 
@@ -47,14 +47,14 @@ public class LocalStack extends Stack {
         authService.getNode().addDependency(authDbHealthCheck);
         authService.getNode().addDependency(authServiceDb);
 
-        FargateService productService = createFargateService("ProductService",
-                "product-service",
-                List.of(8080, 8081),
-                productServiceDB,
-                null);
-
-        productService.getNode().addDependency(productDbHealthCheck);
-        productService.getNode().addDependency(productServiceDB);
+//        FargateService productService = createFargateService("ProductService",
+//                "product-service",
+//                List.of(8080, 8081),
+//                productServiceDB,
+//                null);
+//
+//        productService.getNode().addDependency(productDbHealthCheck);
+//        productService.getNode().addDependency(productServiceDB);
 
         createApiGatewayService();
     }
@@ -96,7 +96,7 @@ public class LocalStack extends Stack {
         return CfnCluster.Builder.create(this, "MskCluster")
                 .clusterName("kafka-cluster")
                 .kafkaVersion("2.8.0")
-                .numberOfBrokerNodes(1)
+                .numberOfBrokerNodes(2)
                 .brokerNodeGroupInfo(CfnCluster.BrokerNodeGroupInfoProperty.builder()
                         .instanceType("kafka.m5.xlarge")
                         .clientSubnets(vpc.getPrivateSubnets().stream()
@@ -120,7 +120,7 @@ public class LocalStack extends Stack {
 
         FargateTaskDefinition taskDefinition = FargateTaskDefinition.Builder.create(this, id + "Task")
                 .cpu(256)
-                .memoryLimitMiB(512)
+                .memoryLimitMiB(1024)
                 .build();
 
         ContainerDefinitionOptions.Builder containerOptions = ContainerDefinitionOptions.builder()
