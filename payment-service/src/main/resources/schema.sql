@@ -1,0 +1,24 @@
+CREATE TABLE payments (
+    id VARCHAR(255) PRIMARY KEY,
+    order_id VARCHAR(255) NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    currency VARCHAR(10) NOT NULL,
+    amount DECIMAL(15,2) NOT NULL,
+    total_paid_amount DECIMAL(15,2) DEFAULT 0.00,
+    payment_method VARCHAR(20),
+    payment_status VARCHAR(20) NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE payment_transactions (
+    id VARCHAR(255) PRIMARY KEY,
+    payment_id VARCHAR(255) NOT NULL,
+    stripe_session_id VARCHAR(255) NOT NULL,
+    stripe_payment_status VARCHAR(50) NOT NULL,
+    amount DECIMAL(15,2) NOT NULL,
+    session_url VARCHAR(512) NOT NULL,
+    currency VARCHAR(10) NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
