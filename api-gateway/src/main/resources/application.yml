@@ -35,4 +35,14 @@ spring:
             - StripPrefix=1
             - JwtValidation
 
+        - id: order-service-route
+          uri: http://order-service:8084
+          predicates:
+            - Path=/api/cart/**, /api/order-placement/**, /api/orders/**, /api/order-cancellation/**
+          filters:
+            - StripPrefix=1
+            - JwtValidation
+
+
+
         

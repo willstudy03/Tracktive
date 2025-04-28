@@ -60,6 +60,46 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
+    @ExceptionHandler(CartSupplierMismatchException.class)
+    public ResponseEntity<String> handleCartSupplierMismatchException(CartSupplierMismatchException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(DatabaseOperationException.class)
+    public ResponseEntity<String> handleDatabaseOperationException(DatabaseOperationException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(EmptyCartException.class)
+    public ResponseEntity<String> handleEmptyCartException(EmptyCartException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(FailedToPlaceOrderException.class)
+    public ResponseEntity<String> handleFailedToPlaceOrderException(FailedToPlaceOrderException exception){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(FailedToSendEventException.class)
+    public ResponseEntity<String> handleFailedToSendEventException(FailedToSendEventException exception){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(InvalidOrderStatusException.class)
+    public ResponseEntity<String> handleInvalidOrderStatusException(InvalidOrderStatusException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(LockAcquisitionException.class)
+    public ResponseEntity<String> handleLockAcquisitionException(LockAcquisitionException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(OrderAlreadyExistException.class)
+    public ResponseEntity<String> handleOrderAlreadyExistItems(OrderAlreadyExistException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
     @ExceptionHandler(OrderItemAlreadyExistException.class)
     public ResponseEntity<String> handleOrderItemAlreadyExistItems(OrderItemAlreadyExistException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
@@ -70,18 +110,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
-    @ExceptionHandler(OrderAlreadyExistException.class)
-    public ResponseEntity<String> handleOrderAlreadyExistItems(OrderAlreadyExistException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
-    }
-
     @ExceptionHandler(OrderNotFoundException.class)
     public ResponseEntity<String> handleOrderNotFoundException(OrderNotFoundException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
-    }
-
-    @ExceptionHandler(CartSupplierMismatchException.class)
-    public ResponseEntity<String> handleCartSupplierMismatchException(CartSupplierMismatchException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
@@ -95,13 +125,4 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 
-    @ExceptionHandler(EmptyCartException.class)
-    public ResponseEntity<String> handleEmptyCartException(EmptyCartException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
-    }
-
-    @ExceptionHandler(InvalidOrderStatusException.class)
-    public ResponseEntity<String> handleInvalidOrderStatusException(InvalidOrderStatusException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
-    }
 }

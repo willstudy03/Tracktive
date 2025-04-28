@@ -17,7 +17,7 @@ import java.util.List;
 * @date 31/3/2025
 */
 @RestController
-@RequestMapping("api/orders")
+@RequestMapping("/orders")
 public class OrderController {
 
     private final OrderService orderService;
@@ -45,21 +45,22 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
-    @PostMapping
-    public ResponseEntity<OrderDTO> addOrder(@RequestBody @Valid OrderRequestDTO orderRequestDTO){
-        OrderDTO order = orderService.addOrder(orderRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(order);
-    }
+//    @PostMapping
+//    public ResponseEntity<OrderDTO> addOrder(@RequestBody @Valid OrderRequestDTO orderRequestDTO){
+//        OrderDTO order = orderService.addOrder(orderRequestDTO);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(order);
+//    }
 
-    @PutMapping
-    public ResponseEntity<OrderDTO> updateOrder(@RequestBody @Valid OrderDTO orderDTO){
-        OrderDTO order = orderService.updateOrder(orderDTO);
-        return ResponseEntity.ok(order);
-    }
+//    @PutMapping
+//    public ResponseEntity<OrderDTO> updateOrder(@RequestBody @Valid OrderDTO orderDTO){
+//        OrderDTO order = orderService.updateOrder(orderDTO);
+//        return ResponseEntity.ok(order);
+//    }
 
-    @DeleteMapping("/{orderId}")
-    public ResponseEntity<String> deleteCartItem(@PathVariable String orderId){
-       orderService.deleteOrderById(orderId);
-        return ResponseEntity.ok("Order with ID " + orderId + " deleted successfully.");
-    }
+//    @DeleteMapping("/{orderId}")
+//    public ResponseEntity<String> deleteCartItem(@PathVariable String orderId){
+//       orderService.deleteOrderById(orderId);
+//        return ResponseEntity.ok("Order with ID " + orderId + " deleted successfully.");
+//    }
+
 }

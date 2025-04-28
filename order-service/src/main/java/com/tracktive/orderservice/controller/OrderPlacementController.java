@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/placeOrder")
+@RequestMapping("/order-placement")
 public class OrderPlacementController {
 
     private final OrderPlacementService orderPlacementService;
@@ -23,7 +23,7 @@ public class OrderPlacementController {
         this.orderPlacementService = orderPlacementService;
     }
 
-    @PostMapping
+    @PostMapping("/place-order")
     public ResponseEntity<OrderPlacementResponseDTO> addItemToCart(@RequestBody @Valid OrderPlacementRequestDTO orderPlacementRequestDTO){
         OrderPlacementResponseDTO orderPlacement = orderPlacementService.placeOrder(orderPlacementRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(orderPlacement);

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 * @date 21/4/2025
 */
 @RestController
-@RequestMapping("api/cancelOrder")
+@RequestMapping("/order-cancellation")
 public class OrderCancellationController {
 
     private final OrderCancellationService orderCancellationService;
@@ -28,9 +28,9 @@ public class OrderCancellationController {
         this.orderCancellationService = orderCancellationService;
     }
 
-    @PostMapping
+    @PostMapping("/cancel-order")
     public ResponseEntity<OrderCancellationResponseDTO> cancelOrder(@RequestBody @Valid OrderCancellationRequestDTO orderCancellationRequestDTO){
         OrderCancellationResponseDTO cancelledOrder = orderCancellationService.cancelOrder(orderCancellationRequestDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(cancelledOrder);
+        return ResponseEntity.status(HttpStatus.OK).body(cancelledOrder);
     }
 }

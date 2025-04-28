@@ -17,7 +17,7 @@ import java.util.List;
 * @date 4/4/2025
 */
 @RestController
-@RequestMapping("api/cart")
+@RequestMapping("/cart")
 public class CartItemManagementController {
 
     private final CartItemManagementService cartItemManagementService;
@@ -27,25 +27,25 @@ public class CartItemManagementController {
         this.cartItemManagementService = cartItemManagementService;
     }
 
-    @GetMapping("retailer/{retailerId}")
+    @GetMapping("/{retailerId}")
     public ResponseEntity<List<CartItemManagementResponseDTO>> getCartItems(@PathVariable String retailerId){
         List<CartItemManagementResponseDTO> cartItems = cartItemManagementService.selectCartItems(retailerId);
         return ResponseEntity.ok(cartItems);
     }
 
-    @PostMapping
+    @PostMapping("/items")
     public ResponseEntity<CartItemManagementResponseDTO> addItemToCart(@RequestBody @Valid CartItemManagementRequestDTO cartItemManagementRequestDTO){
         CartItemManagementResponseDTO cartItem = cartItemManagementService.addCartItem(cartItemManagementRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(cartItem);
     }
 
-    @PutMapping
+    @PutMapping("/items")
     public ResponseEntity<CartItemManagementResponseDTO> updateCartItem(@RequestBody @Valid CartItemManagementResponseDTO cartItemManagementResponseDTO){
         CartItemManagementResponseDTO cartItem = cartItemManagementService.updateCartItem(cartItemManagementResponseDTO);
         return ResponseEntity.ok(cartItem);
     }
 
-    @DeleteMapping("/{cartItemId}")
+    @DeleteMapping("items/{cartItemId}")
     public ResponseEntity<String> deleteCartItem(@PathVariable String cartItemId){
         cartItemManagementService.deleteCartItemById(cartItemId);
         return ResponseEntity.ok("Cart Item with ID " + cartItemId + " deleted successfully.");
