@@ -15,7 +15,7 @@ spring:
         - id: auth-service-route
           uri: http://auth-service:8085
           predicates:
-            - Path=/api/authentication/**
+            - Path=/api/authentication/**, /api/user-credentials/**
           filters:
             - StripPrefix=1
 
