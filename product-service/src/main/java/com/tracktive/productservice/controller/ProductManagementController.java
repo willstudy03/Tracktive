@@ -17,7 +17,7 @@ import java.util.List;
 * @date 25/3/2025
 */
 @RestController
-@RequestMapping("api/admin/products")
+@RequestMapping("/products-management")
 public class ProductManagementController {
 
     private final ProductManagementService productManagementService;
@@ -27,31 +27,31 @@ public class ProductManagementController {
         this.productManagementService = productManagementService;
     }
 
-    @GetMapping
+    @GetMapping("/products")
     public ResponseEntity<List<ProductManagementDTO>> getProducts(){
         List<ProductManagementDTO> products = productManagementService.selectAllProducts();
         return ResponseEntity.ok().body(products);
     }
 
-    @GetMapping("/{productId}")
+    @GetMapping("/products/{productId}")
     public ResponseEntity<ProductManagementDTO> getProductById(@PathVariable String productId){
         ProductManagementDTO product = productManagementService.selectProductById(productId);
         return ResponseEntity.ok().body(product);
     }
 
-    @PostMapping
+    @PostMapping("/products")
     public ResponseEntity<ProductManagementDTO> addProduct(@Valid @RequestBody ProductManagementRequestDTO productManagementRequestDTO){
         ProductManagementDTO product = productManagementService.createProduct(productManagementRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
-    @PutMapping
+    @PutMapping("/products")
     public ResponseEntity<ProductManagementDTO> updateProduct(@Valid @RequestBody ProductManagementDTO productManagementDTO) {
         ProductManagementDTO product = productManagementService.updateProduct(productManagementDTO);
         return ResponseEntity.ok(product);
     }
 
-    @DeleteMapping("/{productId}")
+    @DeleteMapping("/products/{productId}")
     public ResponseEntity<String> deleteProduct(@PathVariable String productId) {
         ProductManagementDTO product = productManagementService.deleteProduct(productId);
         return ResponseEntity.ok("Product with ID " + product.getProductId() + " deleted successfully.");

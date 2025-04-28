@@ -17,7 +17,7 @@ import java.util.List;
 * @date 29/3/2025
 */
 @RestController
-@RequestMapping("api/retailer/inventory")
+@RequestMapping("/retailers")
 public class RetailerInventoryController {
 
     private final RetailerInventoryService retailerInventoryService;
@@ -27,32 +27,32 @@ public class RetailerInventoryController {
         this.retailerInventoryService = retailerInventoryService;
     }
 
-    @GetMapping("retailer/{userId}")
+    @GetMapping("/{userId}/inventory")
     public ResponseEntity<List<RetailerInventoryDTO>> getAllRetailerInventory(@PathVariable String userId){
         List<RetailerInventoryDTO> products = retailerInventoryService.selectRetailerInventoryByRetailerId(userId);
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/{productId}")
+    @GetMapping("/{userId}/inventory/{productId}")
     public ResponseEntity<RetailerInventoryDTO> getRetailerInventoryProduct(@PathVariable String productId){
         RetailerInventoryDTO product = retailerInventoryService.selectRetailerInventoryById(productId);
         return ResponseEntity.ok(product);
     }
 
-    @PostMapping
+    @PostMapping("/{userId}/inventory")
     public ResponseEntity<RetailerInventoryDTO> createRetailerInventoryProduct(@Valid @RequestBody RetailerInventoryRequestDTO retailerInventoryRequestDTO){
         RetailerInventoryDTO product = retailerInventoryService.addRetailerInventory(retailerInventoryRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
-    @PutMapping
+    @PutMapping("/{userId}/inventory")
     public ResponseEntity<RetailerInventoryDTO> updateRetailerInventoryProduct(@Valid @RequestBody RetailerInventoryDTO retailerInventoryDTO){
         RetailerInventoryDTO product = retailerInventoryService.updateRetailerInventory(retailerInventoryDTO);
         return ResponseEntity.ok(product);
     }
 
-    @DeleteMapping("/{productId}")
-    public ResponseEntity<String> deleteSupplierProduct(@PathVariable String productId){
+    @DeleteMapping("/{userId}/inventory/{productId}")
+    public ResponseEntity<String> deleteRetailerProduct(@PathVariable String productId){
         retailerInventoryService.deleteRetailerInventoryById(productId);
         return ResponseEntity.ok("Product with ID " + productId + " deleted successfully.");
     }

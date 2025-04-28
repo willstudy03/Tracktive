@@ -16,7 +16,7 @@ import java.util.List;
 * @date 25/3/2025
 */
 @RestController
-@RequestMapping("products")
+@RequestMapping("/products")
 public class ProductController {
 
     private final ProductService productService;
