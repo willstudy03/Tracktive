@@ -15,14 +15,38 @@ spring:
         - id: auth-service-route
           uri: http://host.docker.internal:8081
           predicates:
-            - Path=/api/authentication/**
+            - Path=/api/authentication/**, /api/user-credentials/**
           filters:
             - StripPrefix=1
+
+        - id: user-service-route
+          uri: http://host.docker.internal:8082
+          predicates:
+            - Path=/api/users-management/**
+          filters:
+            - StripPrefix=1
+            - JwtValidation
 
         - id: product-service-route
           uri: http://host.docker.internal:8083
           predicates:
-            - Path=/api/products/**
+            - Path=/api/products-management/**, /api/retailers/**, /api/suppliers/**, /api/products/**
           filters:
             - StripPrefix=1
             - JwtValidation
+
+        - id: order-service-route
+          uri: http://host.docker.internal:8084
+          predicates:
+            - Path=/api/cart/**, /api/order-placement/**, /api/orders/**, /api/order-cancellation/**
+          filters:
+            - StripPrefix=1
+            - JwtValidation
+
+        - id: payment-service-route
+          uri: http://host.docker.internal:8085
+          predicates:
+            - Path=/api/payments/**, /api/check-out/**, /api/stripe/**
+          filters:
+            - StripPrefix=1
+            - JwtValidation=excludePaths=/api/stripe/**

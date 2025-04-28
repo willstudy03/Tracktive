@@ -49,11 +49,7 @@ spring:
             - Path=/api/payments/**, /api/check-out/**, /api/stripe/**
           filters:
             - StripPrefix=1
-            - JwtValidation
-          filter:
-            - name: JwtValidation
-              condition:
-                - Predicate: Path=/api/payments/**, /api/check-out/**
+            - JwtValidation=excludePaths=/api/stripe/**
 
 
         
