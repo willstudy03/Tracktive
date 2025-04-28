@@ -1,8 +1,6 @@
 package com.tracktive.paymentservice.util.handler;
 
-import com.tracktive.paymentservice.exception.InvalidPaymentStatusException;
-import com.tracktive.paymentservice.exception.PaymentAlreadyExistException;
-import com.tracktive.paymentservice.exception.PaymentNotFoundException;
+import com.tracktive.paymentservice.exception.*;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -51,8 +49,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
     }
 
-    @ExceptionHandler(PaymentNotFoundException.class)
-    public ResponseEntity<String> handlePaymentNotFoundException(PaymentNotFoundException ex) {
+    @ExceptionHandler(DatabaseOperationException.class)
+    public ResponseEntity<String> handleDatabaseOperationException(DatabaseOperationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(FailedToSendEventException.class)
+    public ResponseEntity<String> handleFailedToSendEventException(DatabaseOperationException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidPaymentStatusException.class)
+    public ResponseEntity<String> handleInvalidPaymentStatusException(InvalidPaymentStatusException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(LockAcquisitionException.class)
+    public ResponseEntity<String> handleLockAcquisitionsException(LockAcquisitionException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
@@ -61,8 +74,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
-    @ExceptionHandler(InvalidPaymentStatusException.class)
-    public ResponseEntity<String> handleInvalidPaymentStatusException(InvalidPaymentStatusException ex) {
+    @ExceptionHandler(PaymentNotFoundException.class)
+    public ResponseEntity<String> handlePaymentNotFoundException(PaymentNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(PaymentTransactionAlreadyExistException.class)
+    public ResponseEntity<String> handlePaymentTransactionAlreadyExistException(PaymentTransactionAlreadyExistException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(PaymentTransactionNotFoundException.class)
+    public ResponseEntity<String> handlePaymentTransactionNotFoundException(PaymentTransactionNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 }

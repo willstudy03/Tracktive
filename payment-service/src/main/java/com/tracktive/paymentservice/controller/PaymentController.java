@@ -17,7 +17,7 @@ import java.util.List;
 * @date 30/3/2025
 */
 @RestController
-@RequestMapping("api/payments")
+@RequestMapping("/payments")
 public class PaymentController {
 
     private final PaymentService paymentService;
@@ -27,13 +27,13 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-    @GetMapping("retailer/{userId}")
+    @GetMapping("users/{userId}")
     public ResponseEntity<List<PaymentDTO>> getAllPaymentByUserId(@PathVariable String userId){
         List<PaymentDTO> payments = paymentService.selectAllPaymentsByUserId(userId);
         return ResponseEntity.ok(payments);
     }
 
-    @GetMapping("{paymentId}")
+    @GetMapping("/{paymentId}")
     public ResponseEntity<PaymentDTO> getPaymentByOrderId(@PathVariable String paymentId){
         PaymentDTO payment = paymentService.selectPaymentById(paymentId);
         return ResponseEntity.ok(payment);
@@ -51,9 +51,9 @@ public class PaymentController {
         return ResponseEntity.ok(payment);
     }
 
-    @DeleteMapping("{paymentId}")
+    @DeleteMapping("/{paymentId}")
     public ResponseEntity<String> deletePaymentByOrderId(@PathVariable String paymentId){
         paymentService.deletePaymentById(paymentId);
-        return ResponseEntity.ok("Product with ID " + paymentId + " deleted successfully.");
+        return ResponseEntity.ok("Payment with ID " + paymentId + " deleted successfully.");
     }
 }

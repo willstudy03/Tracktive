@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 * @date 15/4/2025
 */
 @RestController
-@RequestMapping("api/payments")
+@RequestMapping("/check-out")
 public class CheckOutController {
 
     private final CheckOutService checkOutService;
@@ -26,7 +26,7 @@ public class CheckOutController {
         this.checkOutService = checkOutService;
     }
 
-    @PostMapping("/checkout")
+    @PostMapping
     public ResponseEntity<CheckOutResponseDTO> makePayment(@RequestBody CheckOutRequestDTO checkOutRequestDTO){
         CheckOutResponseDTO checkOutResponseDTO = checkOutService.initiatePayment(checkOutRequestDTO);
         return ResponseEntity.ok(checkOutResponseDTO);
