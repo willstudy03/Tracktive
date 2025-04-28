@@ -1,9 +1,6 @@
 package com.tracktive.userservice.util.handler;
 
-import com.tracktive.userservice.exception.DuplicateEmailException;
-import com.tracktive.userservice.exception.LockAcquisitionException;
-import com.tracktive.userservice.exception.UserAlreadyExistsException;
-import com.tracktive.userservice.exception.UserNotFoundException;
+import com.tracktive.userservice.exception.*;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -69,6 +66,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateEmailException.class)
     public ResponseEntity<String> handleDuplicateEmailException(DuplicateEmailException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(DatabaseOperationException.class)
+    public ResponseEntity<String> handleDatabaseOperationException(DatabaseOperationException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(FailedToSendEventException.class)
+    public ResponseEntity<String> handleFailedToSendEventException(FailedToSendEventException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 }

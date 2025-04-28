@@ -3,7 +3,7 @@ server:
 
 auth:
   service:
-    url: http://auth-service:8085
+    url: http://auth-service:8081
 
 spring:
   main:
@@ -13,11 +13,19 @@ spring:
     gateway:
       routes:
         - id: auth-service-route
-          uri: http://auth-service:8085
+          uri: http://auth-service:8081
           predicates:
             - Path=/api/authentication/**, /api/user-credentials/**
           filters:
             - StripPrefix=1
+
+        - id: user-service-route
+          uri: http://user-service:8082
+          predicates:
+            - Path=/api/users-management/**
+          filters:
+            - StripPrefix=1
+            - JwtValidation
 
         - id: product-service-route
           uri: http://product-service:8080
