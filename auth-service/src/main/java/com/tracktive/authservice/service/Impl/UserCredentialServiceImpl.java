@@ -31,7 +31,7 @@ public class UserCredentialServiceImpl implements UserCredentialService {
 
     private final Validator validator;
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     private final UserCredentialsRepository userCredentialsRepository;
 

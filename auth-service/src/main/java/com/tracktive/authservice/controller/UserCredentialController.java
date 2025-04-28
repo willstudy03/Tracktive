@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("userCredentials")
+@RequestMapping("/userCredentials")
 public class UserCredentialController {
 
     private final UserCredentialService userCredentialService;

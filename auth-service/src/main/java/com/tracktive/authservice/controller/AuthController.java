@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 * @date 24/4/2025
 */
 @RestController
-@RequestMapping("authentication")
+@RequestMapping("/authentication")
 public class AuthController {
 
     private final AuthService authService;

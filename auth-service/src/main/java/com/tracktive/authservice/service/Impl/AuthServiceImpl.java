@@ -56,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
             }
 
             String token = jwtUtil.generateToken(userCredentialDTO.getEmail(), userCredentialDTO.getUserRole().name());
-            return new LoginResponseDTO(token);
+            return new LoginResponseDTO(token, userCredentialDTO.getUserId(), userCredentialDTO.getUserRole());
         } catch (UserCredentialNotFoundException e) {
             log.warn("User not found with email: {}", loginRequestDTO.getEmail());
             throw new BadCredentialsException("Invalid email or password");
