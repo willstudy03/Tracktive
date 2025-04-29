@@ -1,5 +1,6 @@
 package com.tracktive.productservice.service.Impl;
 
+import com.tracktive.productservice.aws.S3Service;
 import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.DTO.ProductManagementDTO;
 import com.tracktive.productservice.model.DTO.ProductManagementRequestDTO;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,6 +25,8 @@ import java.util.List;
 @Service
 public class ProductManagementServiceImpl implements ProductManagementService {
 
+    private final S3Service s3Service;
+
     private final ProductService productService;
 
     private final ProductManagementFactory productManagementFactory;
@@ -30,7 +34,8 @@ public class ProductManagementServiceImpl implements ProductManagementService {
     private static final Logger logger = LoggerFactory.getLogger(ProductManagementServiceImpl.class);
 
     @Autowired
-    public ProductManagementServiceImpl(ProductService productService, ProductManagementFactory productManagementFactory) {
+    public ProductManagementServiceImpl(S3Service s3Service, ProductService productService, ProductManagementFactory productManagementFactory) {
+        this.s3Service = s3Service;
         this.productService = productService;
         this.productManagementFactory = productManagementFactory;
     }
@@ -52,8 +57,17 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 
     @Override
     @Transactional
-    public ProductManagementDTO createProduct(ProductManagementRequestDTO productManagementRequestDTO) {
-        return productManagementFactory.addProduct(productManagementRequestDTO);
+    public ProductManagementDTO createProduct(ProductManagementRequestDTO productManagementRequestDTO, MultipartFile image) {
+        ProductManagementDTO productManagementDTO = productManagementFactory.addProduct(productManagementRequestDTO);
+        if (!image.isEmpty()){
+
+            if (!image.getContentType().startsWith("image/")) {
+                throw new IllegalArgumentException("Only images are allowed");
+            }
+
+            productManagementDTO.setImageUrl(s3Service.getFileUrl(s3Service.uploadFile(image,productManagementDTO.getProductId())));
+        }
+        return productManagementFactory.updateProduct(productManagementDTO);
     }
 
     @Override

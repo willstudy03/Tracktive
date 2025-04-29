@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -39,9 +40,10 @@ public class ProductManagementController {
         return ResponseEntity.ok().body(product);
     }
 
+    @CrossOrigin
     @PostMapping("/products")
-    public ResponseEntity<ProductManagementDTO> addProduct(@Valid @RequestBody ProductManagementRequestDTO productManagementRequestDTO){
-        ProductManagementDTO product = productManagementService.createProduct(productManagementRequestDTO);
+    public ResponseEntity<ProductManagementDTO> addProduct(@Valid @RequestPart ProductManagementRequestDTO productManagementRequestDTO, @RequestPart(required = false) MultipartFile file){
+        ProductManagementDTO product = productManagementService.createProduct(productManagementRequestDTO, file);
         return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
 
