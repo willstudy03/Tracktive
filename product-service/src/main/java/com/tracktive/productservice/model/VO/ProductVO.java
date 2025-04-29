@@ -23,18 +23,21 @@ public class ProductVO {
 
     private BigDecimal recommendedPrice;
 
+    private String imageUrl;
+
     private ProductStatus productStatus;
 
     public ProductVO() {
     }
 
-    public ProductVO(String productId, ProductCategory productCategory, String productBrand, String productName, String productDescription, BigDecimal recommendedPrice, ProductStatus productStatus) {
+    public ProductVO(String productId, ProductCategory productCategory, String productBrand, String productName, String productDescription, BigDecimal recommendedPrice, String imageUrl, ProductStatus productStatus) {
         this.productId = productId;
         this.productCategory = productCategory;
         this.productBrand = productBrand;
         this.productName = productName;
         this.productDescription = productDescription;
         this.recommendedPrice = recommendedPrice;
+        this.imageUrl = imageUrl;
         this.productStatus = productStatus;
     }
 
@@ -84,6 +87,14 @@ public class ProductVO {
 
     public void setRecommendedPrice(BigDecimal recommendedPrice) {
         this.recommendedPrice = recommendedPrice;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public ProductStatus getProductStatus() {

@@ -5,6 +5,7 @@ CREATE TABLE products (
     product_name VARCHAR(150) NOT NULL,
     product_description TEXT,
     recommended_price DECIMAL(15, 2),
+    image_url VARCHAR(255),
     product_status VARCHAR(50) NOT NULL DEFAULT 'ACTIVE',
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP

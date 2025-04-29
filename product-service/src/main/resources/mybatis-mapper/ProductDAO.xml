@@ -5,7 +5,7 @@
     <!-- Select a product by id -->
     <select id="selectProductById" resultType="Product">
         SELECT product_id, product_category, product_brand, product_name, product_description,
-        recommended_price, product_status, updated_at, created_at
+        recommended_price, image_url, product_status, updated_at, created_at
         FROM products
         WHERE product_id = #{productId};
     </select>
@@ -13,14 +13,14 @@
     <!-- Select all products -->
     <select id="selectAllProducts" resultType="Product">
         SELECT product_id, product_category, product_brand, product_name, product_description,
-        recommended_price, product_status, updated_at, created_at
+        recommended_price, image_url, product_status, updated_at, created_at
         FROM products;
     </select>
 
     <!-- Lock a product by id (for update) -->
     <select id="lockProductById" resultType="Product">
         SELECT product_id, product_category, product_brand, product_name, product_description,
-        recommended_price, product_status, updated_at, created_at
+        recommended_price, image_url, product_status, updated_at, created_at
         FROM products
         WHERE product_id = #{productId}
         FOR UPDATE;
@@ -29,9 +29,9 @@
     <!-- Insert a new product -->
     <insert id="addProduct">
         INSERT INTO products (product_id, product_category, product_brand, product_name,
-        product_description, recommended_price, product_status)
+        product_description, recommended_price, image_url, product_status)
         VALUES (#{productId}, #{productCategory}, #{productBrand}, #{productName},
-        #{productDescription}, #{recommendedPrice}, #{productStatus});
+        #{productDescription}, #{recommendedPrice}, #{imageUrl}, #{productStatus});
     </insert>
 
     <!-- Update a product -->
@@ -42,6 +42,7 @@
         product_name = #{productName},
         product_description = #{productDescription},
         recommended_price = #{recommendedPrice},
+        image_url = #{imageUrl},
         product_status = #{productStatus}
         WHERE product_id = #{productId};
     </update>

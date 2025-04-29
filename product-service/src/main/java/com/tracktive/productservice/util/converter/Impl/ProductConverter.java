@@ -31,6 +31,7 @@ public class ProductConverter {
        productDTO.setProductName(product.getProductName());
        productDTO.setProductDescription(product.getProductDescription());
        productDTO.setRecommendedPrice(product.getRecommendedPrice());
+       productDTO.setImageUrl(product.getImageUrl());
        productDTO.setProductStatus(product.getProductStatus());
        productDTO.setUpdatedAt(product.getUpdatedAt());
        productDTO.setCreatedAt(product.getCreatedAt());
@@ -49,6 +50,7 @@ public class ProductConverter {
         productDTO.setProductName(requestDTO.getProductName());
         productDTO.setProductDescription(requestDTO.getProductDescription());
         productDTO.setRecommendedPrice(requestDTO.getRecommendedPrice());
+        productDTO.setImageUrl(productDTO.getImageUrl());
         productDTO.setProductStatus(requestDTO.getProductStatus());
         return productDTO;
     }
@@ -64,6 +66,7 @@ public class ProductConverter {
         product.setProductName(productDTO.getProductName());
         product.setProductDescription(productDTO.getProductDescription());
         product.setRecommendedPrice(productDTO.getRecommendedPrice());
+        product.setImageUrl(productDTO.getImageUrl());
         product.setProductStatus(productDTO.getProductStatus());
         product.setUpdatedAt(productDTO.getUpdatedAt());
         product.setCreatedAt(productDTO.getCreatedAt());
@@ -81,6 +84,7 @@ public class ProductConverter {
         productVO.setProductName(productDTO.getProductName());
         productVO.setProductDescription(productDTO.getProductDescription());
         productVO.setRecommendedPrice(productDTO.getRecommendedPrice());
+        productVO.setImageUrl(productDTO.getImageUrl());
         productVO.setProductStatus(productDTO.getProductStatus());
         return productVO;
     }

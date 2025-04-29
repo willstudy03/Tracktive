@@ -60,6 +60,7 @@ class ProductRepositoryImplTest {
         productDTO.setProductName("Michelin Pilot Sport 4");
         productDTO.setProductDescription("High-performance summer tire for passenger cars.");
         productDTO.setRecommendedPrice(BigDecimal.valueOf(450.00));
+        productDTO.setImageUrl("ashdbjahsgdjhasdimage-urlasjdkasdhj");
         productDTO.setProductStatus(ProductStatus.ACTIVE);
 
         boolean isAdded = productRepository.addProduct(productDTO);
