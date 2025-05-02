@@ -12,6 +12,10 @@ import software.amazon.awscdk.services.logs.RetentionDays;
 import software.amazon.awscdk.services.msk.CfnCluster;
 import software.amazon.awscdk.services.rds.*;
 import software.amazon.awscdk.services.route53.CfnHealthCheck;
+import software.amazon.awscdk.services.s3.BlockPublicAccess;
+import software.amazon.awscdk.services.s3.Bucket;
+import software.amazon.awscdk.services.s3.CorsRule;
+import software.amazon.awscdk.services.s3.HttpMethods;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,17 +33,37 @@ public class LocalStack extends Stack {
 
         this.vpc = createVpc();
 
+        Bucket productImagesBucket = Bucket.Builder.create(this, "ProductImagesBucket")
+                .bucketName("product-images")
+                .versioned(false)
+                .publicReadAccess(true)
+                .blockPublicAccess(BlockPublicAccess.Builder.create()
+                        .blockPublicAcls(false)
+                        .blockPublicPolicy(false)
+                        .ignorePublicAcls(false)
+                        .restrictPublicBuckets(false)
+                        .build())
+                .removalPolicy(RemovalPolicy.DESTROY)
+                .cors(List.of(CorsRule.builder()
+                        .allowedMethods(List.of(HttpMethods.GET, HttpMethods.PUT, HttpMethods.POST, HttpMethods.DELETE, HttpMethods.HEAD))
+                        .allowedOrigins(List.of("*"))
+                        .allowedHeaders(List.of("*"))
+                        .exposedHeaders(List.of("ETag", "x-amz-meta-custom-header", "Authorization", "Content-Type", "Accept"))
+                        .maxAge(3000)
+                        .build()))
+                .build();
+
         DatabaseInstance authServiceDb = createDatabase("AuthServiceDB", "auth-service-db");
-        DatabaseInstance userServiceDb = createDatabase("UserServiceDB", "user-service-db");
+//        DatabaseInstance userServiceDb = createDatabase("UserServiceDB", "user-service-db");
         DatabaseInstance productServiceDb = createDatabase("ProductServiceDB", "product-service-db");
-        DatabaseInstance orderServiceDb = createDatabase("OrderServiceDB", "order-service-db");
-        DatabaseInstance paymentServiceDb = createDatabase("PaymentServiceDB", "payment-service-db");
+//        DatabaseInstance orderServiceDb = createDatabase("OrderServiceDB", "order-service-db");
+//        DatabaseInstance paymentServiceDb = createDatabase("PaymentServiceDB", "payment-service-db");
 
         CfnHealthCheck authDbHealthCheck = createDbHealthCheck(authServiceDb, "AuthServiceDBHealthCheck");
-        CfnHealthCheck userDbHealthCheck = createDbHealthCheck(userServiceDb, "UserServiceDBHealthCheck");
+//        CfnHealthCheck userDbHealthCheck = createDbHealthCheck(userServiceDb, "UserServiceDBHealthCheck");
         CfnHealthCheck productDbHealthCheck = createDbHealthCheck(productServiceDb, "ProductServiceDBHealthCheck");
-        CfnHealthCheck orderDbHealthCheck = createDbHealthCheck(orderServiceDb, "OrderServiceDBHealthCheck");
-        CfnHealthCheck paymentDbHealthCheck = createDbHealthCheck(paymentServiceDb, "PaymentServiceDBHealthCheck");
+//        CfnHealthCheck orderDbHealthCheck = createDbHealthCheck(orderServiceDb, "OrderServiceDBHealthCheck");
+//        CfnHealthCheck paymentDbHealthCheck = createDbHealthCheck(paymentServiceDb, "PaymentServiceDBHealthCheck");
 
         CfnCluster mskCluster = createMskCluster();
 
@@ -52,22 +76,28 @@ public class LocalStack extends Stack {
         authService.getNode().addDependency(authServiceDb);
 
         // 2. User Service
-        FargateService userService = createFargateService("UserService", "user-service", List.of(8082), userServiceDb, null);
-        userService.getNode().addDependency(userDbHealthCheck);
-        userService.getNode().addDependency(userServiceDb);
+//        FargateService userService = createFargateService("UserService", "user-service", List.of(8082), userServiceDb, null);
+//        userService.getNode().addDependency(userDbHealthCheck);
+//        userService.getNode().addDependency(userServiceDb);
 
         // 3. Product Service
-        FargateService productService = createFargateService("ProductService", "product-service", List.of(8083, 8183), productServiceDb, null);
+        FargateService productService = createFargateService("ProductService", "product-service", List.of(8083, 8183), productServiceDb,  Map.of(
+                "AWS_S3_BUCKET_NAME", productImagesBucket.getBucketName(),
+                "AWS_S3_ENDPOINT_URL", "http://localhost:4566",
+                "AWS_ACCESS_KEY_ID", "test",
+                "AWS_SECRET_ACCESS_KEY", "test",
+                "AWS_REGION", "us-east-1"
+        ));
         productService.getNode().addDependency(productDbHealthCheck);
         productService.getNode().addDependency(productServiceDb);
 
         // 4. Order Service
-        FargateService orderService = createFargateService("OrderService", "order-service", List.of(8084), orderServiceDb, null);
-        orderService.getNode().addDependency(orderDbHealthCheck);
-        orderService.getNode().addDependency(orderServiceDb);
+//        FargateService orderService = createFargateService("OrderService", "order-service", List.of(8084), orderServiceDb, null);
+//        orderService.getNode().addDependency(orderDbHealthCheck);
+//        orderService.getNode().addDependency(orderServiceDb);
 
         // 5. Payment Service
-        FargateService paymentService = createFargateService("PaymentService", "payment-service", List.of(8085), paymentServiceDb, null);
+//        FargateService paymentService = createFargateService("PaymentService", "payment-service", List.of(8085), paymentServiceDb, null);
 
         createApiGatewayService();
     }

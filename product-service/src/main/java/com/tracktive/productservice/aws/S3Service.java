@@ -20,12 +20,14 @@ public class S3Service {
     private final S3Client s3Client;
     private final String bucketName;
     private final String endpointUrl;
+    private final String localUrl;
 
     @Autowired
-    public S3Service(S3Client s3Client, @Value("${aws.s3.bucket-name}") String bucketName, @Value("${aws.endpoint-url}")String endpointUrl) {
+    public S3Service(S3Client s3Client, @Value("${aws.s3.bucket-name}") String bucketName, @Value("${aws.endpoint-url}")String endpointUrl, @Value("${local.endpoint-url}")String localUrl) {
         this.s3Client = s3Client;
         this.bucketName = bucketName;
         this.endpointUrl = endpointUrl;
+        this.localUrl = localUrl;
         createBucketIfNotExists();
     }
 
@@ -63,7 +65,7 @@ public class S3Service {
 
     public String getFileUrl(String fileName) {
         return String.format("%s/%s/%s",
-                endpointUrl,
+                localUrl,
                 bucketName,
                 fileName);
     }
