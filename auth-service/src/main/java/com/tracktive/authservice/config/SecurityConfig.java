@@ -21,7 +21,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults()) // Enable CORS with default config
                 .authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll());
 
         return http.build();
