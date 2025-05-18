@@ -1,5 +1,6 @@
 package com.tracktive.userservice.service.Impl;
 
+import com.tracktive.userservice.exception.InvalidActionException;
 import com.tracktive.userservice.kafka.UserEventProducer;
 import com.tracktive.userservice.model.DTO.*;
 import com.tracktive.userservice.model.Enum.UserRole;
@@ -192,7 +193,7 @@ public class UserManagementServiceImpl implements UserManagementService {
 
         if (userDTO.getUserRole().equals(UserRole.ADMIN)){
             // admin account is not able to deleted by admin
-            throw new IllegalArgumentException("Admin accounts cannot be deleted");
+            throw new InvalidActionException("Admin accounts cannot be deleted");
         }
 
         // delete user from the db

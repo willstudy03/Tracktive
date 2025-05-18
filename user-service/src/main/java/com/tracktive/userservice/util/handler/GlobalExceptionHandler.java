@@ -83,4 +83,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleDuplicateSSMException(DuplicateSSMException exception){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
+
+    @ExceptionHandler(InvalidActionException.class)
+    public ResponseEntity<String> handleInvalidActionException(InvalidActionException exception){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
 }
