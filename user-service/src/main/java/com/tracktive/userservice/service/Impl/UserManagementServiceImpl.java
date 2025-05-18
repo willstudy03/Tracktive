@@ -113,10 +113,7 @@ public class UserManagementServiceImpl implements UserManagementService {
 
         log.info("Created basic user with ID: {} and role: {}", userDTO.getId(), userDTO.getUserRole());
 
-        // Send 2: Publish Event to authentication service to create a default user credential using email
-        userEventProducer.sendUserCreatedEvent(userDTO);
-
-        // Step 3: Save the role specific details into the db
+        // Step 2: Save the role specific details into the db
         switch (userDTO.getUserRole()){
             case RETAILER:
                 RetailerDTO retailerDTO = retailerService.addRetailer(RetailerConverter.toDTO(userDTO, userCreationRequestDTO.getRetailerDetailsDTO()));
@@ -132,6 +129,9 @@ public class UserManagementServiceImpl implements UserManagementService {
             default:
                 log.warn("Unhandled user role: {} for user ID: {}", userDTO.getUserRole(), userDTO.getId());
         }
+
+        // Send 3: Publish Event to authentication service to create a default user credential using email
+        userEventProducer.sendUserCreatedEvent(userDTO);
 
         log.info("User creation completed for user ID: {}", userDTO.getId());
 

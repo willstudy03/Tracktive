@@ -1,5 +1,7 @@
 package com.tracktive.userservice.service.Impl;
 
+import com.tracktive.userservice.exception.DuplicateEmailException;
+import com.tracktive.userservice.exception.DuplicateSSMException;
 import com.tracktive.userservice.exception.LockAcquisitionException;
 import com.tracktive.userservice.exception.UserNotFoundException;
 import com.tracktive.userservice.model.DTO.SupplierDTO;
@@ -80,6 +82,17 @@ public class SupplierServiceImpl implements SupplierService {
     @Transactional
     public SupplierDTO addSupplier(SupplierDTO supplierDTO) {
         validateSupplierDTO(supplierDTO);
+
+        // Ensure no same ssm
+        boolean ssmExists = supplierRepository.selectAllSuppliers()
+                .stream()
+                .anyMatch(supplier -> supplier.getSsmRegistrationNumber().equals(supplierDTO.getSsmRegistrationNumber()));
+
+        if (ssmExists) {
+            logger.error("User with ssm {} already exists", supplierDTO.getSsmRegistrationNumber());
+            throw new DuplicateSSMException("User with SSM " + supplierDTO.getSsmRegistrationNumber() + " already exists");
+        }
+
         boolean result = supplierRepository.addSupplier(supplierDTO);
         if (!result) {
             logger.error("Failed to add supplier with id: {}", supplierDTO.getSupplierId());

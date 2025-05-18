@@ -49,7 +49,7 @@ public class SupplierConverter {
         }
         SupplierDTO supplierDTO = new SupplierDTO();
         supplierDTO.setSupplierId(userDTO.getId());
-        supplierDTO.setSsmRegistrationNumber(supplierDTO.getSsmRegistrationNumber());
+        supplierDTO.setSsmRegistrationNumber(supplierDetailsDTO.getSsmRegistrationNumber());
         supplierDTO.setBusinessName(supplierDetailsDTO.getBusinessName());
         supplierDTO.setBusinessAddress(supplierDetailsDTO.getBusinessAddress());
         supplierDTO.setBankAccount(supplierDetailsDTO.getBankAccount());

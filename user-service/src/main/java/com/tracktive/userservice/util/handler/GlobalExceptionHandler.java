@@ -78,4 +78,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleFailedToSendEventException(FailedToSendEventException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
+
+    @ExceptionHandler(DuplicateSSMException.class)
+    public ResponseEntity<String> handleDuplicateSSMException(DuplicateSSMException exception){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
 }

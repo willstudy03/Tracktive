@@ -1,5 +1,6 @@
 package com.tracktive.userservice.service.Impl;
 
+import com.tracktive.userservice.exception.DuplicateSSMException;
 import com.tracktive.userservice.exception.LockAcquisitionException;
 import com.tracktive.userservice.exception.UserNotFoundException;
 import com.tracktive.userservice.model.DTO.RetailerDTO;
@@ -77,6 +78,17 @@ public class RetailerServiceImpl implements RetailerService {
     @Transactional
     public RetailerDTO addRetailer(RetailerDTO retailerDTO) {
         validateRetailerDTO(retailerDTO);
+
+        // Ensure no same ssm
+        boolean ssmExists = retailerRepository.selectAllRetailers()
+                .stream()
+                .anyMatch(retailer -> retailer.getSsmRegistrationNumber().equals(retailer.getSsmRegistrationNumber()));
+
+        if (ssmExists) {
+            logger.error("User with ssm {} already exists", retailerDTO.getSsmRegistrationNumber());
+            throw new DuplicateSSMException("User with SSM " + retailerDTO.getSsmRegistrationNumber() + " already exists");
+        }
+
         boolean result = retailerRepository.addRetailer(retailerDTO);
         if (!result) {
             logger.error("Failed to add retailer with id: {}", retailerDTO.getRetailerId());
