@@ -3,6 +3,8 @@ package com.tracktive.userservice.model.DTO;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.tracktive.userservice.model.Enum.UserRole;
 
+import java.time.LocalDateTime;
+
 /**
 * Description: User Management Response DTO
 * @author William Theo
@@ -20,6 +22,10 @@ public class UserManagementResponseDTO {
     private String phoneNumber;
 
     private UserRole userRole;
+
+    private LocalDateTime updatedAt;
+
+    private LocalDateTime createdAt;
 
     private RetailerDetailsDTO retailerDetailsDTO;
 
@@ -76,6 +82,22 @@ public class UserManagementResponseDTO {
 
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public RetailerDetailsDTO getRetailerDetailsDTO() {

@@ -20,7 +20,7 @@ spring:
             - StripPrefix=1
 
         - id: user-service-route
-          uri: http://user-service:8082
+          uri: http://localhost:8082
           predicates:
             - Path=/api/users-management/**
           filters:
