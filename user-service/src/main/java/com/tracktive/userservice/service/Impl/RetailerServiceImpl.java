@@ -103,7 +103,14 @@ public class RetailerServiceImpl implements RetailerService {
     @Override
     @Transactional
     public RetailerDTO updateRetailer(RetailerDTO retailerDTO) {
+
         validateRetailerDTO(retailerDTO);
+
+        // Ensure no same ssm
+        boolean ssmExists = retailerRepository.selectAllRetailers()
+                .stream()
+                .anyMatch(retailer -> retailer.getSsmRegistrationNumber().equals(retailer.getSsmRegistrationNumber()));
+
         boolean result = retailerRepository.updateRetailer(retailerDTO);
         if (!result) {
             logger.error("Failed to update retailer with id: {}", retailerDTO.getRetailerId());

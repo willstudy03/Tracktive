@@ -81,6 +81,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     @Transactional
     public SupplierDTO addSupplier(SupplierDTO supplierDTO) {
+
         validateSupplierDTO(supplierDTO);
 
         // Ensure no same ssm
@@ -107,7 +108,14 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     @Transactional
     public SupplierDTO updateSupplier(SupplierDTO supplierDTO) {
+
         validateSupplierDTO(supplierDTO);
+
+        // Ensure no same ssm
+        boolean ssmExists = supplierRepository.selectAllSuppliers()
+                .stream()
+                .anyMatch(supplier -> supplier.getSsmRegistrationNumber().equals(supplierDTO.getSsmRegistrationNumber()));
+
         boolean result = supplierRepository.updateSupplier(supplierDTO);
         if (!result) {
             logger.error("Failed to update supplier with id: {}", supplierDTO.getSupplierId());
