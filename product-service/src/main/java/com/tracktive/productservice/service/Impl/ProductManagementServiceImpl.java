@@ -59,8 +59,7 @@ public class ProductManagementServiceImpl implements ProductManagementService {
     @Transactional
     public ProductManagementDTO createProduct(ProductManagementRequestDTO productManagementRequestDTO, MultipartFile image) {
         ProductManagementDTO productManagementDTO = productManagementFactory.addProduct(productManagementRequestDTO);
-        if (!image.isEmpty()){
-
+        if (image != null && !image.isEmpty()) {
             if (!image.getContentType().startsWith("image/")) {
                 throw new IllegalArgumentException("Only images are allowed");
             }

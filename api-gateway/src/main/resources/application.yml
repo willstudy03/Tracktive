@@ -28,7 +28,7 @@ spring:
             - JwtValidation
 
         - id: product-service-route
-          uri: http://product-service:8083
+          uri: http://localhost:8083
           predicates:
             - Path=/api/products-management/**, /api/retailers/**, /api/suppliers/**, /api/products/**
           filters:
@@ -36,7 +36,7 @@ spring:
             - JwtValidation
 
         - id: order-service-route
-          uri: http://order-service:8084
+          uri: http://localhost:8084
           predicates:
             - Path=/api/cart/**, /api/order-placement/**, /api/orders/**, /api/order-cancellation/**
           filters:
@@ -44,7 +44,7 @@ spring:
             - JwtValidation
 
         - id: payment-service-route
-          uri: http://payment-service:8085
+          uri: http://localhost:8085
           predicates:
             - Path=/api/payments/**, /api/check-out/**, /api/stripe/**
           filters:

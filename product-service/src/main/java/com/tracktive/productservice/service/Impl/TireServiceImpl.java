@@ -2,6 +2,7 @@ package com.tracktive.productservice.service.Impl;
 
 import com.tracktive.productservice.exception.LockAcquisitionException;
 import com.tracktive.productservice.exception.ProductNotFoundException;
+import com.tracktive.productservice.exception.TireSKUAlreadyExistsException;
 import com.tracktive.productservice.model.DTO.TireDTO;
 import com.tracktive.productservice.model.DTO.TireRequestDTO;
 import com.tracktive.productservice.repository.TireRepository;
@@ -99,6 +100,18 @@ public class TireServiceImpl implements TireService {
 
         TireDTO tireDTO = TireConverter.toDTO(tireRequestDTO);
 
+        // Ensure no same ssm
+        boolean skuExists = tireRepository.selectAllTire()
+                .stream()
+                .anyMatch(tire ->
+                        tire.getTireSku().equals(tireDTO.getTireSku())
+                );
+
+        if (skuExists) {
+            logger.error("Tire with SKU {} already exists", tireDTO.getTireSku());
+            throw new TireSKUAlreadyExistsException("Tire with SKU " + tireDTO.getTireSku() + " already exists");
+        }
+
         boolean result = tireRepository.addTire(tireDTO);
         if (!result) {
             logger.error("Failed to add tire with id: {}", tireDTO.getId());
@@ -115,6 +128,19 @@ public class TireServiceImpl implements TireService {
     public TireDTO updateTire(TireDTO tireDTO) {
 
         validateTireDTO(tireDTO);
+
+        // Ensure no same ssm
+        boolean skuExists = tireRepository.selectAllTire()
+                .stream()
+                .anyMatch(tire ->
+                        tire.getTireSku().equals(tireDTO.getTireSku()) &&
+                                !tire.getTireSku().equals(tireDTO.getTireSku())
+                );
+
+        if (skuExists) {
+            logger.error("Tire with SKU {} already exists", tireDTO.getTireSku());
+            throw new TireSKUAlreadyExistsException("Tire with SKU " + tireDTO.getTireSku() + " already exists");
+        }
 
         boolean result = tireRepository.updateTire(tireDTO);
 

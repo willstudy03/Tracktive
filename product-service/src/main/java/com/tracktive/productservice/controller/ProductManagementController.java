@@ -40,7 +40,6 @@ public class ProductManagementController {
         return ResponseEntity.ok().body(product);
     }
 
-    @CrossOrigin
     @PostMapping("/products")
     public ResponseEntity<ProductManagementDTO> addProduct(@Valid @RequestPart ProductManagementRequestDTO productManagementRequestDTO, @RequestPart(required = false) MultipartFile file){
         ProductManagementDTO product = productManagementService.createProduct(productManagementRequestDTO, file);
