@@ -114,7 +114,15 @@ public class SupplierServiceImpl implements SupplierService {
         // Ensure no same ssm
         boolean ssmExists = supplierRepository.selectAllSuppliers()
                 .stream()
-                .anyMatch(supplier -> supplier.getSsmRegistrationNumber().equals(supplierDTO.getSsmRegistrationNumber()));
+                .anyMatch(supplier ->
+                        supplier.getSsmRegistrationNumber().equals(supplierDTO.getSsmRegistrationNumber()) &&
+                                !supplier.getSupplierId().equals(supplierDTO.getSupplierId())
+                );
+
+        if (ssmExists) {
+            logger.error("User with ssm {} already exists", supplierDTO.getSsmRegistrationNumber());
+            throw new DuplicateSSMException("User with SSM " + supplierDTO.getSsmRegistrationNumber() + " already exists");
+        }
 
         boolean result = supplierRepository.updateSupplier(supplierDTO);
         if (!result) {

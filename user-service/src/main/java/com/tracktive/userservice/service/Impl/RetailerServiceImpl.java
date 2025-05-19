@@ -109,7 +109,15 @@ public class RetailerServiceImpl implements RetailerService {
         // Ensure no same ssm
         boolean ssmExists = retailerRepository.selectAllRetailers()
                 .stream()
-                .anyMatch(retailer -> retailer.getSsmRegistrationNumber().equals(retailer.getSsmRegistrationNumber()));
+                .anyMatch(retailer ->
+                        retailer.getSsmRegistrationNumber().equals(retailerDTO.getSsmRegistrationNumber()) &&
+                                !retailer.getRetailerId().equals(retailerDTO.getRetailerId())
+                );
+
+        if (ssmExists) {
+            logger.error("User with ssm {} already exists", retailerDTO.getSsmRegistrationNumber());
+            throw new DuplicateSSMException("User with SSM " + retailerDTO.getSsmRegistrationNumber() + " already exists");
+        }
 
         boolean result = retailerRepository.updateRetailer(retailerDTO);
         if (!result) {
