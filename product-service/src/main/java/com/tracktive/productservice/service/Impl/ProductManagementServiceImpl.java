@@ -71,7 +71,14 @@ public class ProductManagementServiceImpl implements ProductManagementService {
 
     @Override
     @Transactional
-    public ProductManagementDTO updateProduct(ProductManagementDTO productManagementDTO) {
+    public ProductManagementDTO updateProduct(ProductManagementDTO productManagementDTO, MultipartFile image) {
+        if (image != null && !image.isEmpty()) {
+            if (!image.getContentType().startsWith("image/")) {
+                throw new IllegalArgumentException("Only images are allowed");
+            }
+
+            productManagementDTO.setImageUrl(s3Service.getFileUrl(s3Service.uploadFile(image,productManagementDTO.getProductId())));
+        }
         return productManagementFactory.updateProduct(productManagementDTO);
     }
 

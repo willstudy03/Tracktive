@@ -19,7 +19,7 @@ public interface ProductManagementService {
 
     ProductManagementDTO createProduct(ProductManagementRequestDTO productManagementRequestDTO, MultipartFile file);
 
-    ProductManagementDTO updateProduct(ProductManagementDTO productManagementDTO);
+    ProductManagementDTO updateProduct(ProductManagementDTO productManagementDTO, MultipartFile file);
 
     ProductManagementDTO deleteProduct(String productId);
 }

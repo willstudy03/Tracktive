@@ -47,8 +47,8 @@ public class ProductManagementController {
     }
 
     @PutMapping("/products")
-    public ResponseEntity<ProductManagementDTO> updateProduct(@Valid @RequestBody ProductManagementDTO productManagementDTO) {
-        ProductManagementDTO product = productManagementService.updateProduct(productManagementDTO);
+    public ResponseEntity<ProductManagementDTO> updateProduct(@Valid @RequestPart ProductManagementDTO productManagementDTO, @RequestPart(required = false) MultipartFile file) {
+        ProductManagementDTO product = productManagementService.updateProduct(productManagementDTO, file);
         return ResponseEntity.ok(product);
     }
 
