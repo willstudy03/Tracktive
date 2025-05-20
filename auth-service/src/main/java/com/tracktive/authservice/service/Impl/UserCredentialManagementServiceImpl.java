@@ -1,5 +1,6 @@
 package com.tracktive.authservice.service.Impl;
 
+import com.tracktive.authservice.exception.InvalidUserCredentialException;
 import com.tracktive.authservice.model.DTO.UserCredentialDTO;
 import com.tracktive.authservice.model.DTO.UserCredentialManagementRequestDTO;
 import com.tracktive.authservice.model.DTO.UserCredentialManagementResponseDTO;
@@ -40,6 +41,10 @@ public class UserCredentialManagementServiceImpl implements UserCredentialManage
 
         // Step 1: Ensure user is existed, else exception will be thrown
         UserCredentialDTO userCredentialDTO = userCredentialService.lockById(userCredentialManagementRequestDTO.getUserId());
+
+        if (!passwordEncoder.matches(userCredentialManagementRequestDTO.getCurrentPassword(), userCredentialDTO.getPasswordHash())) {
+            throw new InvalidUserCredentialException("Wrong current password, failed to update new password");
+        }
 
         // Step 2: encode the password
         userCredentialDTO.setPasswordHash(passwordEncoder.encode(userCredentialManagementRequestDTO.getNewPassword()));

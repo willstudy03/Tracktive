@@ -13,6 +13,8 @@ public class UserCredentialManagementRequestDTO {
     @NotBlank(message = "User ID must not be blank")
     private String userId;
 
+    private String currentPassword;
+
     @NotBlank(message = "New password must not be blank")
     @Size(min = 8, max = 100, message = "New password must be between 8 and 100 characters")
     private String newPassword;
@@ -20,8 +22,9 @@ public class UserCredentialManagementRequestDTO {
     public UserCredentialManagementRequestDTO() {
     }
 
-    public UserCredentialManagementRequestDTO(String userId, String newPassword) {
+    public UserCredentialManagementRequestDTO(String userId, String currentPassword, String newPassword) {
         this.userId = userId;
+        this.currentPassword = currentPassword;
         this.newPassword = newPassword;
     }
 
@@ -35,6 +38,14 @@ public class UserCredentialManagementRequestDTO {
 
     public String getNewPassword() {
         return newPassword;
+    }
+
+    public String getCurrentPassword() {
+        return currentPassword;
+    }
+
+    public void setCurrentPassword(String currentPassword) {
+        this.currentPassword = currentPassword;
     }
 
     public void setNewPassword(String newPassword) {

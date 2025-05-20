@@ -1,5 +1,6 @@
 package com.tracktive.authservice.util.handler;
 
+import com.tracktive.authservice.exception.InvalidUserCredentialException;
 import com.tracktive.authservice.exception.LockAcquisitionException;
 import com.tracktive.authservice.exception.UserCredentialAlreadyExistsException;
 import com.tracktive.authservice.exception.UserCredentialNotFoundException;
@@ -64,6 +65,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserCredentialNotFoundException.class)
     public ResponseEntity<String> handleUserCredentialNotFoundException(UserCredentialNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidUserCredentialException.class)
+    public ResponseEntity<String> handleInvalidUserCredentialException(InvalidUserCredentialException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 }
