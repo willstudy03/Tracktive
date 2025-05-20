@@ -2,6 +2,7 @@ package com.tracktive.productservice.controller;
 
 import com.tracktive.productservice.model.DTO.SupplierProductDTO;
 import com.tracktive.productservice.model.DTO.SupplierProductRequestDTO;
+import com.tracktive.productservice.model.VO.SupplierProductVO;
 import com.tracktive.productservice.service.SupplierProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -26,8 +27,8 @@ public class SupplierProductController {
     }
 
     @GetMapping("/{userId}/products")
-    public ResponseEntity<List<SupplierProductDTO>> getSupplierProducts(@PathVariable String userId){
-        List<SupplierProductDTO> products = supplierProductService.selectSupplierProductsBySupplierId(userId);
+    public ResponseEntity<List<SupplierProductVO>> getSupplierProducts(@PathVariable String userId){
+        List<SupplierProductVO> products = supplierProductService.selectSupplierProductsBySupplierId(userId);
         return ResponseEntity.ok(products);
     }
 

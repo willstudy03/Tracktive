@@ -2,6 +2,7 @@ package com.tracktive.productservice.service;
 
 import com.tracktive.productservice.model.DTO.SupplierProductDTO;
 import com.tracktive.productservice.model.DTO.SupplierProductRequestDTO;
+import com.tracktive.productservice.model.VO.SupplierProductVO;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface SupplierProductService {
     List<SupplierProductDTO> selectAllSupplierProducts();
 
     // Select supplier products by supplier id
-    List<SupplierProductDTO> selectSupplierProductsBySupplierId(String supplierId);
+    List<SupplierProductVO> selectSupplierProductsBySupplierId(String supplierId);
 
     // Select supplier product by its id
     SupplierProductDTO selectSupplierProductById(String id);

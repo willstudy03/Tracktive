@@ -4,8 +4,11 @@ import com.tracktive.productservice.exception.InsufficientStockException;
 import com.tracktive.productservice.exception.LockAcquisitionException;
 import com.tracktive.productservice.exception.ProductNotFoundException;
 import com.tracktive.productservice.exception.StockDeductionException;
+import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.DTO.SupplierProductDTO;
 import com.tracktive.productservice.model.DTO.SupplierProductRequestDTO;
+import com.tracktive.productservice.model.VO.SupplierProductVO;
+import com.tracktive.productservice.repository.ProductRepository;
 import com.tracktive.productservice.repository.SupplierProductRepository;
 import com.tracktive.productservice.service.SupplierProductService;
 import com.tracktive.productservice.util.converter.Impl.SupplierProductConverter;
@@ -22,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
 * Description: Supplier Product Service Implementation
@@ -33,13 +37,16 @@ public class SupplierProductServiceImpl implements SupplierProductService {
 
     private final SupplierProductRepository supplierProductRepository;
 
+    private final ProductRepository productRepository;
+
     private final Validator validator;
 
     private static final Logger logger = LoggerFactory.getLogger(SupplierProductServiceImpl.class);
 
     @Autowired
-    public SupplierProductServiceImpl(SupplierProductRepository supplierProductRepository, Validator validator) {
+    public SupplierProductServiceImpl(SupplierProductRepository supplierProductRepository, ProductRepository productRepository, Validator validator) {
         this.supplierProductRepository = supplierProductRepository;
+        this.productRepository = productRepository;
         this.validator = validator;
     }
 
@@ -49,9 +56,17 @@ public class SupplierProductServiceImpl implements SupplierProductService {
     }
 
     @Override
-    public List<SupplierProductDTO> selectSupplierProductsBySupplierId(String supplierId) {
+    public List<SupplierProductVO> selectSupplierProductsBySupplierId(String supplierId) {
         validateSupplierId(supplierId);
-        return supplierProductRepository.selectSupplierProductsBySupplierId(supplierId);
+        return supplierProductRepository.selectSupplierProductsBySupplierId(supplierId)
+                .stream()
+                .map(supplierProductDTO -> {
+                    ProductDTO product = productRepository
+                            .selectProductById(supplierProductDTO.getProductId())
+                            .orElse(null); // Allow null if product not found
+                    return SupplierProductConverter.toVO(supplierProductDTO, product);
+                })
+                .collect(Collectors.toList());
     }
 
     @Override

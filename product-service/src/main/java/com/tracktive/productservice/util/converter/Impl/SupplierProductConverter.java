@@ -1,7 +1,9 @@
 package com.tracktive.productservice.util.converter.Impl;
 
+import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.DTO.SupplierProductDTO;
 import com.tracktive.productservice.model.DTO.SupplierProductRequestDTO;
+import com.tracktive.productservice.model.VO.SupplierProductVO;
 import com.tracktive.productservice.model.entity.SupplierProduct;
 import org.springframework.beans.BeanUtils;
 
@@ -44,6 +46,16 @@ public class SupplierProductConverter {
         dto.setSupplierProductId(UUID.randomUUID().toString());
         BeanUtils.copyProperties(supplierProductRequestDTO, dto);
         return  dto;
+    }
+
+    public static SupplierProductVO toVO(SupplierProductDTO supplierProductDTO, ProductDTO productDTO) {
+        if (Objects.isNull(supplierProductDTO)) {
+            return null;
+        }
+        SupplierProductVO vo = new SupplierProductVO();
+        BeanUtils.copyProperties(supplierProductDTO, vo);
+        vo.setProductDTO(productDTO);
+        return vo;
     }
 
     public static SupplierProduct toEntity(SupplierProductDTO dto) {
