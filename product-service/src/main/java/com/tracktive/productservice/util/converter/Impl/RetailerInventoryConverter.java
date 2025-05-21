@@ -1,7 +1,9 @@
 package com.tracktive.productservice.util.converter.Impl;
 
+import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.DTO.RetailerInventoryDTO;
 import com.tracktive.productservice.model.DTO.RetailerInventoryRequestDTO;
+import com.tracktive.productservice.model.VO.RetailerInventoryVO;
 import com.tracktive.productservice.model.entity.RetailerInventory;
 import org.springframework.beans.BeanUtils;
 
@@ -44,6 +46,17 @@ public class RetailerInventoryConverter {
         BeanUtils.copyProperties(retailerInventoryRequestDTO, dto);
         return dto;
     }
+
+    public static RetailerInventoryVO toVO(RetailerInventoryDTO retailerInventoryDTO, ProductDTO productDTO){
+        if(Objects.isNull(retailerInventoryDTO)){
+            return null;
+        }
+        RetailerInventoryVO vo = new RetailerInventoryVO();
+        BeanUtils.copyProperties(retailerInventoryDTO, vo);
+        vo.setProductDTO(productDTO);
+        return vo;
+    }
+
 
     public static RetailerInventory toEntity(RetailerInventoryDTO dto) {
         if (Objects.isNull(dto)) {

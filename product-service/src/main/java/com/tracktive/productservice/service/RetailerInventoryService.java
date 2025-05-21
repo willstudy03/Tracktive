@@ -2,6 +2,7 @@ package com.tracktive.productservice.service;
 
 import com.tracktive.productservice.model.DTO.RetailerInventoryDTO;
 import com.tracktive.productservice.model.DTO.RetailerInventoryRequestDTO;
+import com.tracktive.productservice.model.VO.RetailerInventoryVO;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface RetailerInventoryService {
     List<RetailerInventoryDTO> selectAllRetailerInventory();
 
     // Select retailer inventory by retailer id
-    List<RetailerInventoryDTO> selectRetailerInventoryByRetailerId(String retailerId);
+    List<RetailerInventoryVO> selectRetailerInventoryByRetailerId(String retailerId);
 
     // Select retailer inventory by its id
     RetailerInventoryDTO selectRetailerInventoryById(String id);

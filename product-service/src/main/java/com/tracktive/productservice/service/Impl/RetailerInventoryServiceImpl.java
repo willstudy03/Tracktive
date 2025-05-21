@@ -2,11 +2,15 @@ package com.tracktive.productservice.service.Impl;
 
 import com.tracktive.productservice.exception.LockAcquisitionException;
 import com.tracktive.productservice.exception.ProductNotFoundException;
+import com.tracktive.productservice.model.DTO.ProductDTO;
 import com.tracktive.productservice.model.DTO.RetailerInventoryDTO;
 import com.tracktive.productservice.model.DTO.RetailerInventoryRequestDTO;
+import com.tracktive.productservice.model.VO.RetailerInventoryVO;
+import com.tracktive.productservice.repository.ProductRepository;
 import com.tracktive.productservice.repository.RetailerInventoryRepository;
 import com.tracktive.productservice.service.RetailerInventoryService;
 import com.tracktive.productservice.util.converter.Impl.RetailerInventoryConverter;
+import com.tracktive.productservice.util.converter.Impl.SupplierProductConverter;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -20,19 +24,23 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class RetailerInventoryServiceImpl implements RetailerInventoryService {
 
     private final RetailerInventoryRepository retailerInventoryRepository;
 
+    private final ProductRepository productRepository;
+
     private final Validator validator;
 
     private static final Logger logger = LoggerFactory.getLogger(RetailerInventoryServiceImpl.class);
 
     @Autowired
-    public RetailerInventoryServiceImpl(RetailerInventoryRepository retailerInventoryRepository, Validator validator) {
+    public RetailerInventoryServiceImpl(RetailerInventoryRepository retailerInventoryRepository, ProductRepository productRepository, Validator validator) {
         this.retailerInventoryRepository = retailerInventoryRepository;
+        this.productRepository = productRepository;
         this.validator = validator;
     }
 
@@ -42,9 +50,17 @@ public class RetailerInventoryServiceImpl implements RetailerInventoryService {
     }
 
     @Override
-    public List<RetailerInventoryDTO> selectRetailerInventoryByRetailerId(String retailerId) {
+    public List<RetailerInventoryVO> selectRetailerInventoryByRetailerId(String retailerId) {
         validateRetailerId(retailerId);
-        return retailerInventoryRepository.selectRetailerInventoryByRetailerId(retailerId);
+        return retailerInventoryRepository.selectRetailerInventoryByRetailerId(retailerId)
+                .stream()
+                .map(retailerInventoryDTO -> {
+                    ProductDTO product = productRepository
+                            .selectProductById(retailerInventoryDTO.getProductId())
+                            .orElse(null); // Allow null if product not found
+                    return RetailerInventoryConverter.toVO(retailerInventoryDTO, product);
+                })
+                .collect(Collectors.toList());
     }
 
     @Override

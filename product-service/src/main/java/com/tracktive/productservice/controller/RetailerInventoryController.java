@@ -2,6 +2,7 @@ package com.tracktive.productservice.controller;
 
 import com.tracktive.productservice.model.DTO.RetailerInventoryDTO;
 import com.tracktive.productservice.model.DTO.RetailerInventoryRequestDTO;
+import com.tracktive.productservice.model.VO.RetailerInventoryVO;
 import com.tracktive.productservice.service.RetailerInventoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,8 @@ public class RetailerInventoryController {
     }
 
     @GetMapping("/{userId}/inventory")
-    public ResponseEntity<List<RetailerInventoryDTO>> getAllRetailerInventory(@PathVariable String userId){
-        List<RetailerInventoryDTO> products = retailerInventoryService.selectRetailerInventoryByRetailerId(userId);
+    public ResponseEntity<List<RetailerInventoryVO>> getAllRetailerInventory(@PathVariable String userId){
+        List<RetailerInventoryVO> products = retailerInventoryService.selectRetailerInventoryByRetailerId(userId);
         return ResponseEntity.ok(products);
     }
 
