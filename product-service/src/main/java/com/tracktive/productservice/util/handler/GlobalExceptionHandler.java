@@ -1,9 +1,6 @@
 package com.tracktive.productservice.util.handler;
 
-import com.tracktive.productservice.exception.ForeignKeyConstraintException;
-import com.tracktive.productservice.exception.ProductAlreadyExistsException;
-import com.tracktive.productservice.exception.ProductNotFoundException;
-import com.tracktive.productservice.exception.TireSKUAlreadyExistsException;
+import com.tracktive.productservice.exception.*;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -70,6 +67,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TireSKUAlreadyExistsException.class)
     public ResponseEntity<String> handleTireSKUAlreadyExist(TireSKUAlreadyExistsException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateRetailerInventoryException.class)
+    public ResponseEntity<String> handleDuplicateRetailerInventoryException(DuplicateRetailerInventoryException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
     }
 }

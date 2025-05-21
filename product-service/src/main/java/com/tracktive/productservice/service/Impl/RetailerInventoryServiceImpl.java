@@ -1,5 +1,6 @@
 package com.tracktive.productservice.service.Impl;
 
+import com.tracktive.productservice.exception.DuplicateRetailerInventoryException;
 import com.tracktive.productservice.exception.LockAcquisitionException;
 import com.tracktive.productservice.exception.ProductNotFoundException;
 import com.tracktive.productservice.model.DTO.ProductDTO;
@@ -99,6 +100,16 @@ public class RetailerInventoryServiceImpl implements RetailerInventoryService {
         validateRetailerInventoryRequestDTO(retailerInventoryRequestDTO);
 
         RetailerInventoryDTO retailerInventoryDTO = RetailerInventoryConverter.toDTO(retailerInventoryRequestDTO);
+
+        // Ensure no same email
+        boolean productExists = retailerInventoryRepository.selectRetailerInventoryByRetailerId(retailerInventoryDTO.getRetailerId())
+                .stream()
+                .anyMatch(product -> product.getProductId().equals(retailerInventoryDTO.getProductId()));
+
+        if (productExists) {
+            logger.error("Product with productId {} already exists", retailerInventoryRequestDTO.getProductId());
+            throw new DuplicateRetailerInventoryException("Product with productId " + retailerInventoryRequestDTO.getProductId() + " already exists");
+        }
 
         boolean result = retailerInventoryRepository.addRetailerInventory(retailerInventoryDTO);
 
