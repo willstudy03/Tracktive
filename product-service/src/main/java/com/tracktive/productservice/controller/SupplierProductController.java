@@ -26,6 +26,12 @@ public class SupplierProductController {
         this.supplierProductService = supplierProductService;
     }
 
+    @GetMapping("/products")
+    public ResponseEntity<List<SupplierProductVO>> getAllSupplierProducts(){
+        List<SupplierProductVO> products = supplierProductService.selectAllSupplierProducts();
+        return ResponseEntity.ok(products);
+    }
+
     @GetMapping("/{userId}/products")
     public ResponseEntity<List<SupplierProductVO>> getSupplierProducts(@PathVariable String userId){
         List<SupplierProductVO> products = supplierProductService.selectSupplierProductsBySupplierId(userId);

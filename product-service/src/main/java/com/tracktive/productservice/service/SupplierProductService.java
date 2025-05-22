@@ -13,7 +13,7 @@ import java.util.List;
 */
 public interface SupplierProductService {
     // Select all supplier products
-    List<SupplierProductDTO> selectAllSupplierProducts();
+    List<SupplierProductVO> selectAllSupplierProducts();
 
     // Select supplier products by supplier id
     List<SupplierProductVO> selectSupplierProductsBySupplierId(String supplierId);

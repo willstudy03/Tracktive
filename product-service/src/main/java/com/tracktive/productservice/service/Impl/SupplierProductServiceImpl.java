@@ -51,8 +51,16 @@ public class SupplierProductServiceImpl implements SupplierProductService {
     }
 
     @Override
-    public List<SupplierProductDTO> selectAllSupplierProducts() {
-        return supplierProductRepository.selectAllSupplierProducts();
+    public List<SupplierProductVO> selectAllSupplierProducts() {
+        return supplierProductRepository.selectAllSupplierProducts()
+                .stream()
+                .map(supplierProductDTO -> {
+                    ProductDTO product = productRepository
+                            .selectProductById(supplierProductDTO.getProductId())
+                            .orElse(null); // Allow null if product not found
+                    return SupplierProductConverter.toVO(supplierProductDTO, product);
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
