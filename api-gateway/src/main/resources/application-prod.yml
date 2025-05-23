@@ -38,7 +38,7 @@ spring:
         - id: order-service-route
           uri: http://host.docker.internal:8084
           predicates:
-            - Path=/api/cart/**, /api/order-placement/**, /api/orders/**, /api/order-cancellation/**
+            - Path=/api/cart/**, /api/order-placement/**, /api/orders/**, /api/order-cancellation/**, /api/orderItem/**
           filters:
             - StripPrefix=1
             - JwtValidation
