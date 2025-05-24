@@ -43,10 +43,20 @@ spring:
             - StripPrefix=1
             - JwtValidation
 
+        # Dedicated route for Stripe webhooks - no authentication required
+        - id: stripe-webhook-route
+          uri: http://host.docker.internal:8085
+          predicates:
+            - Path=/api/stripe/webhook/**
+          filters:
+            - StripPrefix=1
+            # No JWT validation filter for this route
+
+        # Regular payment service route for authenticated endpoints
         - id: payment-service-route
           uri: http://host.docker.internal:8085
           predicates:
-            - Path=/api/payments/**, /api/check-out/**, /api/stripe/**
+            - Path=/api/payments/**, /api/check-out/**
           filters:
             - StripPrefix=1
-            - JwtValidation=excludePaths=/api/stripe/**
+            - JwtValidation

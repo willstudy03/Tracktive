@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("orderItem")
+@RequestMapping("/orderItem")
 public class OrderItemController {
 
     private final OrderItemService orderItemService;
