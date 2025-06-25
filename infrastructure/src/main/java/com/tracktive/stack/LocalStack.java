@@ -55,15 +55,15 @@ public class LocalStack extends Stack {
 
         DatabaseInstance authServiceDb = createDatabase("AuthServiceDB", "auth-service-db");
         DatabaseInstance userServiceDb = createDatabase("UserServiceDB", "user-service-db");
-        DatabaseInstance productServiceDb = createDatabase("ProductServiceDB", "product-service-db");
-        DatabaseInstance orderServiceDb = createDatabase("OrderServiceDB", "order-service-db");
-        DatabaseInstance paymentServiceDb = createDatabase("PaymentServiceDB", "payment-service-db");
+//        DatabaseInstance productServiceDb = createDatabase("ProductServiceDB", "product-service-db");
+//        DatabaseInstance orderServiceDb = createDatabase("OrderServiceDB", "order-service-db");
+//        DatabaseInstance paymentServiceDb = createDatabase("PaymentServiceDB", "payment-service-db");
 
         CfnHealthCheck authDbHealthCheck = createDbHealthCheck(authServiceDb, "AuthServiceDBHealthCheck");
         CfnHealthCheck userDbHealthCheck = createDbHealthCheck(userServiceDb, "UserServiceDBHealthCheck");
-        CfnHealthCheck productDbHealthCheck = createDbHealthCheck(productServiceDb, "ProductServiceDBHealthCheck");
-        CfnHealthCheck orderDbHealthCheck = createDbHealthCheck(orderServiceDb, "OrderServiceDBHealthCheck");
-        CfnHealthCheck paymentDbHealthCheck = createDbHealthCheck(paymentServiceDb, "PaymentServiceDBHealthCheck");
+//        CfnHealthCheck productDbHealthCheck = createDbHealthCheck(productServiceDb, "ProductServiceDBHealthCheck");
+//        CfnHealthCheck orderDbHealthCheck = createDbHealthCheck(orderServiceDb, "OrderServiceDBHealthCheck");
+//        CfnHealthCheck paymentDbHealthCheck = createDbHealthCheck(paymentServiceDb, "PaymentServiceDBHealthCheck");
 
         CfnCluster mskCluster = createMskCluster();
 
@@ -80,24 +80,24 @@ public class LocalStack extends Stack {
         userService.getNode().addDependency(userDbHealthCheck);
         userService.getNode().addDependency(userServiceDb);
 
-        // 3. Product Service
-        FargateService productService = createFargateService("ProductService", "product-service", List.of(8083, 8183), productServiceDb,  Map.of(
-                "AWS_S3_BUCKET_NAME", productImagesBucket.getBucketName(),
-                "AWS_S3_ENDPOINT_URL", "http://localhost:4566",
-                "AWS_ACCESS_KEY_ID", "test",
-                "AWS_SECRET_ACCESS_KEY", "test",
-                "AWS_REGION", "us-east-1"
-        ));
-        productService.getNode().addDependency(productDbHealthCheck);
-        productService.getNode().addDependency(productServiceDb);
+//        // 3. Product Service
+//        FargateService productService = createFargateService("ProductService", "product-service", List.of(8083, 8183), productServiceDb,  Map.of(
+//                "AWS_S3_BUCKET_NAME", productImagesBucket.getBucketName(),
+//                "AWS_S3_ENDPOINT_URL", "http://localhost:4566",
+//                "AWS_ACCESS_KEY_ID", "test",
+//                "AWS_SECRET_ACCESS_KEY", "test",
+//                "AWS_REGION", "us-east-1"
+//        ));
+//        productService.getNode().addDependency(productDbHealthCheck);
+//        productService.getNode().addDependency(productServiceDb);
 
-        // 4. Order Service
-        FargateService orderService = createFargateService("OrderService", "order-service", List.of(8084), orderServiceDb, null);
-        orderService.getNode().addDependency(orderDbHealthCheck);
-        orderService.getNode().addDependency(orderServiceDb);
-
-        // 5. Payment Service
-        FargateService paymentService = createFargateService("PaymentService", "payment-service", List.of(8085), paymentServiceDb, null);
+//        // 4. Order Service
+//        FargateService orderService = createFargateService("OrderService", "order-service", List.of(8084), orderServiceDb, null);
+//        orderService.getNode().addDependency(orderDbHealthCheck);
+//        orderService.getNode().addDependency(orderServiceDb);
+//
+//        // 5. Payment Service
+//        FargateService paymentService = createFargateService("PaymentService", "payment-service", List.of(8085), paymentServiceDb, null);
 
         createApiGatewayService();
     }
