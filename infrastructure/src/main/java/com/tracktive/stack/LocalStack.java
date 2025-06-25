@@ -54,16 +54,16 @@ public class LocalStack extends Stack {
                 .build();
 
         DatabaseInstance authServiceDb = createDatabase("AuthServiceDB", "auth-service-db");
-//        DatabaseInstance userServiceDb = createDatabase("UserServiceDB", "user-service-db");
+        DatabaseInstance userServiceDb = createDatabase("UserServiceDB", "user-service-db");
         DatabaseInstance productServiceDb = createDatabase("ProductServiceDB", "product-service-db");
-//        DatabaseInstance orderServiceDb = createDatabase("OrderServiceDB", "order-service-db");
-//        DatabaseInstance paymentServiceDb = createDatabase("PaymentServiceDB", "payment-service-db");
+        DatabaseInstance orderServiceDb = createDatabase("OrderServiceDB", "order-service-db");
+        DatabaseInstance paymentServiceDb = createDatabase("PaymentServiceDB", "payment-service-db");
 
         CfnHealthCheck authDbHealthCheck = createDbHealthCheck(authServiceDb, "AuthServiceDBHealthCheck");
-//        CfnHealthCheck userDbHealthCheck = createDbHealthCheck(userServiceDb, "UserServiceDBHealthCheck");
+        CfnHealthCheck userDbHealthCheck = createDbHealthCheck(userServiceDb, "UserServiceDBHealthCheck");
         CfnHealthCheck productDbHealthCheck = createDbHealthCheck(productServiceDb, "ProductServiceDBHealthCheck");
-//        CfnHealthCheck orderDbHealthCheck = createDbHealthCheck(orderServiceDb, "OrderServiceDBHealthCheck");
-//        CfnHealthCheck paymentDbHealthCheck = createDbHealthCheck(paymentServiceDb, "PaymentServiceDBHealthCheck");
+        CfnHealthCheck orderDbHealthCheck = createDbHealthCheck(orderServiceDb, "OrderServiceDBHealthCheck");
+        CfnHealthCheck paymentDbHealthCheck = createDbHealthCheck(paymentServiceDb, "PaymentServiceDBHealthCheck");
 
         CfnCluster mskCluster = createMskCluster();
 
@@ -76,9 +76,9 @@ public class LocalStack extends Stack {
         authService.getNode().addDependency(authServiceDb);
 
         // 2. User Service
-//        FargateService userService = createFargateService("UserService", "user-service", List.of(8082), userServiceDb, null);
-//        userService.getNode().addDependency(userDbHealthCheck);
-//        userService.getNode().addDependency(userServiceDb);
+        FargateService userService = createFargateService("UserService", "user-service", List.of(8082), userServiceDb, null);
+        userService.getNode().addDependency(userDbHealthCheck);
+        userService.getNode().addDependency(userServiceDb);
 
         // 3. Product Service
         FargateService productService = createFargateService("ProductService", "product-service", List.of(8083, 8183), productServiceDb,  Map.of(
@@ -92,12 +92,12 @@ public class LocalStack extends Stack {
         productService.getNode().addDependency(productServiceDb);
 
         // 4. Order Service
-//        FargateService orderService = createFargateService("OrderService", "order-service", List.of(8084), orderServiceDb, null);
-//        orderService.getNode().addDependency(orderDbHealthCheck);
-//        orderService.getNode().addDependency(orderServiceDb);
+        FargateService orderService = createFargateService("OrderService", "order-service", List.of(8084), orderServiceDb, null);
+        orderService.getNode().addDependency(orderDbHealthCheck);
+        orderService.getNode().addDependency(orderServiceDb);
 
         // 5. Payment Service
-//        FargateService paymentService = createFargateService("PaymentService", "payment-service", List.of(8085), paymentServiceDb, null);
+        FargateService paymentService = createFargateService("PaymentService", "payment-service", List.of(8085), paymentServiceDb, null);
 
         createApiGatewayService();
     }
