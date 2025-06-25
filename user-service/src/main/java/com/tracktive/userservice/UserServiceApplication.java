@@ -1,5 +1,6 @@
 package com.tracktive.userservice;
 
+import com.tracktive.userservice.config.DataInitializer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -11,8 +12,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class UserServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(UserServiceApplication.class, args);
+        var context = SpringApplication.run(UserServiceApplication.class, args);
+        // Retrieve the DataInitializer bean from the context
+        DataInitializer initializer = context.getBean(DataInitializer.class);
+        // Manually call the initializer
+        initializer.initializeData();
         System.out.println("User Service Running");
-
     }
 }

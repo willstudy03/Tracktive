@@ -8,8 +8,6 @@ import com.tracktive.userservice.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,14 +20,13 @@ import java.util.Arrays;
  * @date 25/6/2025
  */
 @Component
-@Profile({"production", "prod"})  // Support both 'production' and 'prod' profiles
-public class DataInitializer implements CommandLineRunner {
+public class DataInitializer {
 
     private static final Logger log = LoggerFactory.getLogger(DataInitializer.class);
 
     private final UserService userService;
     private final UserManagementService userManagementService;
-    private final Environment environment;  // Add Environment for programmatic check
+    private final Environment environment;
 
     @Autowired
     public DataInitializer(UserService userService, UserManagementService userManagementService, Environment environment) {
@@ -38,10 +35,9 @@ public class DataInitializer implements CommandLineRunner {
         this.environment = environment;
     }
 
-    @Override
+    // Call this method manually when you want to initialize data
     @Transactional
-    public void run(String... args) throws Exception {
-        // Optional: Additional programmatic check (redundant with @Profile but shown for completeness)
+    public void initializeData() {
         if (!Arrays.asList(environment.getActiveProfiles()).contains("prod")) {
             log.info("Skipping data initialization - not running in production profile");
             return;
@@ -51,15 +47,6 @@ public class DataInitializer implements CommandLineRunner {
         createDefaultAdminAccount();
         log.info("Data initialization completed.");
     }
-
-    // Alternative approach using @PostConstruct
-    // @PostConstruct
-    // @Transactional
-    // public void init() {
-    //     log.info("Starting data initialization...");
-    //     createDefaultAdminAccount();
-    //     log.info("Data initialization completed.");
-    // }
 
     private void createDefaultAdminAccount() {
         String defaultAdminEmail = "tracktive@gmail.com";
@@ -76,8 +63,9 @@ public class DataInitializer implements CommandLineRunner {
             adminRequest.setEmail(defaultAdminEmail);
             adminRequest.setUserRole(UserRole.ADMIN);
             adminRequest.setName("Admin");
-            adminRequest.setPhoneNumber("000-000-0000"); // Set appropriate default
-
+            adminRequest.setPhoneNumber("0123456789");
+            adminRequest.setRetailerDetailsDTO(null);
+            adminRequest.setSupplierDetailsDTO(null);
 
             UserDTO createdAdmin = userManagementService.createUser(adminRequest);
 
@@ -86,22 +74,12 @@ public class DataInitializer implements CommandLineRunner {
 
         } catch (Exception e) {
             log.error("Failed to create default admin account: {}", e.getMessage(), e);
-            // You might want to decide whether to throw the exception or just log it
-            // throw new RuntimeException("Failed to initialize default admin account", e);
+            throw new RuntimeException("Failed to initialize default admin account", e);
         }
     }
 
     private boolean adminAccountExists(String email) {
         try {
-            // You'll need to implement a method to check if user exists by email
-            // This assumes you have such a method in your UserService
-            // If not, you might need to add it or use a different approach
-
-            // Option 1: If you have a method to find user by email
-            // UserDTO existingUser = userService.selectUserByEmail(email);
-            // return existingUser != null && existingUser.getUserRole() == UserRole.ADMIN;
-
-            // Option 2: Get all users and check (less efficient for large datasets)
             return userService.selectAllUsers().stream()
                     .anyMatch(user -> email.equals(user.getEmail()) &&
                             user.getUserRole() == UserRole.ADMIN);
